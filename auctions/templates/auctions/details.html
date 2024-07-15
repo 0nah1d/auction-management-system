@@ -1,0 +1,126 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+    <!--============= Product Details Section Starts Here =============-->
+
+    <section class="product-details padding-bottom mt-240 mt-lg-440" style="padding-top: 150px;">
+        <div class="container">
+            <div class="product-details-slider-top-wrapper">
+                <div class="product-details-slider" style="overflow: hidden">
+                    <img style="width: auto;max-width: 100%;" src="{{ list.image_url }}" alt="{{ list.title }}">
+                </div>
+            </div>
+
+            <div class="row mt-40-60-80">
+                <div class="col-lg-8">
+                    <div class="product-details-content">
+                        <div class="product-details-header">
+                            <h2 class="title">{{ list.title }}</h2>
+                            <ul>
+                                <li>Listing ID: {{ list.id }}</li>
+                            </ul>
+                        </div>
+                        <ul class="price-table mb-30">
+                            <li class="header">
+                                <h5 class="current">Current Price</h5>
+                                <h3 class="price">US ${{ list.starting_bid|floatformat:2 }}</h3>
+                            </li>
+                        </ul>
+                        <div class="product-bid-area">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div style="padding: 30px; font-size: 18px; color: red;"
+                                         class="message">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <form class="product-bid-form" method="get" action="{% url 'bid' %}">
+                                <div class="search-icon">
+                                    <img src="{% static 'auctions' %}/images/how/bid.png" alt="product">
+                                </div>
+                                <input required name="bid_amnt" placeholder="Enter you bid amount" type="number">
+                                <button type="submit" name="list_d" class="custom-button" value= {{ list.id }}>Submit a
+                                    bid
+                                </button>
+                            </form>
+                        </div>
+                        <div class="buy-now-area">
+                            <a href="#0" class="custom-button">Buy Now: ${{ list.buy_now_price|floatformat:2 }}</a>
+                            <div class="share-area">
+                                <span>Share to:</span>
+                                <ul>
+                                    <li>
+                                        <a href="#0"><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#0"><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#0"><i class="fab fa-linkedin-in"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#0"><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="product-sidebar-area">
+                        <div class="product-single-sidebar mb-3">
+                            <h6 class="title">This Auction Ends in:</h6>
+                            <div class="countdown">
+                                <div class="countdown-timer" data-expire-date="{{ list.expire_date }} "></div>
+                            </div>
+                            <div class="side-counter-area">
+                                <div class="side-counter-item">
+                                    <div class="thumb">
+                                        <img src="{% static 'auctions' %}/images/product/icon1.png" alt="product">
+                                    </div>
+                                    <div class="content">
+                                        <h3 class="count-title"><span class="counter">{{ total_bidders }}</span></h3>
+                                        <p>Active Bidders</p>
+                                    </div>
+                                </div>
+                                <div class="side-counter-item">
+                                    <div class="thumb">
+                                        <img src="{% static 'auctions' %}/images/product/icon3.png" alt="product">
+                                    </div>
+                                    <div class="content">
+                                        <h3 class="count-title"><span class="counter">{{ total_bids }}</span></h3>
+                                        <p>Total Bids</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="closebid">
+                        {% if is_owner %}
+                            <form method="get" action="{% url 'win_ner' %}">
+                                <button class="btn btn-outline-primary" type="submit" value={{ list.id }} name="listid">
+                                    Close Bid
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 100px;">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="details">
+                    <div class="tab-details-content">
+                        <div class="header-area">
+                            {% autoescape off %}
+                                {{ list.desc }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!--============= Product Details Section Ends Here =============-->
+{% endblock %}

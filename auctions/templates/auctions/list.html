@@ -1,0 +1,97 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+
+    <!--============= Product Auction Section Starts Here =============-->
+    <div class="product-auction padding-bottom" style="padding-top: 150px;">
+        <div class="container">
+            <div class="product-header mb-40">
+                <div class="product-header-item">
+                    <div class="item">Category :</div>
+                    <label for="filterCat"></label>
+                    <form id="filterForm" name="filterForm" method="get" action="/auctions">
+                        <select name="filter-by" class="select-bar" id="filterCat">
+                            <option value="all" {% if selected_category == 'all' %} selected {% endif %}>All</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.title }}" {% if selected_category == cat.title %}
+                                        selected {% endif %}>{{ cat.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                <form method="get" action="/auctions" class="product-search ml-auto">
+                    <label>
+                        <input name="q" type="text" placeholder="Item Name">
+                    </label>
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            {% if total_auctions > 0 %}
+                <div class="row mb-30-none">
+                    {% for auction_p_list in auctions %}
+                        <div class="col-sm-10 col-md-6 col-lg-4 py-2">
+                            <div class="card">
+                                <h6 class="title p-3">
+                                    <a style="display: -webkit-box;-webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
+                                       href="{% url 'auctionDetails' auction_p_list.id %}">{{ auction_p_list.title }}</a>
+                                </h6>
+                                <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden">
+                                    <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                        <img src="{{ auction_p_list.image_url }}"
+                                             alt="{{ auction_p_list.title }}"
+                                             class="card-img-top"
+                                             style="height: 100%; width: auto; object-fit: cover;"
+                                        >
+                                    </a>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
+                                        <p class="small text-danger"><s>৳ {{ auction_p_list.buy_now_price }}</s></p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <h5 class="mb-0">Current Bid</h5>
+                                        <h5 class="text-dark mb-0">৳ {{ auction_p_list.starting_bid }}</h5>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <p class="text-muted mb-0">Bids: <span
+                                                class="fw-bold">{{ present_bid|default:"0" }}</span></p>
+                                        <div class="countdown">
+                                            <div class="countdown-timer"
+                                                 data-expire-date="{{ auction_p_list.expire_date }}"></div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <ul class="pagination">
+                    {% for num in auctions.paginator.page_range %}
+                        <li>
+                            <a {% if num == auctions.number %} class="active"{% endif %}
+                                                               href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Product not found</p>
+            {% endif %}
+        </div>
+    </div>
+    <!--============= Product Auction Section Ends Here =============-->
+
+
+    <script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#filterCat').change(function () {
+                $('#filterForm').submit();
+            });
+        });
+    </script>
+{% endblock %}

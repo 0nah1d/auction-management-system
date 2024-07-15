@@ -1,0 +1,107 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <style>
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-wrapper label {
+            margin-right: 10px; /* Adjust according to your needs */
+        }
+
+        .input-wrapper input {
+            flex-grow: 1;
+        }
+
+        .form-group small {
+            margin-left: 5px; /* Adjust according to your needs */
+            padding: 0;
+        }
+    </style>
+
+    <section class="contact-section padding-bottom" style="padding-top: 150px;">
+        <div class="container">
+            <div class="account-wrapper">
+                <div class="right-side cl-white">
+                    <div class="section-header">
+                        <h3 class="title">NEW HERE?</h3>
+                        <p>Sign up and create your Account</p>
+                        <a href="{% url 'register' %}" class="custom-button transparent">Sign Up</a>
+                    </div>
+                </div>
+                <div class="left-side">
+                    <div class="section-header">
+                        <h2 class="title">HI, THERE</h2>
+                        <p>You can log in to your BidHub account here.</p>
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <small class="text-left text-danger">{{ form.non_field_errors }}</small>
+                        </div>
+                    {% endif %}
+                    <form class="login-form" action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <label for="{{ form.username.name }}"><i class="far fa-user"></i></label>
+                                <input id="{{ form.username.name }}"
+                                       name="{{ form.username.name }}"
+                                       placeholder="Username"
+                                       type="text"
+                                       value="{% if form.username.value %}{{ form.username.value }}{% endif %}"
+                                >
+                            </div>
+                            <small class="text-left text-danger">{{ form.errors.username }}</small>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <label for="{{ form.password.name }}"><i class="fas fa-lock"></i></label>
+                                <input id="{{ form.password.name }}"
+                                       name="{{ form.password.name }}"
+                                       placeholder="Password"
+                                       type="password"
+                                       value="{% if form.password.value %}{{ form.password.value }}{% endif %}"
+                                >
+                                <span class="pass-type"
+                                      onclick="togglePasswordVisibility('{{ form.password.name }}', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                            </div>
+                            <small class="text-left text-danger">{{ form.errors.password }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="custom-button">LOG IN</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function togglePasswordVisibility(inputId, eyeIcon) {
+            const input = document.getElementById(inputId);
+            const icon = eyeIcon.querySelector('i');
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+
+{% endblock %}
