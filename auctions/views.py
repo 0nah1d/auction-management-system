@@ -273,6 +273,8 @@ def bid(request):
     if int(bid_amnt) > int(min_req_bid):
         mybid = Bids(user=request.user.username, listingid=list_id, bid=bid_amnt)
         mybid.save()
+        auction_listing.starting_bid = bid_amnt
+        auction_listing.save()
         messages.success(request, "Bid Placed")
         return redirect("auctionDetails", list_id)
 

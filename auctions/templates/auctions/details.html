@@ -23,14 +23,15 @@
                         <ul class="price-table mb-30">
                             <li class="header">
                                 <h5 class="current">Current Price</h5>
-                                <h3 class="price">US ${{ list.starting_bid|floatformat:2 }}</h3>
+                                <h3 class="price">BDT ৳ {{ present_bid|floatformat:2 }}</h3>
                             </li>
                         </ul>
                         <div class="product-bid-area">
                             {% if messages %}
                                 {% for message in messages %}
-                                    <div style="padding: 30px; font-size: 18px; color: red;"
-                                         class="message">{{ message }}</div>
+                                    <div class="alert alert-warning" role="alert">
+                                        {{ message }}
+                                    </div>
                                 {% endfor %}
                             {% endif %}
                             <form class="product-bid-form" method="get" action="{% url 'bid' %}">
@@ -44,7 +45,7 @@
                             </form>
                         </div>
                         <div class="buy-now-area">
-                            <a href="#0" class="custom-button">Buy Now: ${{ list.buy_now_price|floatformat:2 }}</a>
+                            <a href="#0" class="custom-button">Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}</a>
                             <div class="share-area">
                                 <span>Share to:</span>
                                 <ul>

@@ -969,7 +969,6 @@ input[type="submit"] {
 
 .select-bar .current {
     display: block;
-    margin-top: 2px;
 }
 
 .select-bar .list {
@@ -6834,11 +6833,12 @@ div[class*="auction"] .custom-button {
 .price-table {
     background: #ebf2ff;
     border-radius: 10px;
-    padding: 40px 30px;
+    padding: 20px 30px;
 }
 
 .price-table li {
     justify-content: space-between;
+    align-items: center;
     padding: 0;
     margin-bottom: 5px;
 }
@@ -6851,12 +6851,9 @@ div[class*="auction"] .custom-button {
     margin-bottom: 0;
 }
 
-.price-table li.header {
-    margin-bottom: 20px;
-}
-
 .price-table li .price {
     color: #43b055;
+    font-size: 24px;
 }
 
 .price-table li .info {
@@ -6865,7 +6862,7 @@ div[class*="auction"] .custom-button {
 
 @media (max-width: 575px) {
     .price-table {
-        padding: 30px 15px;
+        padding: 20px 15px;
     }
 
     .price-table li.header {
