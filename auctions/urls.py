@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -6,13 +6,13 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("register", views.register, name="register"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
-    path("register", views.register, name="register"),
+    path("auctions", views.auction_list, name="auctionList"),
+    path("auction/<int:bidid>", views.auction_details, name="auctionDetails"),
+
     path("create", views.create, name="create"),
-    # path("auctions/<int:bidid>", views.listingpage, name="listingpage"),
-    path("auctions", views.auctionList, name="auctionList"),
-    path("auction/<int:bidid>", views.auctionDetails, name="auctionDetails"),
     path("watchlist/<str:username>", views.watchlistpage, name="watchlistpage"),
     path("added", views.addwatchlist, name="addwatchlist"),
     path("delete", views.deletewatchlist, name="deletewatchlist"),
@@ -28,7 +28,6 @@ urlpatterns = [
     path("user/profile", views.userProfile, name="userProfile"),
     path("user/win/bids", views.userWinBids, name="userWinBids"),
     path('user/auction', views.myauction, name="myAuction"),
-    path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:

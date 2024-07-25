@@ -15,26 +15,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
 
 
-def index(request):
-    auctions = AuctionList.objects.filter(active_bool=True)
-    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
-    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
-    real_state_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='real-estate')[:3]
-    electronics_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='electronics')[:4]
-    art_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='art')[:4]
-
-    context = {
-        'header_bg': True,
-        'a_lists': auctions,
-        'top_three_products': top_three_products,
-        'watch_cat_products': watch_cat_products,
-        'real_state_cat_products': real_state_cat_products,
-        'electronics_cat_products': electronics_cat_products,
-        'art_cat_products': art_cat_products
-    }
-    return render(request, "auctions/index.html", context)
-
-
 def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -72,7 +52,27 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 
-def auctionList(request):
+def index(request):
+    auctions = AuctionList.objects.filter(active_bool=True)
+    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
+    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
+    real_state_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='real-estate')[:3]
+    electronics_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='electronics')[:4]
+    art_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='art')[:4]
+
+    context = {
+        'header_bg': True,
+        'a_lists': auctions,
+        'top_three_products': top_three_products,
+        'watch_cat_products': watch_cat_products,
+        'real_state_cat_products': real_state_cat_products,
+        'electronics_cat_products': electronics_cat_products,
+        'art_cat_products': art_cat_products
+    }
+    return render(request, "auctions/index.html", context)
+
+
+def auction_list(request):
     # Get the search query from the URL parameter
     search_query = request.GET.get('q', '')
     selected_category = request.GET.get('filter-by', 'all')
@@ -101,7 +101,7 @@ def auctionList(request):
     })
 
 
-def auctionDetails(request, bidid):
+def auction_details(request, bidid):
     biddesc = AuctionList.objects.get(pk=bidid, active_bool=True)
     bids_present = Bids.objects.filter(listingid=bidid)
     total_bids = Bids.objects.filter(listingid=bidid)
@@ -137,6 +137,22 @@ def myauction(request):
 
 
 @login_required(login_url='login')
+def create(request):
+    if request.method == "POST":
+        m = AuctionList()
+        m.user = request.user.username
+        m.title = request.POST["create_title"]
+        m.desc = request.POST["create_desc"]
+        m.short_desc = request.POST["create_short_desc"]
+        m.starting_bid = request.POST["create_initial_bid"]
+        m.image_url = request.POST["img_url"]
+        m.category = request.POST["category"]
+        m.save()
+        return redirect("index")
+    return render(request, "auctions/create.html", {'categories': Category.objects.all()})
+
+
+@login_required(login_url='login')
 def dashboard(request):
     # print(request.user.username)
     userBids = Bids.objects.filter(user=request.user.username)
@@ -157,23 +173,6 @@ def dashboard(request):
         'your_win': len(your_win),
         'active_bids': len(userBids)
     })
-
-
-@login_required(login_url='login')
-def create(request):
-    if request.method == "POST":
-        m = AuctionList()
-        m.user = request.user.username
-        m.title = request.POST["create_title"]
-        m.desc = request.POST["create_desc"]
-        m.short_desc = request.POST["create_short_desc"]
-        m.starting_bid = request.POST["create_initial_bid"]
-        m.image_url = request.POST["img_url"]
-        m.category = request.POST["category"]
-        # m = auctionlist(title = title, desc=desc, starting_bid = starting_bid, image_url = image_url, category = category)
-        m.save()
-        return redirect("index")
-    return render(request, "auctions/create.html")
 
 
 def listingpage(request, bidid):
@@ -204,7 +203,7 @@ def addwatchlist(request):
     nid = request.GET["listid"]
 
     # below line of code will select a table of watchlist that has my name, then
-    # when we loop in this watchlist, there r two fields present, to browse watch_list 
+    # when we loop in this watchlist, there r two fields present, to browse watch_list
     # watch_list.id == auctionlist.id, similar for all
 
     list_ = Watchlist.objects.filter(user=request.user.username)
