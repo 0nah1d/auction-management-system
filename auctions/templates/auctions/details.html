@@ -78,18 +78,12 @@
                             </div>
                             <div class="side-counter-area">
                                 <div class="side-counter-item">
-                                    <div class="thumb">
-                                        <img src="{% static 'auctions' %}/images/product/icon1.png" alt="product">
-                                    </div>
                                     <div class="content">
                                         <h3 class="count-title"><span class="counter">{{ total_bidders }}</span></h3>
                                         <p>Active Bidders</p>
                                     </div>
                                 </div>
                                 <div class="side-counter-item">
-                                    <div class="thumb">
-                                        <img src="{% static 'auctions' %}/images/product/icon3.png" alt="product">
-                                    </div>
                                     <div class="content">
                                         <h3 class="count-title"><span class="counter">{{ total_bids }}</span></h3>
                                         <p>Total Bids</p>
@@ -114,6 +108,13 @@
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="details">
                     <div class="tab-details-content">
+                        {% if list.short_desc %}
+                            <div class="header-area" style="margin-bottom: 40px">
+                                {% autoescape off %}
+                                    {{ list.short_desc }}
+                                {% endautoescape %}
+                            </div>
+                        {% endif %}
                         <div class="header-area">
                             {% autoescape off %}
                                 {{ list.desc }}
@@ -122,7 +123,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
     <!--============= Product Details Section Ends Here =============-->
