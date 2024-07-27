@@ -38,7 +38,13 @@
 
                                 <div class="d-flex justify-content-between mb-3">
                                     <h5 class="mb-0">Current Bid</h5>
-                                    <h5 class="text-dark mb-0">৳ {{ top_three_p_list.starting_bid }}</h5>
+                                    <h5 class="text-dark mb-0">
+                                        {% if top_three_p_list.current_bid != 0 %}
+                                            ৳ {{ top_three_p_list.current_bid }}
+                                        {% else %}
+                                            ৳ {{ top_three_p_list.starting_bid }}
+                                        {% endif %}
+                                    </h5>
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -117,7 +123,13 @@
 
                                     <div class="d-flex justify-content-between mb-3">
                                         <h5 class="mb-0">Current Bid</h5>
-                                        <h5 class="text-dark mb-0">৳ {{ watch_p_list.starting_bid }}</h5>
+                                        <h5 class="text-dark mb-0">
+                                            {% if watch_p_list.current_bid != 0 %}
+                                                ৳ {{ watch_p_list.current_bid }}
+                                            {% else %}
+                                                ৳ {{ watch_p_list.starting_bid }}
+                                            {% endif %}
+                                        </h5>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mb-2">

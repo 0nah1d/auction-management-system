@@ -149,15 +149,25 @@ def myauction(request):
 def create(request):
     if request.method == "POST":
         m = AuctionList()
-        m.user = request.user.username
-        m.title = request.POST["create_title"]
-        m.desc = request.POST["create_desc"]
-        m.short_desc = request.POST["create_short_desc"]
-        m.starting_bid = request.POST["create_initial_bid"]
-        m.image_url = request.POST["img_url"]
-        m.category = request.POST["category"]
-        m.save()
+        m.user = request.user  # Set the user object, not the username
+        m.title = request.POST.get("create_title")
+        m.desc = request.POST.get("create_desc")
+        m.short_desc = request.POST.get("create_short_desc")
+        m.starting_bid = request.POST.get("create_initial_bid")
+        m.buy_now_price = request.POST.get("create_buy_now_price", 0)
+        m.image_url = request.FILES.get("img_url")  # Handle file upload
+        m.save()  # Save the auction first to get the instance
+
+        # Handle many-to-many relationships
+        categories = request.POST.getlist("category")
+        for category_slug in categories:
+            category = Category.objects.get(slug=category_slug)
+            m.categories.add(category)
+
+        m.save()  # Save changes to the many-to-many relationship
+
         return redirect("index")
+
     return render(request, "auctions/create.html", {'categories': Category.objects.all()})
 
 
@@ -166,7 +176,7 @@ def dashboard(request):
     # print(request.user.username)
     userBids = Bids.objects.filter(user=request.user.username)
     user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
-    your_win = Winner.objects.filter(user=request.user.username)
+    your_win = Winner.objects.filter(user=request.user.pk)
 
     # Get highest and lowest bid prices for each auction
     for auction in user_auctions:
@@ -176,8 +186,16 @@ def dashboard(request):
         auction.highest_bid_price = highest_bid if highest_bid is not None else 0
         auction.lowest_bid_price = lowest_bid if lowest_bid is not None else 0
 
+    user = request.user
+
+    profile_picture_url = None
+    if user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
     return render(request, "auctions/dashboard.html", {
-        'username': request.user.username,
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
         'auctions': user_auctions,
         'your_win': len(your_win),
         'active_bids': len(userBids)
@@ -205,43 +223,6 @@ def watchlistpage(request, username):
     return render(request, "auctions/watchlist.html", {
         "user_watchlist": list_,
     })
-
-
-@login_required(login_url='login')
-def addwatchlist(request):
-    nid = request.GET["listid"]
-
-    # below line of code will select a table of watchlist that has my name, then
-    # when we loop in this watchlist, there r two fields present, to browse watch_list
-    # watch_list.id == auctionlist.id, similar for all
-
-    list_ = Watchlist.objects.filter(user=request.user.username)
-
-    # when you below line, you shld convert id to int inorder to compare or else == wont work
-
-    for items in list_:
-        if int(items.watch_list.id) == int(nid):
-            return watchlistpage(request, request.user.username)
-
-    newwatchlist = Watchlist(watch_list=AuctionList.objects.get(pk=nid), user=request.user.username)
-    newwatchlist.save()
-    # this message remains untill u reload
-    messages.success(request, "Item added to watchlist")
-
-    return listingpage(request, nid)
-
-
-@login_required(login_url='login')
-def deletewatchlist(request):
-    rm_id = request.GET["listid"]
-    list_ = Watchlist.objects.get(pk=rm_id)
-
-    # this message remains untill u reload
-    messages.success(request, f"{list_.watch_list.title} is deleted from your watchlist.")
-    list_.delete()
-
-    # you cannot call a fuction  from views as a return value
-    return redirect("index")
 
 
 # this function returns minimum bid required to place a user's bid
@@ -281,9 +262,9 @@ def bid(request):
     if int(bid_amnt) > int(min_req_bid):
         mybid = Bids(user=request.user.username, listingid=list_id, bid=bid_amnt)
         mybid.save()
-        auction_listing.starting_bid = bid_amnt
+        auction_listing.current_bid = bid_amnt
         auction_listing.save()
-        messages.success(request, "Bid Placed")
+        messages.success(request, "Bid placed successfully.")
         return redirect("auctionDetails", list_id)
 
     messages.warning(request, f"Sorry, {bid_amnt} is less. It should be more than {min_req_bid}$.")
@@ -333,7 +314,7 @@ def win_ner(request):
 # checks winner
 def winnings(request):
     try:
-        your_win = Winner.objects.filter(user=request.user.username)
+        your_win = Winner.objects.filter(user=request.user.pk)
     except:
         your_win = None
 
@@ -342,43 +323,32 @@ def winnings(request):
     })
 
 
-# shows lists that are present in a specific category
-def cat(request, category_name):
-    category = AuctionList.objects.filter(category=category_name)
-    return render(request, "auctions/index.html", {
-        "a1": category,
-    })
-
-
-# shows all categories in which object is listed
-def cat_list(request):
-    # unlike filter that takes a values of object_name in model, to
-    # display objectname use .values('name of section from your object')
-    # and when you add distinct() along with it
-    # it shows only unique names, omits duplicates
-
-    category_present = AuctionList.objects.values('category').distinct()
-    return render(request, "auctions/category.html", {
-        "cat_list": category_present,
-    })
-
-
 @login_required(login_url='login')
-def userBid(request):
+def user_bid(request):
     userBids = Bids.objects.filter(user=request.user.username)
     user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
 
     total_bids = 0
     for auction in user_auctions:
+        auction.image_url = request.build_absolute_uri(auction.image_url.url)
         auction.total_bids = Bids.objects.filter(listingid=auction.id).count()
 
+    user = request.user
+
+    profile_picture_url = None
+    if user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
     return render(request, "auctions/my-bid.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
         "userBids": user_auctions
     })
 
 
 @login_required(login_url='login')
-def userProfile(request):
+def user_profile(request):
     user = request.user
 
     profile_picture_url = None
@@ -395,15 +365,29 @@ def userProfile(request):
 
 
 @login_required(login_url='login')
-def userWinBids(request):
-    # print(request.user.username)
-    win_lists = Winner.objects.filter(user=request.user.username)
+def user_win_bids(request):
+    # Retrieve the winner objects for the logged-in user
+    win_lists = Winner.objects.filter(user=request.user)
 
-    # Get highest and lowest bid prices for each auction
-    for w_list in win_lists:
-        win_lists.aution = AuctionList.objects.filter(id=w_list.bid_win_list)
+    # Get the associated auction lists
+    auctions = []
+    for win in win_lists:
+        auction = AuctionList.objects.get(id=win.bid_win_list.pk)
+        if auction.image_url:
+            auction.image_url = request.build_absolute_uri(auction.image_url.url)
+        auctions.append({
+            'winner': win,
+            'auction': auction
+        })
+
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
     return render(request, "auctions/winning-bids.html", {
-        'username': request.user.username,
-        'auction': win_lists
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+        'auctions': auctions
     })

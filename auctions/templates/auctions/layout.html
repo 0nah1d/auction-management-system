@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{% static 'auctions/css/jquery-ui.min.css' %}">
     <link rel="stylesheet" href="{% static 'auctions/css/main.css' %}">
     <link rel="shortcut icon" href="{% static 'auctions/images/favicon.png' %}" type="image/x-icon">
+    <script src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
+            referrerpolicy="origin"></script>
 </head>
 
 <body {% if header_bg %} class='header_bg' {% endif %}>
@@ -117,13 +119,16 @@
                     </div>
                     <ul class="d-flex justify-content-between align-items-center" style="gap: 20px">
                         <li>
-                            <a href="#"><img width="80px" class="bg-light " src="{% static 'auctions' %}/images/footer/nagad.png" alt="footer"></a>
+                            <a href="#"><img width="80px" class="bg-light "
+                                             src="{% static 'auctions' %}/images/footer/nagad.png" alt="footer"></a>
                         </li>
                         <li>
-                            <a href="#"><img width="80px" class="bg-light" src="{% static 'auctions' %}/images/footer/bikash.png" alt="footer"></a>
+                            <a href="#"><img width="80px" class="bg-light"
+                                             src="{% static 'auctions' %}/images/footer/bikash.png" alt="footer"></a>
                         </li>
                         <li>
-                            <a href="#"><img width="80px" class="bg-light" src="{% static 'auctions' %}/images/footer/rocket.png" alt="footer"></a>
+                            <a href="#"><img width="80px" class="bg-light"
+                                             src="{% static 'auctions' %}/images/footer/rocket.png" alt="footer"></a>
                         </li>
                     </ul>
                     <div class="text-white">
@@ -138,10 +143,10 @@
 </footer>
 
 
-
 <script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'auctions/js/modernizr-3.6.0.min.js' %}"></script>
 <script src="{% static 'auctions/js/plugins.js' %}js/"></script>
+<script src="{% static 'auctions/js/popper.min.js' %}js/"></script>
 <script src="{% static 'auctions/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'auctions/js/isotope.pkgd.min.js' %}"></script>
 <script src="{% static 'auctions/js/wow.min.js' %}"></script>

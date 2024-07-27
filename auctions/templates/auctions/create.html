@@ -1,46 +1,88 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <div style="margin: 150px 0;" class="d-flex justify-content-center align-items-center w-100">
-        <div style="max-width: 800px; width: 100%; padding: 20px">
-            <h2 class="text-center mb-4">Create Listing</h2>
-            <form method="POST">
+    <style>
+        ::placeholder {
+            font-size: 0.8rem; /* Adjust the size as needed */
+        }
+    </style>
+    
+    <div style="padding-top: 100px;" class="d-flex justify-content-center align-items-center w-100">
+        <div style="max-width: 800px; width: 100%; padding: 20px; margin-bottom: 100px">
+            <h2 class="text-center mb-4">Add Auction</h2>
+            <form method="POST" action="/create" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="title"></label>
+                    <label for="title">Title</label>
                     <input required autofocus placeholder="Title" type="text" name="create_title" id="title"
                            class="form-control"/>
                 </div>
+
                 <div class="form-group">
-                    <label for="dec"></label>
-                    <textarea required class="form-control" id="dec" rows="4" placeholder="Add Description" type="text"
+                    <label for="desc">Description</label>
+                    <textarea style="width: 100%" required class="form-control" id="desc" rows="4"
+                              placeholder="Add Description"
                               name="create_desc"></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label for="starting_bid"></label>
-                    <input required placeholder="Starting bid amaount" type="number" name="create_initial_bid"
-                           id="starting_bid"
-                           class="form-control"/>
+                    <label for="starting_bid">Starting Bid</label>
+                    <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
+                           id="starting_bid" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <input type="file" name="img_url">
+                    <label for="buy_now_price">Buy Now Price</label>
+                    <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
+                           id="buy_now_price" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <div>Select Categories</div>
-                    {% for category in categories %}
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="category_{{ category.slug }}"
-                                   name="category[]" value="{{ category.slug }}">
-                            <label class="form-check-label" for="category_{{ category.slug }}">
-                                {{ category.title }}
-                            </label>
-                        </div>
-                    {% endfor %}
+                    <label for="img_url">Upload Image</label>
+                    <input type="file" class="form-control-file" id="img_url" accept="image/*"
+                           onchange="previewImage(event)">
+                    <div class="mt-2">
+                        <img id="image_preview" src="" alt="Image Preview"
+                             style="display:none; max-width: 100%; height: auto;" class="img-fluid"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="category_select">Select Categories</label>
+                    <select name="category[]" id="category_select" class="form-select" multiple style="height: 200px;">
+                        {% for category in categories %}
+                            <option style="padding: 10px" value="{{ category.slug }}">{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         </div>
     </div>
+
+    <script>
+        tinymce.init({
+            selector: '#desc',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('image_preview');
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+    </script>
 {% endblock %}
 
 

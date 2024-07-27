@@ -26,6 +26,7 @@ class AuctionList(models.Model):
     short_desc = models.TextField(default=None, blank=True, null=True)
     desc = tinymce_models.HTMLField()
     starting_bid = models.IntegerField()
+    current_bid = models.IntegerField(default=0)
     buy_now_price = models.IntegerField(default=0)
     bid_watch_list = models.IntegerField(default=0)
     image_url = models.ImageField(upload_to='auction_image', blank=True, null=True)
@@ -53,7 +54,10 @@ class Watchlist(models.Model):
 
 class Winner(models.Model):
     bid_win_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
-    user = models.CharField(max_length=64, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} won {self.bid_win_list.title}"
 
 
 class Category(models.Model):
