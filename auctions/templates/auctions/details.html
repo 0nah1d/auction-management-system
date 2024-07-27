@@ -6,8 +6,10 @@
     <section class="product-details padding-bottom mt-240 mt-lg-440" style="padding-top: 150px;">
         <div class="container">
             <div class="product-details-slider-top-wrapper">
-                <div class="product-details-slider" style="overflow: hidden">
-                    <img style="width: auto;max-width: 100%;" src="{{ list.image_url }}" alt="{{ list.title }}">
+                <div class="product-details-slider"
+                     style="overflow: hidden; max-height: 600px; display: flex; justify-content: center; align-items: center;">
+                    <img style="height: 100%; width: auto; object-fit: contain;" src="{{ list.image_url }}"
+                         alt="{{ list.title }}">
                 </div>
             </div>
 

@@ -35,12 +35,12 @@
                                     <a style="display: -webkit-box;-webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
                                        href="{% url 'auctionDetails' auction_p_list.id %}">{{ auction_p_list.title }}</a>
                                 </h6>
-                                <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden">
+                                <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
                                     <a href="{% url 'auctionDetails' auction_p_list.id %}">
                                         <img src="{{ auction_p_list.image_url }}"
                                              alt="{{ auction_p_list.title }}"
                                              class="card-img-top"
-                                             style="height: 100%; width: auto; object-fit: cover;"
+                                             style="height: 100%; width: 100%; object-fit: contain;"
                                         >
                                     </a>
                                 </div>

@@ -53,21 +53,22 @@ def logout_view(request):
 
 
 def index(request):
-    auctions = AuctionList.objects.filter(active_bool=True)
+    def add_full_image_url(auction_list):
+        for auction in auction_list:
+            if auction.image_url:
+                auction.image_url = request.build_absolute_uri(auction.image_url.url)
+        return auction_list
+
     top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
     watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
-    real_state_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='real-estate')[:3]
-    electronics_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='electronics')[:4]
-    art_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='art')[:4]
+
+    top_three_products = add_full_image_url(top_three_products)
+    watch_cat_products = add_full_image_url(watch_cat_products)
 
     context = {
         'header_bg': True,
-        'a_lists': auctions,
         'top_three_products': top_three_products,
         'watch_cat_products': watch_cat_products,
-        'real_state_cat_products': real_state_cat_products,
-        'electronics_cat_products': electronics_cat_products,
-        'art_cat_products': art_cat_products
     }
     return render(request, "auctions/index.html", context)
 
@@ -89,7 +90,11 @@ def auction_list(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     total_auctions = paginator.count
-    # print(auctions[0].expire_date)
+
+    # Add full image URL to each auction
+    for auction in page_obj:
+        if auction.image_url:
+            auction.image_url = request.build_absolute_uri(auction.image_url.url)
 
     # Category
     categories = Category.objects.all()
@@ -103,6 +108,10 @@ def auction_list(request):
 
 def auction_details(request, bidid):
     biddesc = AuctionList.objects.get(pk=bidid, active_bool=True)
+    # Adding full image URL
+    if biddesc.image_url:
+        biddesc.image_url = request.build_absolute_uri(biddesc.image_url.url)
+
     bids_present = Bids.objects.filter(listingid=bidid)
     total_bids = Bids.objects.filter(listingid=bidid)
     total_bidders = Bids.objects.filter(listingid=bidid).values('user').annotate(total_bids=Count('user'))

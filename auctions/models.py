@@ -28,7 +28,7 @@ class AuctionList(models.Model):
     starting_bid = models.IntegerField()
     buy_now_price = models.IntegerField(default=0)
     bid_watch_list = models.IntegerField(default=0)
-    image_url = models.CharField(max_length=228, default=None, blank=True, null=True)
+    image_url = models.ImageField(upload_to='auction_image', blank=True, null=True)
     expire_date = models.DateTimeField(blank=False, null=True)
     categories = models.ManyToManyField('Category', through='AuctionCategory')
     active_bool = models.BooleanField(default=True)
