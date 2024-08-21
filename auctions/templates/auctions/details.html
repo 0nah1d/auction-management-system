@@ -2,128 +2,227 @@
 {% load static %}
 {% block body %}
     <!--============= Product Details Section Starts Here =============-->
+    <style>
+        .big-img {
+            width: auto;
+            height: 500px;
+            background-color: #cde0ec;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .big-img img {
+            width: auto;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .magnify {
+            position: fixed;
+            border: 1px solid #333;
+            border-radius: 50%;
+            pointer-events: none;
+            width: 200px;
+            height: 200px;
+            background-repeat: no-repeat;
+            background-size: 200%; /* Stronger zoom effect */
+            background-position: center;
+            display: none;
+            z-index: 1000;
+        }
+
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .small-img {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 1px solid black;
+        }
+
+        .small-img img {
+            width: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .small-img:hover img {
+            transform: scale(1.2);
+        }
+    </style>
 
     <section class="product-details padding-bottom mt-240 mt-lg-440" style="padding-top: 150px;">
         <div class="container">
-            <div class="product-details-slider-top-wrapper">
-                <div class="product-details-slider"
-                     style="overflow: hidden; max-height: 600px; display: flex; justify-content: center; align-items: center;">
-                    <img style="height: 100%; width: auto; object-fit: contain;" src="{{ list.image_url }}"
-                         alt="{{ list.title }}">
-                </div>
-            </div>
 
-            <div class="row mt-40-60-80">
-                <div class="col-lg-8">
-                    <div class="product-details-content">
-                        <div class="product-details-header">
-                            <h2 class="title">{{ list.title }}</h2>
-                            <ul>
-                                <li>Listing ID: {{ list.id }}</li>
-                            </ul>
-                        </div>
-                        <ul class="price-table mb-30">
-                            <li class="header">
-                                <h5 class="current">Current Price</h5>
-                                <h3 class="price">BDT ৳ {{ present_bid|floatformat:2 }}</h3>
-                            </li>
-                        </ul>
-                        <div class="product-bid-area">
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <div class="alert alert-warning" role="alert">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                            <form class="product-bid-form" method="get" action="{% url 'bid' %}">
-                                <div class="search-icon">
-                                    <img src="{% static 'auctions' %}/images/how/bid.png" alt="product">
-                                </div>
-                                <input required name="bid_amnt" placeholder="Enter you bid amount" type="number">
-                                <button type="submit" name="list_d" class="custom-button" value= {{ list.id }}>Submit a
-                                    bid
-                                </button>
-                            </form>
-                        </div>
-                        <div class="buy-now-area">
-                            <a href="#0" class="custom-button">Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}</a>
-                            <div class="share-area">
-                                <span>Share to:</span>
-                                <ul>
-                                    <li>
-                                        <a href="#0"><i class="fab fa-facebook-f"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#0"><i class="fab fa-twitter"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#0"><i class="fab fa-linkedin-in"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#0"><i class="fab fa-instagram"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="product-sidebar-area">
-                        <div class="product-single-sidebar mb-3">
-                            <h6 class="title">This Auction Ends in:</h6>
-                            <div class="countdown">
-                                <div class="countdown-timer" data-expire-date="{{ list.expire_date }} "></div>
-                            </div>
-                            <div class="side-counter-area">
-                                <div class="side-counter-item">
-                                    <div class="content">
-                                        <h3 class="count-title"><span class="counter">{{ total_bidders }}</span></h3>
-                                        <p>Active Bidders</p>
-                                    </div>
-                                </div>
-                                <div class="side-counter-item">
-                                    <div class="content">
-                                        <h3 class="count-title"><span class="counter">{{ total_bids }}</span></h3>
-                                        <p>Total Bids</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="closebid">
-                        {% if is_owner %}
-                            <form method="get" action="{% url 'win_ner' %}">
-                                <button class="btn btn-danger" type="submit" value={{ list.id }} name="listid">
-                                    Close Bid
-                                </button>
-                            </form>
+            <div class="">
+                <div style="width: 100%">
+                    <div class="big-img">
+                        {% if image_urls %}
+                            <img src="{{ image_urls.0 }}" alt="First Auction Image" id="mainImage">
+                            <div class="magnify" id="magnify"></div>
                         {% endif %}
                     </div>
+
+                    <div class="images">
+                        {% for image_url in image_urls %}
+                            <div class="small-img">
+                                <img src="{{ image_url }}" onclick="showImg(this.src)" alt="Auction Image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <h3 class="my-4">{{ list.title }}</h3>
+
+
+                <div class="row border-bottom border-top py-4">
+                    <div class="col-lg-8">
+                        <div class="product-details-content">
+                            <ul class="price-table mb-30">
+                                <li class="header">
+                                    <h5>Listing ID: {{ list.id }}</h5>
+                                    <h5 class="current">Current Price:</h5>
+                                    <h3 class="price">BDT ৳ {{ present_bid|floatformat:2 }}</h3>
+                                </li>
+                            </ul>
+                            <div class="product-bid-area">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-warning" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <form class="product-bid-form" method="get" action="{% url 'bid' %}">
+                                    <div class="search-icon">
+                                        <img src="{% static 'auctions' %}/images/how/bid.png" alt="product">
+                                    </div>
+                                    <input required name="bid_amnt" placeholder="Enter you bid amount" type="number">
+                                    <button type="submit" name="list_d" class="custom-button" value= {{ list.id }}>
+                                        Submit a
+                                        bid
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="buy-now-area">
+                                <a href="#0" class="custom-button">Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}</a>
+                                <div class="share-area">
+                                    <span>Share to:</span>
+                                    <ul>
+                                        <li>
+                                            <a href="#0"><i class="fab fa-facebook-f"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="#0"><i class="fab fa-twitter"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="#0"><i class="fab fa-linkedin-in"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="#0"><i class="fab fa-instagram"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="product-sidebar-area">
+                            <div class="product-single-sidebar mb-3">
+                                <h6 class="title">This Auction Ends in:</h6>
+                                <div class="countdown">
+                                    <div class="countdown-timer" data-expire-date="{{ list.expire_date }} "></div>
+                                </div>
+                                <div class="side-counter-area">
+                                    <div class="side-counter-item">
+                                        <div class="content d-flex align-items-center" style="gap: 10px">
+                                            <h3 class="count-title"><span class="counter">{{ total_bidders }}</span>
+                                            </h3>
+                                            <p>Active Bidders</p>
+                                        </div>
+                                    </div>
+                                    <div class="side-counter-item">
+                                        <div class="content d-flex align-items-center" style="gap: 10px">
+                                            <h3 class="count-title"><span class="counter">{{ total_bids }}</span></h3>
+                                            <p>Total Bids</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closebid">
+                            {% if is_owner %}
+                                <form method="get" action="{% url 'win_ner' %}">
+                                    <button class="btn btn-danger" type="submit" value={{ list.id }} name="listid">
+                                        Close Bid
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="container" style="margin-top: 100px;">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="details">
-                    <div class="tab-details-content">
-                        {% if list.short_desc %}
-                            <div class="header-area" style="margin-bottom: 40px">
+            <div class="container" style="margin-top: 100px;">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="details">
+                        <div class="tab-details-content">
+                            {% if list.short_desc %}
+                                <div class="header-area" style="margin-bottom: 40px">
+                                    {% autoescape off %}
+                                        {{ list.short_desc }}
+                                    {% endautoescape %}
+                                </div>
+                            {% endif %}
+                            <div class="header-area">
                                 {% autoescape off %}
-                                    {{ list.short_desc }}
+                                    {{ list.desc }}
                                 {% endautoescape %}
                             </div>
-                        {% endif %}
-                        <div class="header-area">
-                            {% autoescape off %}
-                                {{ list.desc }}
-                            {% endautoescape %}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </section>
     <!--============= Product Details Section Ends Here =============-->
+
+    <script>
+        let bigImg = document.querySelector('.big-img img');
+
+        function showImg(pic) {
+            bigImg.src = pic;
+        }
+
+        const mainImage = document.getElementById('mainImage');
+        const magnify = document.getElementById('magnify');
+
+        mainImage.addEventListener('mousemove', function (e) {
+            const {offsetX, offsetY, target} = e;
+            const {width, height} = target;
+
+            // Calculate the background position for magnify effect
+            const x = (offsetX / width) * 100;
+            const y = (offsetY / height) * 100;
+
+            magnify.style.backgroundImage = `url(${target.src})`;
+            magnify.style.backgroundSize = `${width * 3}px ${height * 3}px`; // Adjust zoom level here
+            magnify.style.backgroundPosition = `${x}% ${y}%`;
+            magnify.style.left = `${e.pageX + 10}px`; // Offset to avoid covering the cursor
+            magnify.style.top = `${e.pageY + 10}px`;  // Offset to avoid covering the cursor
+            magnify.style.display = 'block';
+        });
+
+        mainImage.addEventListener('mouseleave', function () {
+            magnify.style.display = 'none';
+        });
+    </script>
 {% endblock %}

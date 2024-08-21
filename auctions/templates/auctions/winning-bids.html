@@ -25,8 +25,9 @@
                     <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
                         <div class="user">
                             <div class="thumb-area">
-                                <div class="thumb">
-                                    <img src="{{ profile_picture }}" alt="{{ username }}">
+                                <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
+                                    <img style="height: 100%" src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                         alt="{{ username }}">
                                 </div>
                             </div>
                             <div class="content">
@@ -36,10 +37,10 @@
                         </div>
                         <ul class="dashboard-menu">
                             <li>
-                                <a href="{% url 'userDashboard' %}"><i class="flaticon-dashboard"></i>Dashboard</a>
+                                <a href="{% url 'userProfile' %}"><i class="flaticon-settings"></i>Personal Profile </a>
                             </li>
                             <li>
-                                <a href="{% url 'userProfile' %}"><i class="flaticon-settings"></i>Personal Profile </a>
+                                <a href="{% url 'userDashboard' %}"><i class="flaticon-dashboard"></i>Dashboard</a>
                             </li>
                             <li>
                                 <a href="{% url 'userBids' %}"><i class="flaticon-auction"></i>My Bids</a>

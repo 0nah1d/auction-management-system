@@ -5,13 +5,61 @@
         ::placeholder {
             font-size: 0.8rem; /* Adjust the size as needed */
         }
+
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .image-preview {
+            position: relative;
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+        }
+
+        .remove-img-btn {
+            position: absolute;
+            top: 5px; /* Adjust the distance from the top */
+            right: 5px; /* Adjust the distance from the right */
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px; /* Adjust the font size as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
-    
+
     <div style="padding-top: 100px;" class="d-flex justify-content-center align-items-center w-100">
         <div style="max-width: 800px; width: 100%; padding: 20px; margin-bottom: 100px">
             <h2 class="text-center mb-4">Add Auction</h2>
-            <form method="POST" action="/create" enctype="multipart/form-data">
+            <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
+
+                <!-- Display error messages -->
+                {% if messages %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input required autofocus placeholder="Title" type="text" name="create_title" id="title"
@@ -20,9 +68,8 @@
 
                 <div class="form-group">
                     <label for="desc">Description</label>
-                    <textarea style="width: 100%" required class="form-control" id="desc" rows="4"
-                              placeholder="Add Description"
-                              name="create_desc"></textarea>
+                    <textarea style="width: 100%" class="form-control" id="desc" rows="4"
+                              placeholder="Add Description" name="create_desc"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -30,59 +77,109 @@
                     <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
                            id="starting_bid" class="form-control"/>
                 </div>
+
                 <div class="form-group">
                     <label for="buy_now_price">Buy Now Price</label>
-                    <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
-                           id="buy_now_price" class="form-control"/>
+                    <input placeholder="Buy Now Price" type="number" name="create_buy_now_price" id="buy_now_price"
+                           class="form-control"/>
                 </div>
+
                 <div class="form-group">
-                    <label for="img_url">Upload Image</label>
-                    <input type="file" class="form-control-file" id="img_url" accept="image/*"
-                           onchange="previewImage(event)">
-                    <div class="mt-2">
-                        <img id="image_preview" src="" alt="Image Preview"
-                             style="display:none; max-width: 100%; height: auto;" class="img-fluid"/>
+                    <label for="expire_date">Expiration Date</label>
+                    <input required placeholder="Expiration date" type="date" name="expire_date" id="expire_date"
+                           class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="img_url">Upload Images</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile04" name="img_url"
+                               accept="image/*" multiple
+                               onchange="previewImages(event)">
+                        <label class="custom-file-label" for="inputGroupFile04">Choose Images</label>
+                    </div>
+                    <div class="image-preview-container mt-2" id="image_preview_container">
+                        <!-- Image previews will be added here dynamically -->
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="category_select">Select Categories</label>
-                    <select name="category[]" id="category_select" class="form-select" multiple style="height: 200px;">
+                    <label for="category_select">Select Category</label>
+                    <select name="category" id="category_select" class="form-select" multiple style="height: 200px;"
+                            onchange="toggleNewCategoryField()">
                         {% for category in categories %}
-                            <option style="padding: 10px" value="{{ category.slug }}">{{ category.title }}</option>
+                            <option value="{{ category.slug }}">{{ category.title }}</option>
                         {% endfor %}
+                        <option value="new" style="font-style: italic;">Add New Category</option>
                     </select>
                 </div>
+
+                <!-- New category field (hidden by default) -->
+                <div class="form-group" id="new_category_field" style="display:none;">
+                    <label for="new_category_title">New Category Title</label>
+                    <input placeholder="Enter new category title" type="text" name="new_category_title"
+                           id="new_category_title" class="form-control"/>
+                </div>
+
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
+
         </div>
     </div>
 
     <script>
+        function toggleNewCategoryField() {
+            const categorySelect = document.getElementById('category_select');
+            const newCategoryField = document.getElementById('new_category_field');
+            const selectedValue = categorySelect.value;
+
+            if (selectedValue === 'new') {
+                newCategoryField.style.display = 'block';
+            } else {
+                newCategoryField.style.display = 'none';
+            }
+        }
+
         tinymce.init({
             selector: '#desc',
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
         });
 
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('image_preview');
+        function previewImages(event) {
+            const files = event.target.files;
+            const container = document.getElementById('image_preview_container');
+            container.innerHTML = '';
 
-            if (file) {
-                const reader = new FileReader();
+            Array.from(files).forEach(file => {
+                if (file) {
+                    const reader = new FileReader();
+                    const div = document.createElement('div');
+                    div.classList.add('image-preview');
 
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.alt = 'Image Preview';
 
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-            }
+                    const btn = document.createElement('button');
+                    btn.classList.add('remove-img-btn');
+                    btn.innerText = '×';
+                    btn.onclick = () => {
+                        container.removeChild(div);
+                        const dataTransfer = new DataTransfer();
+                        Array.from(event.target.files).forEach((f, index) => {
+                            if (f !== file) {
+                                dataTransfer.items.add(f);
+                            }
+                        });
+                        event.target.files = dataTransfer.files;
+                    };
+
+                    div.appendChild(img);
+                    div.appendChild(btn);
+                    container.appendChild(div);
+                }
+            });
         }
     </script>
 {% endblock %}
-
-

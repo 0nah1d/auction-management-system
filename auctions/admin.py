@@ -12,7 +12,8 @@ class auction(admin.ModelAdmin):
     inlines = [
         AuctionCategoryAdmin,
     ]
-    list_display = ("id", "user", "active_bool", "title", "display_categories", "short_desc", "starting_bid", "buy_now_price", "image_url")
+    list_display = (
+    "id", "user", "active_bool", "title", "display_categories", "short_desc", "starting_bid", "buy_now_price")
 
     def display_categories(self, obj):
         return ", ".join([category.title for category in obj.categories.all()])
@@ -51,3 +52,6 @@ admin.site.register(Watchlist, watchl)
 admin.site.register(Winner, win)
 admin.site.register(User, user)
 admin.site.register(Category, category)
+admin.site.register(AuctionImage)
+
+

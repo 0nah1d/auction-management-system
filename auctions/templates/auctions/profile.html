@@ -1,6 +1,39 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 {% block body %}
+
+    <style>
+        #cropper-modal {
+            position: fixed;
+            top: 44%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        #cropper-modal img {
+            width: 100%;
+        }
+
+        #crop-button, #cancel-button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #cancel-button {
+            background: #dc3545;
+        }
+    </style>
+
     <!--============= Hero Section Starts Here =============-->
     <div style="padding-top: 120px;">
         <div class="container">
@@ -16,6 +49,15 @@
     </div>
     <!--============= Hero Section Ends Here =============-->
 
+    <!-- Cropper Modal -->
+    <div id="cropper-modal" style="display: none;">
+        <div>
+            <img id="cropper-image" src="" alt="Profile Picture">
+            <button id="crop-button">Crop and Upload</button>
+            <button id="cancel-button">Cancel</button>
+        </div>
+    </div>
+
     <!--============= Dashboard Section Starts Here =============-->
     <section style="margin: 40px 0">
         <div class="container">
@@ -24,13 +66,19 @@
                     <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
                         <div class="user">
                             <div class="thumb-area">
-                                <div class="thumb">
-                                    <img src="{{ profile_picture }}" alt="{{ username }}">
-                                </div>
-                                <label for="profile-pic" class="profile-pic-edit"><i
-                                        class="flaticon-pencil"></i></label>
-                                <input type="file" id="profile-pic" class="d-none">
+                                <form id="profile-pic-form" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <label for="profile-pic" class="profile-pic-edit"><i
+                                            class="flaticon-pencil"></i></label>
+                                    <input type="file" id="profile-pic" class="d-none" accept="image/*">
+                                    <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
+                                        <img id="profile-pic-preview" style="height: 100% " src="  
+                                                {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                             alt="{{ username }}">
+                                    </div>
+                                </form>
                             </div>
+
                             <div class="content">
                                 <h5 class="title">{% if name %} {{ name }} {% else %} None {% endif %}</h5>
                                 <span class="username">{{ user.email }}</span>
@@ -92,5 +140,73 @@
         </div>
     </section>
     <!--============= Dashboard Section Ends Here =============-->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        let cropper;
+        const cropperModal = document.getElementById('cropper-modal');
+        const cropperImage = document.getElementById('cropper-image');
+        const cropButton = document.getElementById('crop-button');
+        const cancelButton = document.getElementById('cancel-button');
+
+        document.getElementById('profile-pic').addEventListener('change', function (event) {
+            const fileInput = event.target.files[0];
+            if (fileInput) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropperImage.src = e.target.result;
+                    cropperModal.style.display = 'block';
+                    cropper = new Cropper(cropperImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        responsive: true
+                    });
+                };
+                reader.readAsDataURL(fileInput);
+            }
+        });
+
+        cropButton.addEventListener('click', function () {
+            const canvas = cropper.getCroppedCanvas();
+            canvas.toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('profile_picture', blob, 'profile-pic.jpg');
+                formData.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
+
+                fetch("{% url 'edit_profile_picture' %}", {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const previewImg = document.getElementById('profile-pic-preview');
+                            previewImg.src = URL.createObjectURL(blob);
+                            cropperModal.style.display = 'none';
+                        } else {
+                            alert('Failed to update profile picture.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+            }, 'image/jpeg');
+        });
+
+        cancelButton.addEventListener('click', function () {
+            cropperModal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+            }
+        });
+
+    </script>
+
 
 {% endblock %}

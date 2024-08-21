@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{% static 'auctions/css/jquery-ui.min.css' %}">
     <link rel="stylesheet" href="{% static 'auctions/css/main.css' %}">
     <link rel="shortcut icon" href="{% static 'auctions/images/favicon.png' %}" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
             referrerpolicy="origin"></script>
 </head>
@@ -69,6 +70,7 @@
                         <li><a href="/register">Register</a></li>
                         <li><a href="/login">Login</a></li>
                     {% else %}
+                        <li><a href="/create">Add Auction</a></li>
                         <li><a href="{% url 'userProfile' %}" class="user-button"><i class="flaticon-user"></i></a>
                         </li>
                     {% endif %}
@@ -102,9 +104,12 @@
                         <h5 class="cate text-white">Subscribe to BidHub</h5>
                         <h3 class="title text-white">To Get Exclusive Benefits</h3>
                     </div>
-                    <form class="subscribe-form">
-                        <input type="text" placeholder="Enter Your Email" name="email" class="text-white">
-                        <button type="submit" class="custom-button">Subscribe</button>
+                    <form class="d-flex align-items-center" style="gap: 10px">
+                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email"
+                               aria-label="Email">
+                        <button class="btn btn-primary" style="width: fit-content; border-radius: 10px" type="submit">
+                            Subscribe
+                        </button>
                     </form>
                 </div>
             </div>
@@ -119,15 +124,15 @@
                     </div>
                     <ul class="d-flex justify-content-between align-items-center" style="gap: 20px">
                         <li>
-                            <a href="#"><img width="80px" class="bg-light "
+                            <a href="#"><img width="60px" class="bg-light "
                                              src="{% static 'auctions' %}/images/footer/nagad.png" alt="footer"></a>
                         </li>
                         <li>
-                            <a href="#"><img width="80px" class="bg-light"
+                            <a href="#"><img width="60px" class="bg-light"
                                              src="{% static 'auctions' %}/images/footer/bikash.png" alt="footer"></a>
                         </li>
                         <li>
-                            <a href="#"><img width="80px" class="bg-light"
+                            <a href="#"><img width="60px" class="bg-light"
                                              src="{% static 'auctions' %}/images/footer/rocket.png" alt="footer"></a>
                         </li>
                     </ul>
@@ -145,8 +150,8 @@
 
 <script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'auctions/js/modernizr-3.6.0.min.js' %}"></script>
-<script src="{% static 'auctions/js/plugins.js' %}js/"></script>
-<script src="{% static 'auctions/js/popper.min.js' %}js/"></script>
+<script src="{% static 'auctions/js/plugins.js' %}"></script>
+<script src="{% static 'auctions/js/popper.min.js' %}"></script>
 <script src="{% static 'auctions/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'auctions/js/isotope.pkgd.min.js' %}"></script>
 <script src="{% static 'auctions/js/wow.min.js' %}"></script>

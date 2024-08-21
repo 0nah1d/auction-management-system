@@ -29,10 +29,17 @@ class AuctionList(models.Model):
     current_bid = models.IntegerField(default=0)
     buy_now_price = models.IntegerField(default=0)
     bid_watch_list = models.IntegerField(default=0)
-    image_url = models.ImageField(upload_to='auction_image', blank=True, null=True)
     expire_date = models.DateTimeField(blank=False, null=True)
     categories = models.ManyToManyField('Category', through='AuctionCategory')
     active_bool = models.BooleanField(default=True)
+
+
+class AuctionImage(models.Model):
+    auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE, related_name='images')
+    image_url = models.ImageField(upload_to='auction_image')
+
+    def __str__(self):
+        return f"Image for {self.auction.title}"
 
 
 class Bids(models.Model):

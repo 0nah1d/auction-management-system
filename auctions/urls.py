@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
+from .views import edit_profile_picture
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -15,6 +16,7 @@ urlpatterns = [
 
     path("user/bid", views.user_bid, name="userBids"),
     path("user/profile", views.user_profile, name="userProfile"),
+    path('edit-profile-picture/', edit_profile_picture, name='edit_profile_picture'),
     path("user/win/bids", views.user_win_bids, name="userWinBids"),
     path('user/auction', views.myauction, name="myAuction"),
     path("contact", views.contact, name="contact"),

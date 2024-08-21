@@ -25,8 +25,9 @@
                     <div class="dashboard-widget mb-30 mb-lg-0">
                         <div class="user">
                             <div class="thumb-area">
-                                <div class="thumb">
-                                    <img src="{{ profile_picture }}" alt="{{ username }}">
+                                <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
+                                    <img style="height: 100%" src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                         alt="{{ username }}">
                                 </div>
                             </div>
                             <div class="content">

@@ -22,7 +22,7 @@
                             </h6>
                             <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
                                 <a href="{% url 'auctionDetails' top_three_p_list.id %}">
-                                    <img src="{{ top_three_p_list.image_url }}"
+                                    <img src="{{ top_three_p_list.first_image_url }}"
                                          alt="{{ top_three_p_list.title }}"
                                          class="card-img-top"
                                          style="height: 100%; width: 100%; object-fit: contain;"
@@ -107,7 +107,7 @@
                                 </h6>
                                 <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
                                     <a href="{% url 'auctionDetails' watch_p_list.id %}">
-                                        <img src="{{ watch_p_list.image_url }}"
+                                        <img src="{{ watch_p_list.first_image_url }}"
                                              alt="{{ watch_p_list.title }}"
                                              class="card-img-top"
                                              style="height: 100%; width: 100%; object-fit: contain;"
