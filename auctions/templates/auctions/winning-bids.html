@@ -26,7 +26,9 @@
                         <div class="user">
                             <div class="thumb-area">
                                 <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
-                                    <img style="height: 100%" src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                    <img style="height: 100%" src="
+                                            
+                                            {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
                             </div>
@@ -43,6 +45,9 @@
                                 <a href="{% url 'userDashboard' %}"><i class="flaticon-dashboard"></i>Dashboard</a>
                             </li>
                             <li>
+                                <a href="/user/auction"><i class="flaticon-dashboard"></i>My Auction</a>
+                            </li>
+                            <li>
                                 <a href="{% url 'userBids' %}"><i class="flaticon-auction"></i>My Bids</a>
                             </li>
                             <li>
@@ -53,68 +58,66 @@
                     </div>
                 </div>
                 <div class="col-lg-8">
-                    <div class="dash-bid-item dashboard-widget mb-30">
-                        <div class="header">
-                            <h4 class="title">Winning Bids</h4>
+                    <div class="dashboard-widget mb-40">
+                        <div class="dashboard-title mb-30">
+                            <h5 class="title">My Wining Bids</h5>
                         </div>
-                    </div>
-                    <div class="row mb-30">
-                        {% for auction_p_list in auctions %}
-                            <div class="col-sm-10 col-md-6">
-                                <div class="card">
-                                    <h6 class="title p-3">
-                                        <a style="display: -webkit-box;-webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                           href="{% url 'auctionDetails' auction_p_list.auction.id %}">{{ auction_p_list.auction.title }}</a>
-                                    </h6>
-                                    <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
-                                        <a href="{% url 'auctionDetails' auction_p_list.auction.id %}">
-                                            <img src="{{ auction_p_list.auction.image_url }}"
-                                                 alt="{{ auction_p_list.auction.title }}"
-                                                 class="card-img-top"
-                                                 style="height: 100%; width: 100%; object-fit: contain;"
-                                            >
-                                        </a>
-                                    </div>
-
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
-                                            <p class="small text-danger">
-                                                <s>৳ {{ auction_p_list.auction.buy_now_price }}</s></p>
+                        <div class="row mb-30">
+                            {% for auction_p_list in auctions %}
+                                <div class="col-sm-12 col-md-6 mb-4">
+                                    <div class="card">
+                                        <h6 class="title p-3">
+                                            <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                               style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
+                                            >{{ auction_p_list.title }}
+                                            </a>
+                                        </h6>
+                                        <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
+                                        >
+                                            <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                                <img src="{{ auction_p_list.image_url }}"
+                                                     alt="{{ auction_p_list.title }}"
+                                                     class="card-img-top"
+                                                     style="height: 100%; width: 100%; object-fit: cover;">
+                                            </a>
                                         </div>
-
-                                        <div class="d-flex justify-content-between mb-3">
-                                            <h5 class="mb-0">Current Bid</h5>
-                                            <h5 class="text-dark mb-0">
-                                                {% if auction_p_list.auction.current_bid != 0 %}
-                                                    ৳ {{ auction_p_list.auction.current_bid }}
-                                                {% else %}
-                                                    ৳ {{ auction_p_list.auction.starting_bid }}
-                                                {% endif %}
-                                            </h5>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <p class="text-muted mb-0">Bids: <span
-                                                    class="fw-bold">{{ present_bid|default:"0" }}</span></p>
-                                            <div class="countdown">
-                                                <div class="countdown-timer"
-                                                     data-expire-date="{{ auction_p_list.auction.expire_date }}"></div>
-
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
+                                                <p class="small text-danger">
+                                                    <s>৳ {{ auction_p_list.buy_now_price }}</s>
+                                                </p>
                                             </div>
-                                        </div>
-                                        <div class="text-center">
-                                            <a href="{% url 'auctionDetails' auction_p_list.auction.id %}"
-                                               class="custom-button">View</a>
+                                            <div class="d-flex justify-content-between mb-3">
+                                                <h5 class="mb-0">Current Bid</h5>
+                                                <h5 class="text-dark mb-0">
+                                                    {% if auction_p_list.current_bid != 0 %}
+                                                        ৳ {{ auction_p_list.current_bid }}
+                                                    {% else %}
+                                                        ৳ {{ auction_p_list.starting_bid }}
+                                                    {% endif %}
+                                                </h5>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <p class="text-muted mb-0">Bids: <span
+                                                        class="fw-bold">{{ present_bid|default:"0" }}</span></p>
+                                                <div class="countdown">
+                                                    <div class="countdown-timer"
+                                                         data-expire-date="{{ auction_p_list.expire_date }}"></div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                   class="custom-button">View</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     </section>
     <!--============= Dashboard Section Ends Here =============-->
 

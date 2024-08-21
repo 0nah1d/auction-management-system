@@ -14,14 +14,20 @@
 
         .image-preview {
             position: relative;
-            max-width: 100px;
-            max-height: 100px;
+            width: 100px;
+            height: 100px;
+            background-color: #cde0ec;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
         }
 
         .image-preview img {
-            max-width: 100px;
-            max-height: 100px;
-            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
         }
 
         .remove-img-btn {
@@ -44,7 +50,7 @@
     </style>
 
     <div style="padding-top: 100px;" class="d-flex justify-content-center align-items-center w-100">
-        <div style="max-width: 800px; width: 100%; padding: 20px; margin-bottom: 100px">
+        <div class="container" style="padding: 20px; margin-bottom: 100px;">
             <h2 class="text-center mb-4">Add Auction</h2>
             <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -72,22 +78,32 @@
                               placeholder="Add Description" name="create_desc"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="starting_bid">Starting Bid</label>
-                    <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
-                           id="starting_bid" class="form-control"/>
-                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="form-group">
+                            <label for="starting_bid">Starting Bid</label>
+                            <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
+                                   id="starting_bid" class="form-control"/>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="buy_now_price">Buy Now Price</label>
-                    <input placeholder="Buy Now Price" type="number" name="create_buy_now_price" id="buy_now_price"
-                           class="form-control"/>
-                </div>
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="form-group">
+                            <label for="buy_now_price">Buy Now Price</label>
+                            <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
+                                   id="buy_now_price"
+                                   class="form-control"/>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="expire_date">Expiration Date</label>
-                    <input required placeholder="Expiration date" type="date" name="expire_date" id="expire_date"
-                           class="form-control"/>
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="form-group">
+                            <label for="expire_date">Expiration Date</label>
+                            <input required placeholder="Expiration date" type="date" name="expire_date"
+                                   id="expire_date"
+                                   class="form-control"/>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -104,13 +120,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="category_select">Select Category</label>
+                    <label for="category_select">Select Category <span style="font-size: small">(You can select multiple category by holding down the Ctrl
+                        key)</span></label>
                     <select name="category" id="category_select" class="form-select" multiple style="height: 200px;"
                             onchange="toggleNewCategoryField()">
                         {% for category in categories %}
-                            <option value="{{ category.slug }}">{{ category.title }}</option>
+                            <option class="p-2" value="{{ category.slug }}">{{ category.title }}</option>
                         {% endfor %}
-                        <option value="new" style="font-style: italic;">Add New Category</option>
+                        <option value="new" class="p-2" style="font-style: italic;">Add New Category</option>
                     </select>
                 </div>
 

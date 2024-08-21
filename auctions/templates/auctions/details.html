@@ -163,7 +163,7 @@
                         <div class="closebid">
                             {% if is_owner %}
                                 <form method="get" action="{% url 'win_ner' %}">
-                                    <button class="btn btn-danger" type="submit" value={{ list.id }} name="listid">
+                                    <button class="btn btn-danger" type="submit" value="{{ list.id }}" name="listid">
                                         Close Bid
                                     </button>
                                 </form>

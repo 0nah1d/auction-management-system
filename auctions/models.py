@@ -43,7 +43,7 @@ class AuctionImage(models.Model):
 
 
 class Bids(models.Model):
-    user = models.CharField(max_length=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     listingid = models.IntegerField()
     bid = models.IntegerField()
 

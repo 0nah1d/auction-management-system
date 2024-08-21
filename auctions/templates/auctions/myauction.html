@@ -2,144 +2,61 @@
 {% load static %}
 {% block body %}
 
-    <!--============= Cart Section Starts Here =============-->
-    <div class="cart-sidebar-area">
-        <div class="top-content">
-            <a href="index.html" class="logo">
-                <img src="{% static 'auctions' %}/images/logo/logo2.png" alt="logo">
-            </a>
-            <span class="side-sidebar-close-btn"><i class="fas fa-times"></i></span>
-        </div>
-        <div class="bottom-content">
-            <div class="cart-products">
-                <h4 class="title">Shopping cart</h4>
-                <div class="single-product-item">
-                    <div class="thumb">
-                        <a href="#0"><img src="{% static 'auctions' %}/images/shop/shop01.jpg" alt="shop"></a>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="#0">Color Pencil</a></h4>
-                        <div class="price"><span class="pprice">$80.00</span>
-                            <del class="dprice">$120.00</del>
-                        </div>
-                        <a href="#" class="remove-cart">Remove</a>
-                    </div>
-                </div>
-                <div class="single-product-item">
-                    <div class="thumb">
-                        <a href="#0"><img src="{% static 'auctions' %}/images/shop/shop02.jpg" alt="shop"></a>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="#0">Water Pot</a></h4>
-                        <div class="price"><span class="pprice">$80.00</span>
-                            <del class="dprice">$120.00</del>
-                        </div>
-                        <a href="#" class="remove-cart">Remove</a>
-                    </div>
-                </div>
-                <div class="single-product-item">
-                    <div class="thumb">
-                        <a href="#0"><img src="{% static 'auctions' %}/images/shop/shop03.jpg" alt="shop"></a>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="#0">Art Paper</a></h4>
-                        <div class="price"><span class="pprice">$80.00</span>
-                            <del class="dprice">$120.00</del>
-                        </div>
-                        <a href="#" class="remove-cart">Remove</a>
-                    </div>
-                </div>
-                <div class="single-product-item">
-                    <div class="thumb">
-                        <a href="#0"><img src="{% static 'auctions' %}/images/shop/shop04.jpg" alt="shop"></a>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="#0">Stop Watch</a></h4>
-                        <div class="price"><span class="pprice">$80.00</span>
-                            <del class="dprice">$120.00</del>
-                        </div>
-                        <a href="#" class="remove-cart">Remove</a>
-                    </div>
-                </div>
-                <div class="single-product-item">
-                    <div class="thumb">
-                        <a href="#0"><img src="{% static 'auctions' %}/images/shop/shop05.jpg" alt="shop"></a>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="#0">Comics Book</a></h4>
-                        <div class="price"><span class="pprice">$80.00</span>
-                            <del class="dprice">$120.00</del>
-                        </div>
-                        <a href="#" class="remove-cart">Remove</a>
-                    </div>
-                </div>
-                <div class="btn-wrapper text-center">
-                    <a href="#0" class="custom-button"><span>Checkout</span></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--============= Cart Section Ends Here =============-->
-
 
     <!--============= Hero Section Starts Here =============-->
-    <div class="hero-section style-2 pb-lg-400">
+    <div style="padding-top: 120px;">
         <div class="container">
             <ul class="breadcrumb">
                 <li>
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="/dashboard">My Account</a>
-                </li>
-                <li>    
-                    <span>Auction</span>
+                    <span>My Auction</span>
                 </li>
             </ul>
         </div>
-        <div class="bg_img hero-bg bottom_center"
-             data-background="{% static 'auctions' %}/images/banner/hero-bg.png"></div>
     </div>
     <!--============= Hero Section Ends Here =============-->
 
     <!--============= Dashboard Section Starts Here =============-->
-    <section class="dashboard-section padding-bottom mt--240 mt-lg--325 pos-rel">
+    <section style="margin: 40px 0">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-sm-10 col-md-7 col-lg-4">
-                    <div class="dashboard-widget mb-30 mb-lg-0">
+                    <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
                         <div class="user">
                             <div class="thumb-area">
-                                <div class="thumb">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0YtOC-DWcKhaIbwJDRuAlgKJKugPwp5dfhKKgOJf_UDtKQdOeZq9CQEetxDF1jmntumU&usqp=CAU"
+                                <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
+                                    <img style="height: 100%" src="
+                                            
+                                            
+                                            
+                                            {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
                             </div>
                             <div class="content">
-                                <h5 class="title">{{ username }}</h5>
-                                <span class="username">
-                                    <a href="https://pixner.net/cdn-cgi/l/email-protection"
-                                       class="__cf_email__"
-                                       data-cfemail="53393c3b3d13343e323a3f7d303c3e">[email&#160;protected]</a></span>
-                                <div style="margin-top: 15px;">
-                                    <a href="{% url 'logout' %}">Logout</a>
-                                </div>
+                                <h5 class="title">{% if name %} {{ name }} {% else %} None {% endif %}</h5>
+                                <span class="username">{{ user.email }}</span>
                             </div>
                         </div>
                         <ul class="dashboard-menu">
                             <li>
+                                <a href="{% url 'userProfile' %}"><i class="flaticon-settings"></i>Personal Profile </a>
+                            </li>
+                            <li>
                                 <a href="{% url 'userDashboard' %}"><i class="flaticon-dashboard"></i>Dashboard</a>
                             </li>
                             <li>
-                                <a href="{% url 'myAuction' %}" class="active"><i class="flaticon-settings"></i>My
-                                    Auction </a>
+                                <a href="/user/auction" class="active"><i class="flaticon-dashboard"></i>My Auction</a>
                             </li>
                             <li>
                                 <a href="{% url 'userBids' %}"><i class="flaticon-auction"></i>My Bids</a>
                             </li>
-                            {#                            <li>#}
-                            {#                                <a href="{% url 'userWinBids' %}"><i class="flaticon-best-seller"></i>Winning Bids</a>#}
-                            {#                            </li>#}
+                            <li>
+                                <a href="{% url 'userWinBids' %}"><i class="flaticon-best-seller"></i>Winning
+                                    Bids</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -151,51 +68,73 @@
                         {% if total_auctions > 0 %}
                             <div class="row mb-30-none">
                                 {% for auction_p_list in auctions %}
-                                    <div class="col-sm-12 col-md-12 col-lg-6">
-                                        <div class="auction-item-2">
-                                            <div class="auction-thumb">
-                                                <a href="{% url 'auctionDetails' auction_p_list.id %}"><img
-                                                        src="{{ auction_p_list.image_url }}"
-                                                        alt="{{ auction_p_list.title }}"></a>
+                                    <div class="col-sm-12 col-md-6 mb-4">
+                                        <div class="card">
+                                            <h6 class="title p-3">
+                                                <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                   style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
+                                                >{{ auction_p_list.title }}
+                                                </a>
+                                            </h6>
+                                            <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
+                                            >
+                                                <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                                    <img src="{{ auction_p_list.image_url }}"
+                                                         alt="{{ auction_p_list.title }}"
+                                                         class="card-img-top"
+                                                         style="height: 100%; width: 100%; object-fit: cover;">
+                                                </a>
                                             </div>
-                                            <div class="auction-content">
-                                                <h6 class="title">
-                                                    <a href="{% url 'auctionDetails' auction_p_list.id %}">{{ auction_p_list.title }}</a>
-                                                </h6>
-                                                <div class="bid-area">
-                                                    <div class="bid-amount">
-                                                        <div class="icon">
-                                                            <i class="flaticon-auction"></i>
-                                                        </div>
-                                                        <div class="amount-content">
-                                                            <div class="current">Current Bid</div>
-                                                            <div class="amount">${{ auction_p_list.starting_bid }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="bid-amount">
-                                                        <div class="icon">
-                                                            <i class="flaticon-money"></i>
-                                                        </div>
-                                                        <div class="amount-content">
-                                                            <div class="current">Buy Now</div>
-                                                            <div class="amount">
-                                                                <del>${{ auction_p_list.buy_now_price }}</del>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
+                                                    <p class="small text-danger">
+                                                        <s>৳ {{ auction_p_list.buy_now_price }}</s>
+                                                    </p>
                                                 </div>
-                                                <div class="countdown-area">
+                                                <div class="d-flex justify-content-between mb-3">
+                                                    <h5 class="mb-0">Current Bid</h5>
+                                                    <h5 class="text-dark mb-0">
+                                                        {% if auction_p_list.current_bid != 0 %}
+                                                            ৳ {{ auction_p_list.current_bid }}
+                                                        {% else %}
+                                                            ৳ {{ auction_p_list.starting_bid }}
+                                                        {% endif %}
+                                                    </h5>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <p class="text-muted mb-0">Bids: <span
+                                                            class="fw-bold">{{ present_bid|default:"0" }}</span></p>
                                                     <div class="countdown">
                                                         <div class="countdown-timer"
                                                              data-expire-date="{{ auction_p_list.expire_date }}"></div>
                                                     </div>
-                                                    <span class="total-bids">{{ present_bid|default:"0" }} Bids</span>
+                                                </div>
+
+
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        {% if auction_p_list.active_status %}
+                                                            <span class="btn btn-sm btn-success">Active</span>
+                                                        {% else %}
+                                                            <span class="btn btn-sm btn-danger">Inactive</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if auction_p_list.active_status %}
+                                                        <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                           class="custom-button">View</a>
+                                                    {% else %}
+                                                        <a href="{% url 'active' auction_p_list.id %}"
+                                                           class="custom-button">Active</a>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 {% endfor %}
                             </div>
+
                             <ul class="pagination">
                                 {% for num in auctions.paginator.page_range %}
                                     <li>

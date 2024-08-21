@@ -14,28 +14,28 @@
             </div>
             <div class="row justify-content-center mb-30-none">
                 {% for top_three_p_list in top_three_products %}
-                    <div class="col-sm-10 col-md-6 col-lg-4 py-2">
+                    <div class="col-12 col-md-6 col-lg-4 py-2">
                         <div class="card">
                             <h6 class="title p-3">
-                                <a style="display: -webkit-box;-webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                   href="{% url 'auctionDetails' top_three_p_list.id %}">{{ top_three_p_list.title }}</a>
+                                <a href="{% url 'auctionDetails' top_three_p_list.id %}"
+                                   style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
+                                >{{ top_three_p_list.title }}
+                                </a>
                             </h6>
-                            <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
+                            <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
+                            >
                                 <a href="{% url 'auctionDetails' top_three_p_list.id %}">
                                     <img src="{{ top_three_p_list.first_image_url }}"
                                          alt="{{ top_three_p_list.title }}"
                                          class="card-img-top"
-                                         style="height: 100%; width: 100%; object-fit: contain;"
-                                    >
+                                         style="height: 100%; width: 100%; object-fit: cover;">
                                 </a>
                             </div>
-
                             <div class="card-body">
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between mb-2">
                                     <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
                                     <p class="small text-danger"><s>৳ {{ top_three_p_list.buy_now_price }}</s></p>
                                 </div>
-
                                 <div class="d-flex justify-content-between mb-3">
                                     <h5 class="mb-0">Current Bid</h5>
                                     <h5 class="text-dark mb-0">
@@ -46,7 +46,6 @@
                                         {% endif %}
                                     </h5>
                                 </div>
-
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <p class="text-muted mb-0">Bids: <span
                                             class="fw-bold">{{ present_bid|default:"0" }}</span></p>
@@ -58,6 +57,7 @@
                             </div>
                         </div>
                     </div>
+
                 {% endfor %}
             </div>
         </div>
@@ -99,28 +99,28 @@
                 </div>
                 <div class="row justify-content-center mb-30-none">
                     {% for watch_p_list in watch_cat_products %}
-                        <div class="col-sm-10 col-md-6 col-lg-4 py-2">
+                        <div class="col-12 col-md-6 col-lg-4 py-2">
                             <div class="card">
                                 <h6 class="title p-3">
-                                    <a style="display: -webkit-box;-webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                       href="{% url 'auctionDetails' watch_p_list.id %}">{{ watch_p_list.title }}</a>
+                                    <a href="{% url 'auctionDetails' watch_p_list.id %}"
+                                       style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
+                                    >{{ watch_p_list.title }}
+                                    </a>
                                 </h6>
-                                <div style="height: 300px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;">
+                                <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
+                                >
                                     <a href="{% url 'auctionDetails' watch_p_list.id %}">
                                         <img src="{{ watch_p_list.first_image_url }}"
                                              alt="{{ watch_p_list.title }}"
                                              class="card-img-top"
-                                             style="height: 100%; width: 100%; object-fit: contain;"
-                                        >
+                                             style="height: 100%; width: 100%; object-fit: cover;">
                                     </a>
                                 </div>
-
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between mb-2">
                                         <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
                                         <p class="small text-danger"><s>৳ {{ watch_p_list.buy_now_price }}</s></p>
                                     </div>
-
                                     <div class="d-flex justify-content-between mb-3">
                                         <h5 class="mb-0">Current Bid</h5>
                                         <h5 class="text-dark mb-0">
@@ -131,7 +131,6 @@
                                             {% endif %}
                                         </h5>
                                     </div>
-
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <p class="text-muted mb-0">Bids: <span
                                                 class="fw-bold">{{ present_bid|default:"0" }}</span></p>

@@ -15,6 +15,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def register(request):
@@ -158,21 +159,6 @@ def contact(request):
     return render(request, "auctions/contact.html")
 
 
-def myauction(request):
-    # Retrieve auctions where request.user is the foreign key user
-    auctions = AuctionList.objects.filter(user=request.user, active_bool=True)
-
-    # Pagination
-    paginator = Paginator(auctions, 10)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    total_auctions = paginator.count
-    return render(request, "auctions/myauction.html", {
-        'auctions': page_obj,
-        'total_auctions': total_auctions
-    })
-
-
 @login_required(login_url='login')
 def create(request):
     if request.method == "POST":
@@ -248,8 +234,7 @@ def create(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    # print(request.user.username)
-    userBids = Bids.objects.filter(user=request.user.username)
+    userBids = Bids.objects.filter(user=request.user)
     user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
     your_win = Winner.objects.filter(user=request.user.pk)
 
@@ -316,6 +301,10 @@ def bid(request):
     # Fetch the auction listing
     auction_listing = AuctionList.objects.get(pk=list_id)
 
+    if auction_listing.user == request.user:
+        messages.warning(request, "You cannot bid on your own auction.")
+        return redirect("auctionDetails", list_id)
+
     # Get the current time in UTC
     current_time = now()
 
@@ -359,31 +348,32 @@ def allcomments(request):
 
 # shows message abt winner when bid is closed
 def win_ner(request):
-    bid_id = request.GET["listid"]
+    bid_id = request.GET.get("listid")
     bids_present = Bids.objects.filter(listingid=bid_id)
     biddesc = AuctionList.objects.get(pk=bid_id, active_bool=True)
     max_bid = minbid(biddesc.starting_bid, bids_present)
-    try:
-        # checks if anyone other than list_owner win the bid
-        winner_object = Bids.objects.get(bid=max_bid, listingid=bid_id)
-        winner_obj = AuctionList.objects.get(id=bid_id)
-        win = Winner(bid_win_list=winner_obj, user=winner_object.user)
-        winners_name = winner_object.user
 
-    except:
-        # if no-one placed a bid, and if bid is closed by list_owner, owner wins the bid
+    try:
+        winner_object = Bids.objects.get(bid=max_bid, listingid=bid_id)
+        winner_user = winner_object.user
+        winner_obj = AuctionList.objects.get(id=bid_id)
+        win = Winner(bid_win_list=winner_obj, user=winner_user)
+        winners_name = winner_user.username  # Assuming you want the username here
+
+    except ObjectDoesNotExist:
+        # Handle the case where no bid was found
         winner_obj = AuctionList.objects.get(starting_bid=max_bid, id=bid_id)
         win = Winner(bid_win_list=winner_obj, user=winner_obj.user)
-        winners_name = winner_obj.user
+        winners_name = winner_obj.user.username  # Assuming you want the username here
 
-    # Check Django Documentary for Updating attributes based on existing fields.
+    # Deactivate the auction
     biddesc.active_bool = False
     biddesc.save()
 
-    # saving winner details
+    # Save winner details
     win.save()
     messages.success(request, f"{winners_name} won {win.bid_win_list.title}.")
-    return redirect("index")
+    return redirect("myAuction")
 
 
 # checks winner
@@ -400,12 +390,17 @@ def winnings(request):
 
 @login_required(login_url='login')
 def user_bid(request):
-    userBids = Bids.objects.filter(user=request.user.username)
+    userBids = Bids.objects.filter(user=request.user)
+
     user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
 
-    total_bids = 0
     for auction in user_auctions:
-        auction.image_url = request.build_absolute_uri(auction.image_url.url)
+        first_image = AuctionImage.objects.filter(auction=auction).first()
+        if first_image:
+            auction.image_url = request.build_absolute_uri(first_image.image_url.url)
+        else:
+            auction.image_url = None
+
         auction.total_bids = Bids.objects.filter(listingid=auction.id).count()
 
     user = request.user
@@ -441,18 +436,23 @@ def user_profile(request):
 
 @login_required(login_url='login')
 def user_win_bids(request):
-    # Retrieve the winner objects for the logged-in user
     win_lists = Winner.objects.filter(user=request.user)
 
-    # Get the associated auction lists
     auctions = []
     for win in win_lists:
         auction = AuctionList.objects.get(id=win.bid_win_list.pk)
-        if auction.image_url:
-            auction.image_url = request.build_absolute_uri(auction.image_url.url)
+
+        first_image = AuctionImage.objects.filter(auction=auction).first()
+        image_url = request.build_absolute_uri(first_image.image_url.url) if first_image else None
+
         auctions.append({
-            'winner': win,
-            'auction': auction
+            'id': auction.id,
+            'title': auction.title,
+            'starting_bid': auction.starting_bid,
+            'current_bid': auction.current_bid,
+            'buy_now_price': auction.buy_now_price,
+            'expire_date': auction.expire_date,
+            'image_url': image_url
         })
 
     user = request.user
@@ -466,3 +466,57 @@ def user_win_bids(request):
         'profile_picture': profile_picture_url,
         'auctions': auctions
     })
+
+
+@login_required(login_url='login')
+def myauction(request):
+    auctions = AuctionList.objects.filter(user=request.user)
+
+    auction_list = []
+    for auction in auctions:
+        first_image = AuctionImage.objects.filter(auction=auction).first()
+        first_image_url = request.build_absolute_uri(first_image.image_url.url) if first_image else None
+
+        auction_list.append({
+            'id': auction.id,
+            'title': auction.title,
+            'starting_bid': auction.starting_bid,
+            'current_bid': auction.current_bid,
+            'buy_now_price': auction.buy_now_price,
+            'bid_watch_list': auction.bid_watch_list,
+            'expire_date': auction.expire_date,
+            'image_url': first_image_url,
+            'active_status': auction.active_bool
+        })
+
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    # Pagination
+    paginator = Paginator(auction_list, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    total_auctions = paginator.count
+
+    return render(request, "auctions/myauction.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+        'auctions': page_obj,
+        'total_auctions': total_auctions
+    })
+
+
+@login_required(login_url='login')
+def active(request, auction_id):
+    auction = get_object_or_404(AuctionList, id=auction_id)
+
+    if auction.user == request.user:
+        auction.active_bool = True
+        auction.save()
+    else:
+        messages.success(request, "You cannot change the active status.")
+
+    return redirect('myAuction')
