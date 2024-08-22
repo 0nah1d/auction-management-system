@@ -21,7 +21,6 @@ urlpatterns = [
     path('user/auction', views.myauction, name="myAuction"),
     path("contact", views.contact, name="contact"),
     path("dashboard", views.dashboard, name="userDashboard"),
-    path('active/<int:auction_id>/', views.active, name='active'),
 
     path("watchlist/<str:username>", views.watchlistpage, name="watchlistpage"),
     path("bidlist", views.bid, name="bid"),

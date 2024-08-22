@@ -31,6 +31,21 @@
                                             
                                             
                                             
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
                                             {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
@@ -71,14 +86,30 @@
                                     <div class="col-sm-12 col-md-6 mb-4">
                                         <div class="card">
                                             <h6 class="title p-3">
-                                                <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                <a href="
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        {% if auction_p_list.active_status %}{% url 'auctionDetails' auction_p_list.id %}{% else %}#{% endif %}"
                                                    style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                                >{{ auction_p_list.title }}
+                                                > {{ auction_p_list.title }}
                                                 </a>
                                             </h6>
                                             <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
                                             >
-                                                <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                                <a href="
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        {% if auction_p_list.active_status %}{% url 'auctionDetails' auction_p_list.id %}{% else %}#{% endif %}">
                                                     <img src="{{ auction_p_list.image_url }}"
                                                          alt="{{ auction_p_list.title }}"
                                                          class="card-img-top"
@@ -115,17 +146,29 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
                                                         {% if auction_p_list.active_status %}
-                                                            <span class="btn btn-sm btn-success">Active</span>
+                                                            <span class="btn btn-sm btn-success"
+                                                                  style="font-size: 12px">Active</span>
                                                         {% else %}
-                                                            <span class="btn btn-sm btn-danger">Inactive</span>
+                                                            <span class="btn btn-sm btn-danger" style="font-size: 12px">Inactive</span>
                                                         {% endif %}
                                                     </div>
+                                                    <div>
+                                                        {% if auction_p_list.active_status %}
+                                                            <a href="" class="btn btn-sm btn-warning"
+                                                               style="font-size: 12px">
+                                                                Edit
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <a href="" class="btn btn-sm btn-danger" style="font-size: 12px">
+                                                        Delete
+                                                    </a>
+
                                                     {% if auction_p_list.active_status %}
                                                         <a href="{% url 'auctionDetails' auction_p_list.id %}"
-                                                           class="custom-button">View</a>
-                                                    {% else %}
-                                                        <a href="{% url 'active' auction_p_list.id %}"
-                                                           class="custom-button">Active</a>
+                                                           class="btn btn-sm btn-primary"
+                                                           style="font-size: 12px">View</a>
                                                     {% endif %}
                                                 </div>
                                             </div>

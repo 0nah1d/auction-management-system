@@ -354,17 +354,24 @@ def win_ner(request):
     max_bid = minbid(biddesc.starting_bid, bids_present)
 
     try:
+        # Get the winning bid and user
         winner_object = Bids.objects.get(bid=max_bid, listingid=bid_id)
         winner_user = winner_object.user
-        winner_obj = AuctionList.objects.get(id=bid_id)
-        win = Winner(bid_win_list=winner_obj, user=winner_user)
-        winners_name = winner_user.username  # Assuming you want the username here
+
+        # Check if the winner is the owner of the auction
+        if winner_user == biddesc.user:
+            messages.error(request, "The auction owner cannot win their own bid.")
+            return redirect("myAuction")
+
+        # If valid, save the winner details
+        win = Winner(bid_win_list=biddesc, user=winner_user)
+        winners_name = winner_user.username
 
     except ObjectDoesNotExist:
         # Handle the case where no bid was found
-        winner_obj = AuctionList.objects.get(starting_bid=max_bid, id=bid_id)
-        win = Winner(bid_win_list=winner_obj, user=winner_obj.user)
-        winners_name = winner_obj.user.username  # Assuming you want the username here
+        # This should not happen if `max_bid` is properly computed
+        messages.error(request, "No valid bid found.")
+        return redirect("myAuction")
 
     # Deactivate the auction
     biddesc.active_bool = False
@@ -507,16 +514,3 @@ def myauction(request):
         'auctions': page_obj,
         'total_auctions': total_auctions
     })
-
-
-@login_required(login_url='login')
-def active(request, auction_id):
-    auction = get_object_or_404(AuctionList, id=auction_id)
-
-    if auction.user == request.user:
-        auction.active_bool = True
-        auction.save()
-    else:
-        messages.success(request, "You cannot change the active status.")
-
-    return redirect('myAuction')
