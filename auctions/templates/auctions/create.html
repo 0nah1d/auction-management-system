@@ -56,7 +56,6 @@
             <h2 class="text-3xl font-semibold text-center mb-6">Add Auction</h2>
             <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
-
                 <!-- Display error messages -->
                 {% if messages %}
                     <div class="bg-red-500 text-white p-4 rounded mb-4">
@@ -76,7 +75,8 @@
 
                 <div class="mb-4">
                     <label for="desc" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea style="width: 100%" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
+                    <textarea style="width: 100%"
+                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
                               id="desc" rows="4" placeholder="Add Description" name="create_desc"></textarea>
                 </div>
 
@@ -84,19 +84,22 @@
                     <div class="mb-4">
                         <label for="starting_bid" class="block text-sm font-medium text-gray-700">Starting Bid</label>
                         <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
-                               id="starting_bid" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                               id="starting_bid"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                     </div>
 
                     <div class="mb-4">
                         <label for="buy_now_price" class="block text-sm font-medium text-gray-700">Buy Now Price</label>
                         <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
-                               id="buy_now_price" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                               id="buy_now_price"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                     </div>
 
                     <div class="mb-4">
                         <label for="expire_date" class="block text-sm font-medium text-gray-700">Expiration Date</label>
                         <input required placeholder="Expiration date" type="date" name="expire_date"
-                               id="expire_date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                               id="expire_date"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                     </div>
                 </div>
 
@@ -105,7 +108,8 @@
                     <div class="relative">
                         <input type="file" class="sr-only" id="inputGroupFile04" name="img_url"
                                accept="image/*" multiple onchange="previewImages(event)">
-                        <label class="cursor-pointer block bg-gray-200 border border-gray-300 rounded-md text-gray-700 py-2 px-4 text-sm" for="inputGroupFile04">Choose Images</label>
+                        <label class="cursor-pointer block bg-gray-200 border border-gray-300 rounded-md text-gray-700 py-2 px-4 text-sm"
+                               for="inputGroupFile04">Choose Images</label>
                         <div class="image-preview-container mt-2" id="image_preview_container">
                             <!-- Image previews will be added here dynamically -->
                         </div>
@@ -116,7 +120,9 @@
                     <label for="category_select" class="block text-sm font-medium text-gray-700">
                         Select Category <span class="text-xs text-gray-500">(You can select multiple categories by holding down the Ctrl key)</span>
                     </label>
-                    <select name="category" id="category_select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out" multiple style="height: 200px;"
+                    <select name="category" id="category_select"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
+                            multiple style="height: 200px;"
                             onchange="toggleNewCategoryField()">
                         {% for category in categories %}
                             <option class="p-2" value="{{ category.slug }}">{{ category.title }}</option>
@@ -127,18 +133,28 @@
 
                 <!-- New category field (hidden by default) -->
                 <div class="mb-4" id="new_category_field" style="display:none;">
-                    <label for="new_category_title" class="block text-sm font-medium text-gray-700">New Category Title</label>
+                    <label for="new_category_title" class="block text-sm font-medium text-gray-700">New Category
+                        Title</label>
                     <input placeholder="Enter new category title" type="text" name="new_category_title"
-                           id="new_category_title" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                           id="new_category_title"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                 </div>
 
-                <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-150 ease-in-out" type="submit">Submit</button>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-150 ease-in-out"
+                        type="submit">Submit
+                </button>
             </form>
         </div>
     </div>
-
+    
     <script>
-        function toggleNewCategoryField() {
+      tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+      
+       function toggleNewCategoryField() {
             const categorySelect = document.getElementById('category_select');
             const newCategoryField = document.getElementById('new_category_field');
             const selectedOptions = Array.from(categorySelect.selectedOptions).map(option => option.value);
@@ -149,12 +165,6 @@
                 newCategoryField.style.display = 'none';
             }
         }
-
-        tinymce.init({
-            selector: '#desc',
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        });
 
         function previewImages(event) {
             const files = event.target.files;
