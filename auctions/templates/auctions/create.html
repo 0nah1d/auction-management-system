@@ -4,6 +4,7 @@
     <style>
         ::placeholder {
             font-size: 0.8rem; /* Adjust the size as needed */
+            color: #9ca3af; /* Gray color for placeholders */
         }
 
         .image-preview-container {
@@ -22,6 +23,7 @@
             justify-content: center;
             align-items: center;
             border: 1px solid black;
+            border-radius: 0.375rem; /* Rounded corners */
         }
 
         .image-preview img {
@@ -49,15 +51,15 @@
         }
     </style>
 
-    <div style="padding-top: 100px;" class="d-flex justify-content-center align-items-center w-100">
-        <div class="container" style="padding: 20px; margin-bottom: 100px;">
-            <h2 class="text-center mb-4">Add Auction</h2>
+    <div class="pt-24 flex justify-center items-center w-full">
+        <div class="container px-4 py-8 mb-24 bg-white shadow-lg rounded-lg">
+            <h2 class="text-3xl font-semibold text-center mb-6">Add Auction</h2>
             <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <!-- Display error messages -->
                 {% if messages %}
-                    <div class="alert alert-danger">
+                    <div class="bg-red-500 text-white p-4 rounded mb-4">
                         <ul>
                             {% for message in messages %}
                                 <li>{{ message }}</li>
@@ -66,81 +68,72 @@
                     </div>
                 {% endif %}
 
-                <div class="form-group">
-                    <label for="title">Title</label>
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
                     <input required autofocus placeholder="Title" type="text" name="create_title" id="title"
-                           class="form-control"/>
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                 </div>
 
-                <div class="form-group">
-                    <label for="desc">Description</label>
-                    <textarea style="width: 100%" class="form-control" id="desc" rows="4"
-                              placeholder="Add Description" name="create_desc"></textarea>
+                <div class="mb-4">
+                    <label for="desc" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea style="width: 100%" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
+                              id="desc" rows="4" placeholder="Add Description" name="create_desc"></textarea>
                 </div>
 
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-4 mb-3">
-                        <div class="form-group">
-                            <label for="starting_bid">Starting Bid</label>
-                            <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
-                                   id="starting_bid" class="form-control"/>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="mb-4">
+                        <label for="starting_bid" class="block text-sm font-medium text-gray-700">Starting Bid</label>
+                        <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
+                               id="starting_bid" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="buy_now_price" class="block text-sm font-medium text-gray-700">Buy Now Price</label>
+                        <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
+                               id="buy_now_price" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="expire_date" class="block text-sm font-medium text-gray-700">Expiration Date</label>
+                        <input required placeholder="Expiration date" type="date" name="expire_date"
+                               id="expire_date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="img_url" class="block text-sm font-medium text-gray-700">Upload Images</label>
+                    <div class="relative">
+                        <input type="file" class="sr-only" id="inputGroupFile04" name="img_url"
+                               accept="image/*" multiple onchange="previewImages(event)">
+                        <label class="cursor-pointer block bg-gray-200 border border-gray-300 rounded-md text-gray-700 py-2 px-4 text-sm" for="inputGroupFile04">Choose Images</label>
+                        <div class="image-preview-container mt-2" id="image_preview_container">
+                            <!-- Image previews will be added here dynamically -->
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-4 mb-3">
-                        <div class="form-group">
-                            <label for="buy_now_price">Buy Now Price</label>
-                            <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
-                                   id="buy_now_price"
-                                   class="form-control"/>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 mb-3">
-                        <div class="form-group">
-                            <label for="expire_date">Expiration Date</label>
-                            <input required placeholder="Expiration date" type="date" name="expire_date"
-                                   id="expire_date"
-                                   class="form-control"/>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="img_url">Upload Images</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="inputGroupFile04" name="img_url"
-                               accept="image/*" multiple
-                               onchange="previewImages(event)">
-                        <label class="custom-file-label" for="inputGroupFile04">Choose Images</label>
-                    </div>
-                    <div class="image-preview-container mt-2" id="image_preview_container">
-                        <!-- Image previews will be added here dynamically -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="category_select">Select Category <span style="font-size: small">(You can select multiple category by holding down the Ctrl
-                        key)</span></label>
-                    <select name="category" id="category_select" class="form-select" multiple style="height: 200px;"
+                <div class="mb-4">
+                    <label for="category_select" class="block text-sm font-medium text-gray-700">
+                        Select Category <span class="text-xs text-gray-500">(You can select multiple categories by holding down the Ctrl key)</span>
+                    </label>
+                    <select name="category" id="category_select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out" multiple style="height: 200px;"
                             onchange="toggleNewCategoryField()">
                         {% for category in categories %}
                             <option class="p-2" value="{{ category.slug }}">{{ category.title }}</option>
                         {% endfor %}
-                        <option value="new" class="p-2" style="font-style: italic;">Add New Category</option>
+                        <option value="new" class="p-2 italic">Add New Category</option>
                     </select>
                 </div>
 
                 <!-- New category field (hidden by default) -->
-                <div class="form-group" id="new_category_field" style="display:none;">
-                    <label for="new_category_title">New Category Title</label>
+                <div class="mb-4" id="new_category_field" style="display:none;">
+                    <label for="new_category_title" class="block text-sm font-medium text-gray-700">New Category Title</label>
                     <input placeholder="Enter new category title" type="text" name="new_category_title"
-                           id="new_category_title" class="form-control"/>
+                           id="new_category_title" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                 </div>
 
-                <button class="btn btn-primary" type="submit">Submit</button>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-150 ease-in-out" type="submit">Submit</button>
             </form>
-
         </div>
     </div>
 
@@ -148,9 +141,9 @@
         function toggleNewCategoryField() {
             const categorySelect = document.getElementById('category_select');
             const newCategoryField = document.getElementById('new_category_field');
-            const selectedValue = categorySelect.value;
+            const selectedOptions = Array.from(categorySelect.selectedOptions).map(option => option.value);
 
-            if (selectedValue === 'new') {
+            if (selectedOptions.includes('new')) {
                 newCategoryField.style.display = 'block';
             } else {
                 newCategoryField.style.display = 'none';

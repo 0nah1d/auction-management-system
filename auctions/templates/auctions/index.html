@@ -1,200 +1,231 @@
-{% extends "auctions/layout.html" %}
-{% load static %}
-{% block body %}
-    {% include "auctions/banner.html" %}
-    <section class="jewelry-auction-section padding-bottom padding-top pos-rel">
-        <div class="container">
-            <div class="section-header-3">
-                <div class="left">
-                    <div class="title-area">
-                        <h2 class="title mb-0">Top auctions list</h2>
-                    </div>
-                </div>
-                <a href="{% url 'auctionList' %}" class="normal-button">View All</a>
-            </div>
-            <div class="row justify-content-center mb-30-none">
-                {% for top_three_p_list in top_three_products %}
-                    <div class="col-12 col-md-6 col-lg-4 py-2">
-                        <div class="card">
-                            <h6 class="title p-3">
-                                <a href="{% url 'auctionDetails' top_three_p_list.id %}"
-                                   style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                >{{ top_three_p_list.title }}
-                                </a>
-                            </h6>
-                            <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
-                            >
-                                <a href="{% url 'auctionDetails' top_three_p_list.id %}">
-                                    <img src="{{ top_three_p_list.first_image_url }}"
-                                         alt="{{ top_three_p_list.title }}"
-                                         class="card-img-top"
-                                         style="height: 100%; width: 100%; object-fit: cover;">
-                                </a>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
-                                    <p class="small text-danger"><s>৳ {{ top_three_p_list.buy_now_price }}</s></p>
-                                </div>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <h5 class="mb-0">Current Bid</h5>
-                                    <h5 class="text-dark mb-0">
-                                        {% if top_three_p_list.current_bid != 0 %}
-                                            ৳ {{ top_three_p_list.current_bid }}
-                                        {% else %}
-                                            ৳ {{ top_three_p_list.starting_bid }}
-                                        {% endif %}
-                                    </h5>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <p class="text-muted mb-0">Bids: <span
-                                            class="fw-bold">{{ present_bid|default:"0" }}</span></p>
-                                    <div class="countdown">
-                                        <div class="countdown-timer"
-                                             data-expire-date="{{ top_three_p_list.expire_date }}"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+{%include "auctions/banner.html" %}
 
-                {% endfor %}
-            </div>
+<!-- Top Auctions Section -->
+<section class="py-16 relative bg-gray-100">
+  <div class="container mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-semibold">Top auctions list</h2>
+      <a
+        href="{% url 'auctionList' %}"
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+        >View All</a
+      >
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for top_three_p_list in top_three_products %}
+      <div
+        class="bg-white shadow-lg rounded-lg overflow-hidden max-w-xs mx-auto"
+      >
+        <!-- Image Section -->
+        <div class="relative">
+          <a href="{% url 'auctionDetails' top_three_p_list.id %}">
+            <img
+              src="{{ top_three_p_list.first_image_url }}"
+              alt="{{ top_three_p_list.title }}"
+              class="w-full h-48 object-cover object-center hover:scale-110 transition"
+            />
+          </a>
+          <div
+            class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
+          >
+            <a href="#!" class="text-white font-bold">Bid Now</a>
+          </div>
         </div>
-    </section>
-    <!--============= Jewelry Auction Section Ends Here =============-->
 
+        <!-- Card Content -->
+        <div class="p-4">
+          <!-- Title -->
+          <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
+            <a
+              href="{% url 'auctionDetails' top_three_p_list.id %}"
+              class="hover:text-blue-600"
+            >
+              {{ top_three_p_list.title }}
+            </a>
+          </h6>
 
-    <!--============= Call In Section Starts Here =============-->
-    {% if not user.is_authenticated %}
-        <section class="call-in-section padding-top pt-max-xl-0">
-            <div class="container">
-                <div class="call-wrapper cl-white bg_img" style="background-color: #242c5f">
-                    <div class="section-header">
-                        <h3 class="title text-primary">Register for Free & Start Bidding Now!</h3>
-                        <p class="text-primary">From cars to diamonds to iPhones, we have it all.</p>
-                    </div>
-                    <a href="/register" class="custom-button white">Register</a>
-                </div>
+          <!-- Price and Bid Information -->
+          <div class="mb-4">
+            <div
+              class="flex justify-between items-center text-sm text-gray-600 mb-2"
+            >
+              <p class="text-blue-500 font-semibold">
+                Buy Now: ৳ {{ top_three_p_list.buy_now_price }}
+              </p>
+              {% if top_three_p_list.current_bid != 0 %}
+              <p class="line-through text-red-500">
+                ৳ {{ top_three_p_list.current_bid }}
+              </p>
+              {% else %}
+              <p class="line-through text-red-500">
+                ৳ {{ top_three_p_list.starting_bid }}
+              </p>
+              {% endif %}
             </div>
-        </section>
-    {% endif %}
-    <!--============= Call In Section Ends Here =============-->
 
-    {% if watch_cat_products|length > 0 %}
-        <!--============= Watches Auction Section Starts Here =============-->
-        <section class="watches-auction-section padding-bottom padding-top">
-            <div class="container">
-                <div class="section-header-3">
-                    <div class="left">
-                        <div class="thumb">
-                            <img src="{% static 'auctions' %}/images/header-icons/watch.png" alt="header-icons">
-                        </div>
-                        <div class="title-area">
-                            <h2 class="title">Watches</h2>
-                            <p>Shop for men & women designer brand watches</p>
-                        </div>
-                    </div>
-                    <a href="/auctions" class="normal-button">View All</a>
-                </div>
-                <div class="row justify-content-center mb-30-none">
-                    {% for watch_p_list in watch_cat_products %}
-                        <div class="col-12 col-md-6 col-lg-4 py-2">
-                            <div class="card">
-                                <h6 class="title p-3">
-                                    <a href="{% url 'auctionDetails' watch_p_list.id %}"
-                                       style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; text-overflow: ellipsis; overflow: hidden;"
-                                    >{{ watch_p_list.title }}
-                                    </a>
-                                </h6>
-                                <div style="height: 200px; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f6f6ff; overflow: hidden;"
-                                >
-                                    <a href="{% url 'auctionDetails' watch_p_list.id %}">
-                                        <img src="{{ watch_p_list.first_image_url }}"
-                                             alt="{{ watch_p_list.title }}"
-                                             class="card-img-top"
-                                             style="height: 100%; width: 100%; object-fit: cover;">
-                                    </a>
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <p class="small"><a href="#!" class="text-muted">Buy Now</a></p>
-                                        <p class="small text-danger"><s>৳ {{ watch_p_list.buy_now_price }}</s></p>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <h5 class="mb-0">Current Bid</h5>
-                                        <h5 class="text-dark mb-0">
-                                            {% if watch_p_list.current_bid != 0 %}
-                                                ৳ {{ watch_p_list.current_bid }}
-                                            {% else %}
-                                                ৳ {{ watch_p_list.starting_bid }}
-                                            {% endif %}
-                                        </h5>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <p class="text-muted mb-0">Bids: <span
-                                                class="fw-bold">{{ present_bid|default:"0" }}</span></p>
-                                        <div class="countdown">
-                                            <div class="countdown-timer"
-                                                 data-expire-date="{{ watch_p_list.expire_date }}"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div
+              class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
+            >
+              <h5>Current Bid</h5>
+              <h5>
+                ৳ {{top_three_p_list.current_bid|default:top_three_p_list.starting_bid}}
+              </h5>
             </div>
-        </section>
-        <!--============= Watches Auction Section Ends Here =============-->
-    {% endif %}
 
-
-    <!--============= How Section Starts Here =============-->
-    <section class=" padding-top mb-10">
-        <div class="container">
-            <div class="how-wrapper section-bg">
-                <div class="section-header text-lg-left">
-                    <h2 class="title">How it works</h2>
-                    <p>Easy 3 steps to win</p>
-                </div>
-                <div class="row justify-content-center mb--40">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="how-item">
-                            <div class="how-thumb">
-                                <img src="{% static 'auctions' %}/images/how/signup.png" alt="how">
-                            </div>
-                            <div class="how-content">
-                                <h4 class="title">Sign Up</h4>
-                                <p>No Credit Card Required</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="how-item">
-                            <div class="how-thumb">
-                                <img src="{% static 'auctions' %}/images/how/bid.png" alt="how">
-                            </div>
-                            <div class="how-content">
-                                <h4 class="title">Bid</h4>
-                                <p>Bidding is free Only pay if you win</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="how-item">
-                            <div class="how-thumb">
-                                <img src="{% static 'auctions' %}/images/how/win.png" alt="how">
-                            </div>
-                            <div class="how-content">
-                                <h4 class="title">Win</h4>
-                                <p>Fun - Excitement - Great deals</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div
+              class="flex justify-between items-center text-sm text-gray-600"
+            >
+              <p>
+                Bids:
+                <span class="font-bold">{{ present_bid|default:"0" }}</span>
+              </p>
+              <div
+                class="countdown-timer"
+                data-expire-date="{{ top_three_p_list.expire_date }}"
+              ></div>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Section -->
+{% if not user.is_authenticated %}
+<section class="py-16 bg-blue-700 text-center text-white">
+  <div class="container mx-auto">
+    <h3 class="text-2xl font-bold">Register for Free & Start Bidding Now!</h3>
+    <p class="mb-8">From cars to diamonds to iPhones, we have it all.</p>
+    <a
+      href="/register"
+      class="bg-white text-blue-700 px-6 py-2 rounded hover:bg-purple-100"
+      >Register</a
+    >
+  </div>
+</section>
+{% endif %}
+
+<!-- Watches Auction Section -->
+{% if watch_cat_products|length > 0 %}
+<section class="py-16 bg-gray-100">
+  <div class="container mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center">
+        <img
+          src="{% static 'images/header-icons/watch.png' %}"
+          alt="header-icons"
+          class="h-12 mr-4"
+        />
+        <div>
+          <h2 class="text-3xl font-semibold">Watches</h2>
+          <p class="text-gray-600">
+            Shop for men & women designer brand watches
+          </p>
+        </div>
+      </div>
+      <a href="/auctions" class="bg-blue-500 text-white px-4 py-2 rounded"
+        >View All</a
+      >
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for watch_p_list in watch_cat_products %}
+      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="p-4">
+          <h6 class="text-lg font-medium text-gray-800 mb-4">
+            <a
+              href="{% url 'auctionDetails' watch_p_list.id %}"
+              class="block truncate"
+            >
+              {{ watch_p_list.title }}
+            </a>
+          </h6>
+          <div class="h-48 flex justify-center items-center bg-gray-200">
+            <a href="{% url 'auctionDetails' watch_p_list.id %}">
+              <img
+                src="{{ watch_p_list.first_image_url }}"
+                alt="{{ watch_p_list.title }}"
+                class="w-full h-full object-cover"
+              />
+            </a>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <p><a href="#!" class="text-blue-500">Buy Now</a></p>
+              <p class="line-through text-red-500">
+                ৳ {{ watch_p_list.buy_now_price }}
+              </p>
+            </div>
+            <div
+              class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-3"
+            >
+              <h5>Current Bid</h5>
+              <h5>
+                {% if watch_p_list.current_bid != 0 %} ৳ {{
+                watch_p_list.current_bid }} {% else %} ৳ {{
+                watch_p_list.starting_bid }} {% endif %}
+              </h5>
+            </div>
+            <div
+              class="flex justify-between items-center text-sm text-gray-600"
+            >
+              <p>
+                Bids:
+                <span class="font-bold">{{ present_bid|default:"0" }}</span>
+              </p>
+              <div
+                class="countdown-timer"
+                data-expire-date="{{ watch_p_list.expire_date }}"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- How It Works Section -->
+<section class="bg-gray-100 py-20">
+  <div class="container mx-auto py-10 bg-white shadow-lg rounded-lg">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-semibold">How it works</h2>
+      <p class="text-gray-600">Easy 3 steps to win</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="flex flex-col items-center">
+        <img
+          src="{% static 'images/how/signup.png' %}"
+          alt="how"
+          class="h-24 mb-4"
+        />
+        <h4 class="text-xl font-semibold mb-2">Sign Up</h4>
+        <p class="text-gray-600">No Credit Card Required</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <img
+          src="{% static 'images/how/bid.png' %}"
+          alt="how"
+          class="h-24 mb-4"
+        />
+        <h4 class="text-xl font-semibold mb-2">Bid</h4>
+        <p class="text-gray-600">Bidding is free Only pay if you win</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <img
+          src="{% static 'images/how/win.png' %}"
+          alt="how"
+          class="h-24 mb-4"
+        />
+        <h4 class="text-xl font-semibold mb-2">Win</h4>
+        <p class="text-gray-600">Fun - Excitement - Great deals</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}

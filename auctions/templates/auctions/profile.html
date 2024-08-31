@@ -2,214 +2,150 @@
 {% load static %}
 {% block body %}
 
-    <style>
-        #cropper-modal {
-            position: fixed;
-            top: 44%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-width: 400px;
-            background: #fff;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
+<!--============= Hero Section Starts Here =============-->
+<div class="pt-32">
+    <div class="container mx-auto">
+        <ul class="flex space-x-2 text-gray-500">
+            <li><a href="/" class="hover:text-blue-500">Home</a></li>
+            <li><span> / Profile</span></li>
+        </ul>
+    </div>
+</div>
+<!--============= Hero Section Ends Here =============-->
 
-        #cropper-modal img {
-            width: 100%;
-        }
-
-        #crop-button, #cancel-button {
-            margin-top: 10px;
-            padding: 10px;
-            border: none;
-            background: #007bff;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        #cancel-button {
-            background: #dc3545;
-        }
-    </style>
-
-    <!--============= Hero Section Starts Here =============-->
-    <div style="padding-top: 120px;">
-        <div class="container">
-            <ul class="breadcrumb">
-                <li>
-                    <a href="/">Home</a>
-                </li>
-                <li>
-                    <span>Profile</span>
-                </li>
-            </ul>
+<!-- Cropper Modal -->
+<div id="cropper-modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50" style="display: none;">
+    <div class="bg-white p-4 rounded-lg shadow-lg max-w-xs w-full">
+        <img id="cropper-image" class="w-full rounded-lg" src="" alt="Profile Picture">
+        <div class="flex justify-between mt-4">
+            <button id="crop-button" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Crop and Upload</button>
+            <button id="cancel-button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Cancel</button>
         </div>
     </div>
-    <!--============= Hero Section Ends Here =============-->
+</div>
 
-    <!-- Cropper Modal -->
-    <div id="cropper-modal" style="display: none;">
-        <div>
-            <img id="cropper-image" src="" alt="Profile Picture">
-            <button id="crop-button">Crop and Upload</button>
-            <button id="cancel-button">Cancel</button>
-        </div>
-    </div>
-
-    <!--============= Dashboard Section Starts Here =============-->
-    <section style="margin: 40px 0">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-sm-10 col-md-7 col-lg-4">
-                    <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
-                        <div class="user">
-                            <div class="thumb-area">
-                                <form id="profile-pic-form" method="post" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <label for="profile-pic" class="profile-pic-edit"><i
-                                            class="flaticon-pencil"></i></label>
-                                    <input type="file" id="profile-pic" class="d-none" accept="image/*">
-                                    <div style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%">
-                                        <img id="profile-pic-preview" style="height: 100% " src="  
-                                                {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
-                                             alt="{{ username }}">
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="content">
-                                <h5 class="title">{% if name %} {{ name }} {% else %} None {% endif %}</h5>
-                                <span class="username">{{ user.email }}</span>
-                            </div>
-                            <div style="margin-top: 15px;">
-                                <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Logout</a>
-                            </div>
+<!--============= Dashboard Section Starts Here =============-->
+<section class="my-10">
+    <div class="container mx-auto">
+        <div class="flex justify-center">
+            <div class="w-full lg:w-1/4">
+                <div class="bg-white shadow-lg rounded-lg p-4 sticky top-20">
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24 rounded-full overflow-hidden">
+                            <form id="profile-pic-form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label for="profile-pic" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white cursor-pointer opacity-0 hover:opacity-100 transition-opacity">
+                                    <i class="flaticon-pencil"></i>
+                                </label>
+                                <input type="file" id="profile-pic" class="hidden" accept="image/*">
+                                <img id="profile-pic-preview" class="object-cover w-full h-full"
+                                     src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                     alt="{{ username }}">
+                            </form>
                         </div>
-                        <ul class="dashboard-menu">
-                            <li>
-                                <a href="/user/profile" class="active"><i class="flaticon-settings"></i>Personal Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/dashboard"><i class="flaticon-dashboard"></i>Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="/user/auction"><i class="flaticon-dashboard"></i>My Auction</a>
-                            </li>
-                            <li>
-                                <a href="/user/bid"><i class="flaticon-auction"></i>My Bids</a>
-                            </li>
-                            <li>
-                                <a href="/user/win/bids"><i class="flaticon-best-seller"></i>Winning Bids</a>
-                            </li>
-                        </ul>
+                        <h5 class="mt-4 text-lg font-semibold text-gray-800">{% if name %} {{ name }} {% else %} None {% endif %}</h5>
+                        <span class="text-gray-600">{{ user.email }}</span>
+                        <a href="{% url 'logout' %}" class="mt-3 text-red-500 hover:underline">Logout</a>
                     </div>
+                    <ul class="mt-6 space-y-2">
+                        <li><a href="/user/profile" class="block text-blue-500 font-semibold">Personal Profile</a></li>
+                        <li><a href="/dashboard" class="block text-gray-700 hover:text-blue-500">Dashboard</a></li>
+                        <li><a href="/user/auction" class="block text-gray-700 hover:text-blue-500">My Auction</a></li>
+                        <li><a href="/user/bid" class="block text-gray-700 hover:text-blue-500">My Bids</a></li>
+                        <li><a href="/user/win/bids" class="block text-gray-700 hover:text-blue-500">Winning Bids</a></li>
+                    </ul>
                 </div>
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="dash-pro-item mb-30 dashboard-widget">
-                                <div class="header">
-                                    <h4 class="title">Personal Details</h4>
-                                    <span class="edit"><i class="flaticon-edit"></i> Edit</span>
-                                </div>
-                                <ul class="dash-pro-body">
-                                    <li>
-                                        <div class="info-name">Username</div>
-                                        <div class="info-value">{{ username }}</div>
-                                    </li>
-                                    <li>
-                                        <div class="info-name">Email</div>
-                                        <div class="info-value">{{ email }}</div>
-                                    </li>
-                                    <li>
-                                        <div class="info-name">Name</div>
-                                        <div class="info-value">
-                                            {% if name %}
-                                                {{ name }}
-                                            {% else %}
-                                                None
-                                            {% endif %}
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+            </div>
+            <div class="w-full lg:w-3/4 lg:ml-8">
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-xl font-semibold text-gray-800">Personal Details</h4>
+                        <span class="text-blue-500 cursor-pointer hover:underline"><i class="flaticon-edit"></i> Edit</span>
                     </div>
+                    <ul class="space-y-4">
+                        <li class="flex justify-between">
+                            <span class="text-gray-600">Username</span>
+                            <span class="text-gray-800">{{ username }}</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-600">Email</span>
+                            <span class="text-gray-800">{{ email }}</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-600">Name</span>
+                            <span class="text-gray-800">{% if name %} {{ name }} {% else %} None {% endif %}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
-    <!--============= Dashboard Section Ends Here =============-->
+    </div>
+</section>
+<!--============= Dashboard Section Ends Here =============-->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+    let cropper;
+    const cropperModal = document.getElementById('cropper-modal');
+    const cropperImage = document.getElementById('cropper-image');
+    const cropButton = document.getElementById('crop-button');
+    const cancelButton = document.getElementById('cancel-button');
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script>
-        let cropper;
-        const cropperModal = document.getElementById('cropper-modal');
-        const cropperImage = document.getElementById('cropper-image');
-        const cropButton = document.getElementById('crop-button');
-        const cancelButton = document.getElementById('cancel-button');
+    document.getElementById('profile-pic').addEventListener('change', function (event) {
+        const fileInput = event.target.files[0];
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropperImage.src = e.target.result;
+                cropperModal.style.display = 'flex';
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true
+                });
+            };
+            reader.readAsDataURL(fileInput);
+        }
+    });
 
-        document.getElementById('profile-pic').addEventListener('change', function (event) {
-            const fileInput = event.target.files[0];
-            if (fileInput) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropperImage.src = e.target.result;
-                    cropperModal.style.display = 'block';
-                    cropper = new Cropper(cropperImage, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 1,
-                        responsive: true
-                    });
-                };
-                reader.readAsDataURL(fileInput);
-            }
-        });
+    cropButton.addEventListener('click', function () {
+        const canvas = cropper.getCroppedCanvas();
+        canvas.toBlob(function (blob) {
+            const formData = new FormData();
+            formData.append('profile_picture', blob, 'profile-pic.jpg');
+            formData.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
 
-        cropButton.addEventListener('click', function () {
-            const canvas = cropper.getCroppedCanvas();
-            canvas.toBlob(function (blob) {
-                const formData = new FormData();
-                formData.append('profile_picture', blob, 'profile-pic.jpg');
-                formData.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
+            fetch("{% url 'edit_profile_picture' %}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const previewImg = document.getElementById('profile-pic-preview');
+                    previewImg.src = URL.createObjectURL(blob);
+                    cropperModal.style.display = 'none';
+                } else {
+                    alert('Failed to update profile picture.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+        }, 'image/jpeg');
+    });
 
-                fetch("{% url 'edit_profile_picture' %}", {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const previewImg = document.getElementById('profile-pic-preview');
-                            previewImg.src = URL.createObjectURL(blob);
-                            cropperModal.style.display = 'none';
-                        } else {
-                            alert('Failed to update profile picture.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred.');
-                    });
-            }, 'image/jpeg');
-        });
-
-        cancelButton.addEventListener('click', function () {
-            cropperModal.style.display = 'none';
-            if (cropper) {
-                cropper.destroy();
-            }
-        });
-
-    </script>
-
+    cancelButton.addEventListener('click', function () {
+        cropperModal.style.display = 'none';
+        if (cropper) {
+            cropper.destroy();
+        }
+    });
+</script>
 
 {% endblock %}

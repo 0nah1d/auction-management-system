@@ -2,176 +2,510 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>The Auction Management system by Django</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{% static 'auctions/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/animate.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/nice-select.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/owl.min.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/magnific-popup.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/flaticon.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/jquery-ui.min.css' %}">
-    <link rel="stylesheet" href="{% static 'auctions/css/main.css' %}">
-    <link rel="shortcut icon" href="{% static 'auctions/images/favicon.png' %}" type="image/x-icon">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
-    <script src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
-            referrerpolicy="origin"></script>
-</head>
-
-<body {% if header_bg %} class='header_bg' {% endif %}>
-
-{#Loader Start#}
-<div class="overlayer" id="overlayer">
-    <div class="loader">
-        <div class="loader-inner"></div>
-    </div>
-</div>
-{#Loader End#}
-
-{#Scroll Tip Start#}
-<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
-{#Scroll Tip End#}
-
-<div class="overlay"></div>
-<header>
-    <div class="header-bottom">
-        <div class="container">
-            <div class="header-wrapper">
-                <div class="logo">
-                    <a href="{% url 'index' %}">
-                        BidHub
-                    </a>
-                </div>
-                <ul class="menu ml-auto">
-                    <li class="mr-5">
-                        <form method="get" action="/auctions" class="search-form">
-                            <input name="q" type="text" placeholder="Product Name"/>
-                            <button type="submit"><i class="fas fa-search"></i></button>
-                        </form>
-                        <div class="search-bar d-md-none">
-                            <a href="#-1"><i class="fas fa-search"></i></a>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="{% url 'index' %}">Home</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'auctionList' %}">Auction</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'contact' %}">Contact</a>
-                    </li>
-                    {% if not user.is_authenticated %}
-                        <li><a href="/register">Register</a></li>
-                        <li><a href="/login">Login</a></li>
-                    {% else %}
-                        <li><a href="/create">Add Auction</a></li>
-                        <li><a href="{% url 'userProfile' %}" class="user-button"><i class="flaticon-user"></i></a>
-                        </li>
-                    {% endif %}
-                </ul>
-
-
-                <div class="header-bar d-lg-none">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-{% block body %}
-
-{% endblock %}
-
-<!--============= Footer Section Starts Here =============-->
-<footer class="padding-top" style="background-color: #242c5f">
-    <div class="newslater-wrapper mb-5">
-        <div class="container">
-            <div class="newslater-area">
-                <div class="newslater-thumb">
-                    <img src="{% static 'auctions' %}/images/banner/banner-1-1.png" alt="footer">
-                </div>
-                <div class="newslater-content">
-                    <div class="section-header left-style mb-low">
-                        <h5 class="cate text-white">Subscribe to BidHub</h5>
-                        <h3 class="title text-white">To Get Exclusive Benefits</h3>
-                    </div>
-                    <form class="d-flex align-items-center" style="gap: 10px">
-                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email"
-                               aria-label="Email">
-                        <button class="btn btn-primary" style="width: fit-content; border-radius: 10px" type="submit">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="container">
-            <div class="border-top border-info">
-                <div class="d-flex flex-wrap justify-content-between align-items-center py-2">
-                    <div class="h4 font-weight-bold text-white">
-                        <a href="/">BidHub</a>
-                    </div>
-                    <ul class="d-flex justify-content-between align-items-center" style="gap: 20px">
-                        <li>
-                            <a href="#"><img width="60px" class="bg-light "
-                                             src="{% static 'auctions' %}/images/footer/nagad.png" alt="footer"></a>
-                        </li>
-                        <li>
-                            <a href="#"><img width="60px" class="bg-light"
-                                             src="{% static 'auctions' %}/images/footer/bikash.png" alt="footer"></a>
-                        </li>
-                        <li>
-                            <a href="#"><img width="60px" class="bg-light"
-                                             src="{% static 'auctions' %}/images/footer/rocket.png" alt="footer"></a>
-                        </li>
-                    </ul>
-                    <div class="text-white">
-                        <p>&copy; Copyright <span id="year"></span> | <a href="/" class="text-primary">BidHub</a> By <a
-                                href="https://github.com/nahidthedeveloper" target="_blank"
-                                class="text-primary">Nahid</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-
-
-<script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'auctions/js/modernizr-3.6.0.min.js' %}"></script>
-<script src="{% static 'auctions/js/plugins.js' %}"></script>
-<script src="{% static 'auctions/js/popper.min.js' %}"></script>
-<script src="{% static 'auctions/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'auctions/js/isotope.pkgd.min.js' %}"></script>
-<script src="{% static 'auctions/js/wow.min.js' %}"></script>
-<script src="{% static 'auctions/js/waypoints.js' %}"></script>
-<script src="{% static 'auctions/js/nice-select.js' %}"></script>
-<script src="{% static 'auctions/js/counterup.min.js' %}"></script>
-<script src="{% static 'auctions/js/owl.min.js' %}"></script>
-<script src="{% static 'auctions/js/magnific-popup.min.js' %}"></script>
-<script src="{% static 'auctions/js/yscountdown.min.js' %}"></script>
-<script src="{% static 'auctions/js/jquery-ui.min.js' %}"></script>
-<script src="https://momentjs.com/downloads/moment.js"></script>
-<script src="{% static 'auctions/js/main.js' %}"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let yearElement = document.getElementById('year');
-        if (yearElement) {
-            yearElement.innerText = new Date().getFullYear();
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script
+      src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom styles for loader */
+      #overlayer {
+        /* Custom styles for loader */
+        #overlayer {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          transition: opacity 0.5s ease;
         }
-    });
-</script>
-</body>
+
+        #overlayer.hidden {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        .loader {
+          border: 8px solid rgba(255, 255, 255, 0.2);
+          border-radius: 50%;
+          border-top: 8px solid white;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      #overlayer.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .loader {
+        border: 8px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        border-top: 8px solid white;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .scrollToTop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #000;
+        color: #fff;
+        border-radius: 50%;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        z-index: 9999;
+        transition: background-color 0.3s;
+      }
+
+      .scrollToTop:hover {
+        background-color: #333;
+      }
+      /* Navbar background for home page */
+      .home-page {
+        background-color: transparent;
+      }
+
+      .home-page.scrolled {
+        background-color: #242c5f; /* Example: bg-gray-800 */
+      }
+
+      /* Navbar background for other pages */
+      .always-background {
+        background-color: #242c5f; /* Example: bg-gray-800 */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Global Page Loader -->
+    <div id="overlayer">
+      <div class="loader"></div>
+    </div>
+
+    <!-- Scroll Tip -->
+    <a href="#" class="scrollToTop">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <header
+      id="navbar"
+      class="fixed w-full z-10 transition-colors duration-300 ease-in-out {% if request.path == '/' %}home-page{% else %}always-background{% endif %}"
+    >
+      <div class="bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 lg:px-0">
+          <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+              <a
+                href="{% url 'index' %}"
+                class="text-white text-xl font-semibold"
+                >BidHub</a
+              >
+            </div>
+
+            <!-- Hamburger Menu (Mobile) -->
+            <div class="lg:hidden">
+              <button id="nav-toggle" class="text-white focus:outline-none">
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Search Form -->
+            <form
+              method="get"
+              action="/auctions"
+              class="space-y-2 relative hidden lg:block"
+            >
+              <div class="relative">
+                <input
+                  name="q"
+                  type="text"
+                  placeholder="Product Name"
+                  class="w-full px-3 py-2 rounded-md bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+                />
+                <button
+                  type="submit"
+                  class="absolute top-0 right-0 h-full flex items-center px-3 text-white rounded-r-md"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="11"
+                      cy="11"
+                      r="8"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    ></circle>
+                    <line
+                      x1="16.5"
+                      y1="16.5"
+                      x2="22"
+                      y2="22"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    ></line>
+                  </svg>
+                </button>
+              </div>
+            </form>
+
+            <!-- Navbar Links -->
+            <div class="hidden lg:flex space-x-4 items-center">
+              <nav class="flex space-x-4">
+                <a
+                  href="{% url 'index' %}"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Home</a
+                >
+                <a
+                  href="{% url 'auctionList' %}"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Auction</a
+                >
+                <a
+                  href="{% url 'contact' %}"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Contact</a
+                >
+                {% if not user.is_authenticated %}
+                <a
+                  href="/register"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Register</a
+                >
+                <a
+                  href="/login"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Login</a
+                >
+                {% else %}
+                <a
+                  href="/create"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  >Add Auction</a
+                >
+                <a
+                  href="{% url 'userProfile' %}"
+                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                  ><i class="fas fa-user"></i>
+                </a>
+                {% endif %}
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="nav-menu" class="lg:hidden hidden bg-gray-700 px-4 py-4">
+          <nav class="space-y-2">
+            <a
+              href="{% url 'index' %}"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Home</a
+            >
+            <a
+              href="{% url 'auctionList' %}"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Auction</a
+            >
+            <a
+              href="{% url 'contact' %}"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Contact</a
+            >
+            {% if not user.is_authenticated %}
+            <a
+              href="/register"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Register</a
+            >
+            <a
+              href="/login"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Login</a
+            >
+            {% else %}
+            <a
+              href="/create"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              >Add Auction</a
+            >
+            <a
+              href="{% url 'userProfile' %}"
+              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+              ><i class="fas fa-user"></i>
+            </a>
+            {% endif %}
+          </nav>
+          <!-- Search Form (Mobile) -->
+          <form method="get" action="/auctions" class="mt-4 space-y-2 relative">
+            <div class="relative">
+              <input
+                name="q"
+                type="text"
+                placeholder="Product Name"
+                class="w-full px-3 py-2 rounded-md bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+              />
+              <button
+                type="submit"
+                class="absolute top-0 right-0 h-full flex items-center px-3 text-white rounded-r-md"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  ></circle>
+                  <line
+                    x1="16.5"
+                    y1="16.5"
+                    x2="22"
+                    y2="22"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  ></line>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    {% block body %} {% endblock %}
+
+    <!--============= Footer Section Starts Here =============-->
+    <footer class="bg-[#242c5f] text-white py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Subscription Section -->
+        <div
+          class="flex flex-col lg:flex-row justify-between items-center border-b border-gray-700 pb-8"
+        >
+          <div class="flex items-center space-x-4">
+            <img
+              src="{% static 'images/banner/banner-1-1.png' %}"
+              alt="footer"
+              class="w-[150px]"
+            />
+            <div>
+              <h5 class="text-lg font-semibold">Subscribe to BidHub</h5>
+              <h3 class="text-2xl font-bold">To Get Exclusive Benefits</h3>
+            </div>
+          </div>
+          <form class="mt-6 lg:mt-0 flex space-x-4">
+            <input
+              type="email"
+              placeholder="Enter Your Email"
+              name="email"
+              aria-label="Email"
+              class="px-4 py-2 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              type="submit"
+              class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+        <!-- Footer Links and Payment Options -->
+        <div
+          class="flex flex-col lg:flex-row justify-between items-center mt-8 space-y-6 lg:space-y-0 lg:space-x-12"
+        >
+          <div>
+            <a href="/" class="text-3xl font-bold text-white">BidHub</a>
+          </div>
+          <ul class="flex space-x-8 bg-white px-4">
+            <li>
+              <a href="#">
+                <img
+                  src="{% static 'images/footer/nagad.png' %}"
+                  alt="Nagad"
+                  class="w-16"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <img
+                  src="{% static 'images/footer/bikash.png' %}"
+                  alt="Bikash"
+                  class="w-16"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <img
+                  src="{% static 'images/footer/rocket.png' %}"
+                  alt="Rocket"
+                  class="w-16"
+                />
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Copyright Section -->
+        <div class="mt-8 text-center">
+          <p class="text-sm">
+            &copy; <span id="year"></span>
+            <a href="/" class="text-indigo-500">BidHub</a> By
+            <a
+              href="https://github.com/nahidthedeveloper"
+              target="_blank"
+              class="text-indigo-500"
+              >Nahid</a
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+      // Change Navbar Background on Scroll
+      window.addEventListener("scroll", function () {
+        const navbar = document.getElementById("navbar");
+        const isHomePage = navbar.classList.contains("home-page");
+
+        if (isHomePage) {
+          if (window.scrollY > 50) {
+            navbar.classList.add("scrolled");
+          } else {
+            navbar.classList.remove("scrolled");
+          }
+        }
+      });
+
+      // Toggle Mobile Menu
+      document
+        .getElementById("nav-toggle")
+        .addEventListener("click", function () {
+          const menu = document.getElementById("nav-menu");
+          menu.classList.toggle("hidden");
+        });
+
+      // Set current year in the footer
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Function to hide the loader with a delay
+      function hideLoader() {
+        const overlayer = document.getElementById("overlayer");
+        if (overlayer) {
+          // Set a minimum display time of 1 second
+          setTimeout(() => {
+            overlayer.classList.add("hidden");
+          }, 1000);
+        }
+      }
+
+      // Event listener to hide the loader when the window loads
+      window.addEventListener("load", function () {
+        hideLoader();
+      });
+
+      // Optionally handle route changes if you use a JavaScript framework that supports routing
+      // Example for Vue.js with Vue Router
+      if (typeof window.Vue !== "undefined" && window.VueRouter) {
+        const router = window.VueRouter;
+        router.afterEach((to, from) => {
+          // Show loader for route changes
+          const overlayer = document.getElementById("overlayer");
+          if (overlayer) {
+            overlayer.classList.remove("hidden");
+            // Set a delay before hiding the loader
+            setTimeout(() => {
+              hideLoader();
+            }, 1000);
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

@@ -1,228 +1,233 @@
-{% extends "auctions/layout.html" %}
-{% load static %}
-{% block body %}
-    <!--============= Product Details Section Starts Here =============-->
-    <style>
-        .big-img {
-            width: auto;
-            height: 500px;
-            background-color: #cde0ec;
-            display: flex;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
+{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+<!--============= Product Details Section Starts Here =============-->
+<style>
+  .magnify {
+    position: fixed;
+    border: 1px solid #333;
+    border-radius: 50%;
+    pointer-events: none;
+    width: 200px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: 200%;
+    background-position: center;
+    display: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+  }
+</style>
 
-        .big-img img {
-            width: auto;
-            height: 100%;
-            cursor: crosshair;
-        }
+<section class="py-24 bg-gray-100">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Image Gallery -->
+      <div class="relative">
+        <!-- Main Image -->
+        <div class="relative w-full bg-gray-200 rounded-lg overflow-hidden">
+          {% if image_urls %}
+          <img
+            src="{{ image_urls.0 }}"
+            alt="Auction Image"
+            id="mainImage"
+            class="w-full h-auto object-contain cursor-pointer"
+            onclick="toggleImage(this.src)"
+          />
+          <div class="magnify" id="magnify"></div>
+          {% endif %}
+        </div>
+        <!-- Thumbnail Images -->
+        <div class="flex flex-wrap justify-center gap-2 mt-4">
+          {% for image_url in image_urls %}
+          <div
+            class="w-24 h-24 overflow-hidden border border-gray-300 rounded cursor-pointer"
+            onclick="showImg(this.querySelector('img').src)"
+          >
+            <img
+              src="{{ image_url }}"
+              alt="Thumbnail Image"
+              class="w-full h-full object-cover transition-transform transform hover:scale-110"
+            />
+          </div>
+          {% endfor %}
+        </div>
+      </div>
 
-        .magnify {
-            position: fixed;
-            border: 1px solid #333;
-            border-radius: 50%;
-            pointer-events: none;
-            width: 200px;
-            height: 200px;
-            background-repeat: no-repeat;
-            background-size: 200%; /* Stronger zoom effect */
-            background-position: center;
-            display: none;
-            z-index: 1000;
-        }
+      <!-- Product Details -->
+      <div class="space-y-6">
+        {% if messages %} {% for message in messages %}
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg mb-4">
+          {{ message }}
+        </div>
+        {% endfor %} {% endif %}
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <!-- First div: 2/3 width on medium screens and up -->
+          <div class="bg-white shadow rounded-lg p-6 md:col-span-3">
+            <ul class="space-y-2">
+              <li class="flex justify-between items-center text-lg font-medium">
+                <span>Listing ID:</span>
+                <span>{{ list.id }}</span>
+              </li>
+              <li class="flex justify-between items-center text-lg font-medium">
+                <span>Current Price:</span>
+                <span class="text-xl font-bold"
+                  >BDT ৳ {{ present_bid|floatformat:2 }}</span
+                >
+              </li>
+            </ul>
+          </div>
 
-        .images {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            margin-top: 15px;
-        }
+          <!-- Second div: 1/3 width on medium screens and up -->
+          <div class="bg-white shadow rounded-lg p-6 md:col-span-2">
+            <form
+              class="space-y-4 flex flex-col items-center"
+              method="get"
+              action="{% url 'bid' %}"
+            >
+              <input
+                required
+                name="bid_amnt"
+                placeholder="Enter bid amount"
+                type="number"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                name="list_d"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full"
+                value="{{ list.id }}"
+              >
+                Submit a Bid
+              </button>
+            </form>
+          </div>
+        </div>
 
-        .small-img {
-            width: 100px;
-            height: 100px;
-            overflow: hidden;
-            border: 1px solid black;
-        }
-
-        .small-img img {
-            width: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .small-img:hover img {
-            transform: scale(1.2);
-        }
-    </style>
-
-    <section class="product-details padding-bottom mt-240 mt-lg-440" style="padding-top: 150px;">
-        <div class="container">
-
-            <div class="">
-                <div style="width: 100%">
-                    <div class="big-img">
-                        {% if image_urls %}
-                            <img src="{{ image_urls.0 }}" alt="First Auction Image" id="mainImage">
-                            <div class="magnify" id="magnify"></div>
-                        {% endif %}
-                    </div>
-
-                    <div class="images">
-                        {% for image_url in image_urls %}
-                            <div class="small-img">
-                                <img src="{{ image_url }}" onclick="showImg(this.src)" alt="Auction Image">
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <h3 class="my-4">{{ list.title }}</h3>
-
-
-                <div class="row border-bottom border-top py-4">
-                    <div class="col-lg-8">
-                        <div class="product-details-content">
-                            <ul class="price-table mb-30">
-                                <li class="header">
-                                    <h5>Listing ID: {{ list.id }}</h5>
-                                    <h5 class="current">Current Price:</h5>
-                                    <h3 class="price">BDT ৳ {{ present_bid|floatformat:2 }}</h3>
-                                </li>
-                            </ul>
-                            <div class="product-bid-area">
-                                {% if messages %}
-                                    {% for message in messages %}
-                                        <div class="alert alert-warning" role="alert">
-                                            {{ message }}
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <form class="product-bid-form" method="get" action="{% url 'bid' %}">
-                                    <div class="search-icon">
-                                        <img src="{% static 'auctions' %}/images/how/bid.png" alt="product">
-                                    </div>
-                                    <input required name="bid_amnt" placeholder="Enter you bid amount" type="number">
-                                    <button type="submit" name="list_d" class="custom-button" value= {{ list.id }}>
-                                        Submit a
-                                        bid
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="buy-now-area">
-                                <a href="#0" class="custom-button">Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}</a>
-                                <div class="share-area">
-                                    <span>Share to:</span>
-                                    <ul>
-                                        <li>
-                                            <a href="#0"><i class="fab fa-facebook-f"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="#0"><i class="fab fa-twitter"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="#0"><i class="fab fa-linkedin-in"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="#0"><i class="fab fa-instagram"></i></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="product-sidebar-area">
-                            <div class="product-single-sidebar mb-3">
-                                <h6 class="title">This Auction Ends in:</h6>
-                                <div class="countdown">
-                                    <div class="countdown-timer" data-expire-date="{{ list.expire_date }} "></div>
-                                </div>
-                                <div class="side-counter-area">
-                                    <div class="side-counter-item">
-                                        <div class="content d-flex align-items-center" style="gap: 10px">
-                                            <h3 class="count-title"><span class="counter">{{ total_bidders }}</span>
-                                            </h3>
-                                            <p>Active Bidders</p>
-                                        </div>
-                                    </div>
-                                    <div class="side-counter-item">
-                                        <div class="content d-flex align-items-center" style="gap: 10px">
-                                            <h3 class="count-title"><span class="counter">{{ total_bids }}</span></h3>
-                                            <p>Total Bids</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="closebid">
-                            {% if is_owner %}
-                                <form method="get" action="{% url 'win_ner' %}">
-                                    <button class="btn btn-danger" type="submit" value="{{ list.id }}" name="listid">
-                                        Close Bid
-                                    </button>
-                                </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-white shadow rounded-lg p-4 col-span-1">
+            <a
+              href="#0"
+              class="block bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700"
+            >
+              Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}
+            </a>
+            <div class="flex gap-4 items-center justify-between">
+              <div class="mt-4">
+                <span class="block mb-2 font-medium">Share to:</span>
+                <ul class="flex space-x-4">
+                  <li>
+                    <a href="#0" class="text-blue-600 hover:text-blue-700"
+                      ><i class="fab fa-facebook-f"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#0" class="text-blue-400 hover:text-blue-500"
+                      ><i class="fab fa-twitter"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#0" class="text-blue-700 hover:text-blue-800"
+                      ><i class="fab fa-linkedin-in"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#0" class="text-pink-500 hover:text-pink-600"
+                      ><i class="fab fa-instagram"></i
+                    ></a>
+                  </li>
+                </ul>
+              </div>
+              {% if is_owner %}
+              <form method="get" action="{% url 'win_ner' %}" class="mt-8">
+                <button
+                  class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                  type="submit"
+                  value="{{ list.id }}"
+                  name="listid"
+                >
+                  Close Bid
+                </button>
+              </form>
+              {% endif %}
             </div>
-            <div class="container" style="margin-top: 100px;">
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="details">
-                        <div class="tab-details-content">
-                            {% if list.short_desc %}
-                                <div class="header-area" style="margin-bottom: 40px">
-                                    {% autoescape off %}
-                                        {{ list.short_desc }}
-                                    {% endautoescape %}
-                                </div>
-                            {% endif %}
-                            <div class="header-area">
-                                {% autoescape off %}
-                                    {{ list.desc }}
-                                {% endautoescape %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="bg-white shadow rounded-lg p-4 col-span-1">
+            <h6 class="text-lg font-medium">This Auction Ends in:</h6>
+            <div
+              class="countdown"
+              data-expire-date="{{ list.expire_date }}"
+            ></div>
+            <div class="mt-6 space-y-4">
+              <div class="flex items-center space-x-4">
+                <h3 class="text-2xl font-bold">
+                  <span class="counter">{{ total_bidders }}</span>
+                </h3>
+                <p>Active Bidders</p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <h3 class="text-2xl font-bold">
+                  <span class="counter">{{ total_bids }}</span>
+                </h3>
+                <p>Total Bids</p>
+              </div>
             </div>
-    </section>
-    <!--============= Product Details Section Ends Here =============-->
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        let bigImg = document.querySelector('.big-img img');
+    <h3 class="text-3xl font-semibold mt-12">{{ list.title }}</h3>
+    <div class="mt-4">
+      <div class="tab-details-content">
+        {% if list.short_desc %}
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+          {% autoescape off %} {{ list.short_desc }} {% endautoescape %}
+        </div>
+        {% endif %}
+        <div class="bg-white shadow rounded-lg p-6">
+          {% autoescape off %} {{ list.desc }} {% endautoescape %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--============= Product Details Section Ends Here =============-->
 
-        function showImg(pic) {
-            bigImg.src = pic;
-        }
+<script>
+  function showImg(src) {
+    document.getElementById("mainImage").src = src;
+  }
 
-        const mainImage = document.getElementById('mainImage');
-        const magnify = document.getElementById('magnify');
+  function toggleImage(src) {
+    const magnify = document.getElementById("magnify");
+    if (magnify.style.display === "none") {
+      magnify.style.display = "block";
+      magnify.style.backgroundImage = `url(${src})`;
+      magnify.style.backgroundSize = "200%"; // Adjust zoom level here
+    } else {
+      magnify.style.display = "none";
+    }
+  }
 
-        mainImage.addEventListener('mousemove', function (e) {
-            const {offsetX, offsetY, target} = e;
-            const {width, height} = target;
+  const mainImage = document.getElementById("mainImage");
+  const magnify = document.getElementById("magnify");
 
-            // Calculate the background position for magnify effect
-            const x = (offsetX / width) * 100;
-            const y = (offsetY / height) * 100;
+  mainImage.addEventListener("mousemove", function (e) {
+    if (magnify.style.display === "block") {
+      const { offsetX, offsetY, target } = e;
+      const { width, height } = target;
 
-            magnify.style.backgroundImage = `url(${target.src})`;
-            magnify.style.backgroundSize = `${width * 3}px ${height * 3}px`; // Adjust zoom level here
-            magnify.style.backgroundPosition = `${x}% ${y}%`;
-            magnify.style.left = `${e.pageX + 10}px`; // Offset to avoid covering the cursor
-            magnify.style.top = `${e.pageY + 10}px`;  // Offset to avoid covering the cursor
-            magnify.style.display = 'block';
-        });
+      const x = (offsetX / width) * 100;
+      const y = (offsetY / height) * 100;
 
-        mainImage.addEventListener('mouseleave', function () {
-            magnify.style.display = 'none';
-        });
-    </script>
+      magnify.style.backgroundSize = `${width * 3}px ${height * 3}px`; // Adjust zoom level here
+      magnify.style.backgroundPosition = `${x}% ${y}%`;
+      magnify.style.left = `${e.pageX}px`;
+      magnify.style.top = `${e.pageY}px`;
+    }
+  });
+
+  mainImage.addEventListener("mouseleave", function () {
+    magnify.style.display = "none";
+  });
+</script>
 {% endblock %}

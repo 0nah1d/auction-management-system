@@ -2,35 +2,37 @@
 {% load static %}
 {% block body %}
     <!--============= Contact Section Starts Here =============-->
-    <section class="contact-section padding-bottom" style="padding-top: 150px;">
-        <div class="container">
-            <div class="contact-wrapper padding-top padding-bottom ">
-                <div class="section-header">
-                    <h5 class="cate">Contact Us</h5>
-                    <h2 class="title">get in touch</h2>
-                    <p>We'd love to hear from you! Let us know how we can help.</p>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <form class="contact-form" id="contact_form">
-                            <div class="form-group">
-                                <label for="name"><i class="far fa-user"></i></label>
-                                <input type="text" placeholder="Your Name" name="name" id="name">
-                            </div>
-                            <div class="form-group">
-                                <label for="name"><i class="fas fa-envelope-open-text"></i></label>
-                                <input type="text" placeholder="Enter Your Email ID" name="email" id="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="message" class="message"><i class="far fa-envelope"></i></label>
-                                <textarea name="message" id="message" placeholder="Type Your Message"></textarea>
-                            </div>
-                            <div class="form-group text-center mb-0">
-                                <button type="submit" class="custom-button">Send Message</button>
-                            </div>
-                        </form>
+    <section class="pt-24 pb-16 bg-gray-100">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h5 class="text-blue-500 text-lg font-medium">Contact Us</h5>
+                <h2 class="text-3xl font-bold text-gray-800">Get in Touch</h2>
+                <p class="text-gray-600">We'd love to hear from you! Let us know how we can help.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+                <form id="contact_form" class="space-y-6">
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="far fa-user text-gray-500 mr-3"></i>
+                        <input type="text" placeholder="Your Name" name="name" id="name"
+                            class="w-full focus:outline-none p-2">
                     </div>
-                </div>
+                    <div class="flex items-center border-b border-gray-300 py-2">
+                        <i class="fas fa-envelope-open-text text-gray-500 mr-3"></i>
+                        <input type="email" placeholder="Enter Your Email ID" name="email" id="email"
+                            class="w-full focus:outline-none p-2">
+                    </div>
+                    <div class="flex items-start border-b border-gray-300 py-2">
+                        <i class="far fa-envelope text-gray-500 mr-3 mt-3"></i>
+                        <textarea name="message" id="message" placeholder="Type Your Message"
+                            class="w-full focus:outline-none p-2 h-32 resize-none"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit"
+                            class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 focus:outline-none">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
