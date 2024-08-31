@@ -1,34 +1,36 @@
 {% load static %}
-<section class="relative bg-cover bg-center bg-no-repeat h-screen flex items-center" style="background-image: url('{% static 'images/banner/banner-bg-1-1.png' %}');">
-    <div class="absolute inset-0 bg-black opacity-50"></div> <!-- Optional dark overlay for better text contrast -->
-    <div class="relative container mx-auto py-16 lg:py-32 flex flex-col lg:flex-row items-center justify-center lg:justify-between">
-        <div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
-            <div class="text-white">
-                <h5 class="text-lg font-semibold mb-4">BidHub Auction Management System</h5>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-                    <span class="block lg:inline">Discover Your</span> Next Great Find!
-                </h1>
-                <p class="text-base sm:text-lg lg:text-xl">
-                    Online Auction: Your one-stop destination to shop, sell, and give, with unbeatable variety and
-                    affordability.
-                </p>
+<section class="relative bg-cover bg-center bg-no-repeat h-screen flex items-center"
+         style="background-image: url('{% static 'images/banner/banner-bg-1-1.png' %}');">
+    <div class="max-w-[1280px] w-full m-auto">
+        <div class="relative container mx-auto py-16 lg:py-32 flex flex-col lg:flex-row items-center justify-center lg:justify-between">
+            <div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
+                <div class="text-white">
+                    <h5 class="text-lg lg:text-2xl font-semibold mb-4">BidHub Auction Management System</h5>
+                    <h1 class="text-3xl sm:text-4xl lg:text-7xl font-bold mb-4">
+                        <span class="block lg:inline">Discover Your</span> Next Great Find!
+                    </h1>
+                    <p class="text-base sm:text-lg lg:text-2xl">
+                        Online Auction: Your one-stop destination to shop, sell, and give, with unbeatable variety and
+                        affordability.
+                    </p>
+                </div>
+            </div>
+            <div class="hidden lg:block lg:w-1/2">
+                <div class="relative">
+                    <img
+                            src="{% static 'images/banner/banner-1-1.png' %}"
+                            alt="banner"
+                            class="w-full h-full object-cover"
+                    />
+                </div>
             </div>
         </div>
-        <div class="hidden lg:block lg:w-1/2">
-            <div class="relative">
-                <img
-                    src="{% static 'images/banner/banner-1-1.png' %}"
-                    alt="banner"
-                    class="w-full h-full object-cover"
-                />
-            </div>
+        <div class="hidden lg:block absolute inset-x-0 bottom-0 transform translate-y-1/2">
+            <img
+                    src="{% static 'images/banner/banner-shape.png' %}"
+                    alt="banner shape"
+                    class="w-full"
+            />
         </div>
-    </div>
-    <div class="hidden lg:block absolute inset-x-0 bottom-0 transform translate-y-1/2">
-        <img
-            src="{% static 'images/banner/banner-shape.png' %}"
-            alt="banner shape"
-            class="w-full"
-        />
     </div>
 </section>

@@ -2,149 +2,150 @@
 {% load static %}
 {% block body %}
 
-<!--============= Product Auction Section Starts Here =============-->
-<div class="pt-24 pb-16 bg-gray-100">
-    <div class="container mx-auto">
-        <div class="flex flex-col lg:flex-row items-center justify-between mb-8 bg-white shadow rounded-lg p-4">
-            <div class="flex items-center space-x-4">
-                <div class="text-gray-700 font-medium">Category:</div>
-                <form id="filterForm" method="get" action="/auctions">
-                    <div class="relative">
-                      <select
-                        name="filter-by"
-                        id="filterCat"
-                        class="border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500 w-full appearance-none"
-                        onchange="document.getElementById('filterForm').submit();"
-                      >
-                        <option value="all" {% if selected_category == 'all' %} selected {% endif %}>All</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat.title }}" {% if selected_category == cat.title %} selected {% endif %}>
-                          {{ cat.title }}
-                        </option>
-                        {% endfor %}
-                      </select>
-                      <div class="absolute inset-y-0 right-2 flex items-center px-2 pointer-events-none">
-                        <i class="fas fa-chevron-down"></i>
-                      </div>
-                    </div>
-                  </form>
-                  
-            </div>
-            <form method="get" action="/auctions" class="mt-4 lg:mt-0 flex items-center space-x-2">
-                <input name="q" type="text" placeholder="Item Name"
-                    class="border border-gray-300 rounded-lg p-2 w-full focus:ring-blue-500 focus:border-blue-500">
-                <button type="submit"
-                    class="bg-[#242c5f] text-white px-3 py-2 rounded-lg focus:outline-none">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </div>
+    <!--============= Product Auction Section Starts Here =============-->
+    <div class="pt-24 pb-16 bg-gray-100">
+        <div class="container mx-auto max-w-[1280px] w-full m-auto">
+            <div class="flex flex-col lg:flex-row items-center justify-between mb-8 bg-white shadow rounded-lg p-4">
+                <div class="flex items-center space-x-4">
+                    <div class="text-gray-700 font-medium">Category:</div>
+                    <form id="filterForm" method="get" action="/auctions">
+                        <div class="relative">
+                            <select
+                                    name="filter-by"
+                                    id="filterCat"
+                                    class="border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500 w-full appearance-none"
+                                    onchange="document.getElementById('filterForm').submit();"
+                            >
+                                <option value="all" {% if selected_category == 'all' %} selected {% endif %}>All
+                                </option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.title }}" {% if selected_category == cat.title %}
+                                            selected {% endif %}>
+                                        {{ cat.title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="absolute inset-y-0 right-2 flex items-center px-2 pointer-events-none">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </form>
 
-        {% if total_auctions > 0 %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for auction_p_list in auctions %}
-            <div
-        class="bg-white shadow-lg rounded-lg overflow-hidden max-w-xs mx-auto"
-      >
-        <!-- Image Section -->
-        <div class="relative">
-          <a href="{% url 'auctionDetails' auction_p_list.id %}">
-            <img
-              src="{{ auction_p_list.first_image_url }}"
-              alt="{{ auction_p_list.title }}"
-              class="w-full h-48 object-cover object-center hover:scale-110 transition"
-            />
-          </a>
-          <div
-            class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
-          >
-            <a href="#!" class="text-white font-bold">Bid Now</a>
-          </div>
-        </div>
-
-        <!-- Card Content -->
-        <div class="p-4">
-          <!-- Title -->
-          <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
-            <a
-              href="{% url 'auctionDetails' auction_p_list.id %}"
-              class="hover:text-blue-600"
-            >
-              {{ auction_p_list.title }}
-            </a>
-          </h6>
-
-          <!-- Price and Bid Information -->
-          <div class="mb-4">
-            <div
-              class="flex justify-between items-center text-sm text-gray-600 mb-2"
-            >
-              <p class="text-blue-500 font-semibold">
-                Buy Now: ৳ {{ auction_p_list.buy_now_price }}
-              </p>
-              {% if auction_p_list.current_bid != 0 %}
-              <p class="line-through text-red-500">
-                ৳ {{ auction_p_list.current_bid }}
-              </p>
-              {% else %}
-              <p class="line-through text-red-500">
-                ৳ {{ auction_p_list.starting_bid }}
-              </p>
-              {% endif %}
+                </div>
+                <form method="get" action="/auctions" class="mt-4 lg:mt-0 flex items-center space-x-2">
+                    <input name="q" type="text" placeholder="Item Name"
+                           class="border border-gray-300 rounded-lg p-2 w-full focus:ring-blue-500 focus:border-blue-500">
+                    <button type="submit"
+                            class="bg-[#242c5f] text-white px-3 py-2 rounded-lg focus:outline-none">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
             </div>
 
-            <div
-              class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
-            >
-              <h5>Current Bid</h5>
-              <h5>
-                ৳ {{auction_p_list.current_bid|default:auction_p_list.starting_bid}}
-              </h5>
-            </div>
+            {% if total_auctions > 0 %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for auction_p_list in auctions %}
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden mx-auto w-[278px]">
+                            <!-- Image Section -->
+                            <div class="relative">
+                                <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                    <img
+                                            src="{{ auction_p_list.first_image_url }}"
+                                            alt="{{ auction_p_list.title }}"
+                                            class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                    />
+                                </a>
+                                <div
+                                        class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
+                                >
+                                    <a href="#!" class="text-white font-bold">Bid Now</a>
+                                </div>
+                            </div>
 
-            <div
-              class="flex justify-between items-center text-sm text-gray-600"
-            >
-              <p>
-                Bids:
-                <span class="font-bold">{{ present_bid|default:"0" }}</span>
-              </p>
-              <div
-                class="countdown-timer"
-                data-expire-date="{{ auction_p_list.expire_date }}"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
+                            <!-- Card Content -->
+                            <div class="p-4">
+                                <!-- Title -->
+                                <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
+                                    <a
+                                            href="{% url 'auctionDetails' auction_p_list.id %}"
+                                            class="hover:text-blue-600"
+                                    >
+                                        {{ auction_p_list.title }}
+                                    </a>
+                                </h6>
 
-            {% endfor %}
-        </div>
-        <div class="flex justify-center mt-8">
-            <ul class="flex space-x-2">
-                {% for num in auctions.paginator.page_range %}
-                <li>
-                    <a href="?page={{ num }}" class="{% if num == auctions.number %} bg-blue-500 text-white {% else %}
+                                <!-- Price and Bid Information -->
+                                <div class="mb-4">
+                                    <div
+                                            class="flex justify-between items-center text-sm text-gray-600 mb-2"
+                                    >
+                                        <p class="text-blue-500 font-semibold">
+                                            Buy Now: ৳ {{ auction_p_list.buy_now_price }}
+                                        </p>
+                                        {% if auction_p_list.current_bid != 0 %}
+                                            <p class="line-through text-red-500">
+                                                ৳ {{ auction_p_list.current_bid }}
+                                            </p>
+                                        {% else %}
+                                            <p class="line-through text-red-500">
+                                                ৳ {{ auction_p_list.starting_bid }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div
+                                            class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
+                                    >
+                                        <h5>Current Bid</h5>
+                                        <h5>
+                                            ৳ {{ auction_p_list.current_bid|default:auction_p_list.starting_bid }}
+                                        </h5>
+                                    </div>
+
+                                    <div
+                                            class="flex justify-between items-center text-sm text-gray-600"
+                                    >
+                                        <p>
+                                            Bids:
+                                            <span class="font-bold">{{ present_bid|default:"0" }}</span>
+                                        </p>
+                                        <div
+                                                class="countdown-timer"
+                                                data-expire-date="{{ auction_p_list.expire_date }}"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+                <div class="flex justify-center mt-8">
+                    <ul class="flex space-x-2">
+                        {% for num in auctions.paginator.page_range %}
+                            <li>
+                                <a href="?page={{ num }}"
+                                   class="{% if num == auctions.number %} bg-blue-500 text-white {% else %}
                         bg-gray-200 text-gray-800 {% endif %} py-2 px-3 rounded-lg">
-                        {{ num }}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p class="text-center text-gray-600">Product not found</p>
+            {% endif %}
         </div>
-        {% else %}
-        <p class="text-center text-gray-600">Product not found</p>
-        {% endif %}
     </div>
-</div>
-<!--============= Product Auction Section Ends Here =============-->
+    <!--============= Product Auction Section Ends Here =============-->
 
-<script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('#filterCat').change(function () {
-            $('#filterForm').submit();
+    <script src="{% static 'auctions/js/jquery-3.3.1.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#filterCat').change(function () {
+                $('#filterForm').submit();
+            });
         });
-    });
-</script>
+    </script>
 {% endblock %}
