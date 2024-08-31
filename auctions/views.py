@@ -514,3 +514,16 @@ def myauction(request):
         'auctions': page_obj,
         'total_auctions': total_auctions
     })
+
+
+@login_required(login_url='login')
+def delete_auction(request, auction_id):
+    auction = get_object_or_404(AuctionList, id=auction_id)
+
+    if auction.user == request.user:
+        auction.delete()
+        messages.success(request, "Auction deleted successfully")
+    else:
+        messages.error(request, "You are not authorized to delete this auction")
+
+    return redirect("myAuction")

@@ -27,6 +27,8 @@
                                                  
                                                  
                                                  
+                                                 
+                                                 
                                                  {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}"
                                     />
@@ -73,6 +75,11 @@
 
                     <!-- Main Content -->
                     <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
+                        {% if messages %} {% for message in messages %}
+                            <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg mb-4">
+                                {{ message }}
+                            </div>
+                        {% endfor %} {% endif %}
                         <!-- My Auctions List -->
                         <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
                             <h5 class="text-xl font-semibold mb-6">My Auctions List</h5>
@@ -115,7 +122,7 @@
                                                         </span>
                                                     {% endif %}
                                                 </h6>
-                                            
+
                                                 <!-- Price and Bid Information -->
                                                 <div class="mb-4">
                                                     <div class="flex justify-between items-center text-sm text-gray-600 mb-2"

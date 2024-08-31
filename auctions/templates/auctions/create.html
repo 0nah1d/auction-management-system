@@ -57,15 +57,11 @@
             <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
                 <!-- Display error messages -->
-                {% if messages %}
-                    <div class="bg-red-500 text-white p-4 rounded mb-4">
-                        <ul>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
+                {% if messages %} {% for message in messages %}
+                    <div class="bg-red-100 text-yellow-800 p-4 rounded-lg mb-4">
+                        {{ message }}
                     </div>
-                {% endif %}
+                {% endfor %} {% endif %}
 
                 <div class="mb-4">
                     <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
@@ -146,15 +142,15 @@
             </form>
         </div>
     </div>
-    
+
     <script>
-      tinymce.init({
+        tinymce.init({
             selector: 'textarea',
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
         });
-      
-       function toggleNewCategoryField() {
+
+        function toggleNewCategoryField() {
             const categorySelect = document.getElementById('category_select');
             const newCategoryField = document.getElementById('new_category_field');
             const selectedOptions = Array.from(categorySelect.selectedOptions).map(option => option.value);
