@@ -10,10 +10,12 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
+    path("create", views.create, name="create"),
     path("auctions", views.auction_list, name="auctionList"),
     path("auction/<int:bidid>", views.auction_details, name="auctionDetails"),
     path("delete/<int:auction_id>", views.delete_auction, name="deleteAuction"),
-    path("create", views.create, name="create"),
+    path("edit/<int:auction_id>", views.update, name="update"),
+    path('auctions/remove_image/', views.remove_image, name='remove_image'),
 
     path("user/bid", views.user_bid, name="userBids"),
     path("user/profile", views.user_profile, name="userProfile"),

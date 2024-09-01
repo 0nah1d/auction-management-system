@@ -1,4 +1,6 @@
-{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+{% extends "auctions/layout.html" %} 
+{% load static %}
+{% block body %}
     <div class="max-w-[1280px] w-full m-auto">
 
         <!--============= Hero Section Starts Here =============-->
@@ -22,14 +24,7 @@
                             <div class="flex flex-col items-center">
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
                                     <img class="object-cover w-full h-full"
-                                         src="
-                                                 
-                                                 
-                                                 
-                                                 
-                                                 
-                                                 
-                                                 {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                         src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}"
                                     />
                                 </div>
@@ -172,7 +167,7 @@
                                                         </div>
                                                         <div>
                                                             {% if auction_p_list.active_status %}
-                                                                <a href=""
+                                                                <a href="{% url 'update' auction_p_list.id %}"
                                                                    class="bg-yellow-500 text-white text-xs py-1 px-2 rounded hover:bg-yellow-600"
                                                                 >Edit</a
                                                                 >

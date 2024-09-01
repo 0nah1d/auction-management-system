@@ -1,3 +1,5 @@
+import json
+import os
 from django.contrib.auth import login, logout
 from django.db.models import Count, Max, Min
 from django.http import HttpResponseRedirect
@@ -9,13 +11,38 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.core.mail import send_mail
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+
+
+def index(request):
+    def add_full_image_url(auction_list):
+        for auction in auction_list:
+            first_image = AuctionImage.objects.filter(auction=auction).first()
+            if first_image:
+                auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
+            else:
+                auction.first_image_url = None  # Or set a default image URL if you prefer
+        return auction_list
+
+    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
+    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
+
+    # Add first image URL to each auction
+    top_three_products = add_full_image_url(top_three_products)
+    watch_cat_products = add_full_image_url(watch_cat_products)
+
+    context = {
+        'header_bg': True,
+        'top_three_products': top_three_products,
+        'watch_cat_products': watch_cat_products,
+    }
+    return render(request, "auctions/index.html", context)
 
 
 def register(request):
@@ -50,55 +77,13 @@ def login_view(request):
     return render(request, "auctions/login.html", {"form": form})
 
 
+def contact(request):
+    return render(request, "auctions/contact.html")
+
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
-
-@login_required
-def edit_profile_picture(request):
-    user = request.user
-
-    if request.method == 'POST' and request.FILES.get('profile_picture'):
-        new_picture = request.FILES['profile_picture']
-
-        # Remove the previous profile picture if there is one
-        if user.profile_picture:
-            if default_storage.exists(user.profile_picture.name):
-                default_storage.delete(user.profile_picture.name)
-
-        # Update the user's profile picture
-        user.profile_picture = new_picture
-        user.save()
-
-        return JsonResponse({'success': True})
-
-    return JsonResponse({'success': False}, status=400)
-
-
-def index(request):
-    def add_full_image_url(auction_list):
-        for auction in auction_list:
-            first_image = AuctionImage.objects.filter(auction=auction).first()
-            if first_image:
-                auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
-            else:
-                auction.first_image_url = None  # Or set a default image URL if you prefer
-        return auction_list
-
-    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
-    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
-
-    # Add first image URL to each auction
-    top_three_products = add_full_image_url(top_three_products)
-    watch_cat_products = add_full_image_url(watch_cat_products)
-
-    context = {
-        'header_bg': True,
-        'top_three_products': top_three_products,
-        'watch_cat_products': watch_cat_products,
-    }
-    return render(request, "auctions/index.html", context)
 
 
 def auction_list(request):
@@ -155,79 +140,81 @@ def auction_details(request, bidid):
     })
 
 
-def contact(request):
-    return render(request, "auctions/contact.html")
+@login_required
+def edit_profile_picture(request):
+    user = request.user
+
+    if request.method == 'POST' and request.FILES.get('profile_picture'):
+        new_picture = request.FILES['profile_picture']
+
+        # Remove the previous profile picture if there is one
+        if user.profile_picture:
+            if default_storage.exists(user.profile_picture.name):
+                default_storage.delete(user.profile_picture.name)
+
+        # Update the user's profile picture
+        user.profile_picture = new_picture
+        user.save()
+
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False}, status=400)
 
 
 @login_required(login_url='login')
 def create(request):
     if request.method == "POST":
-        # Initialize the auction object
-        m = AuctionList(user=request.user)
-
-        # Validate and assign title
         title = request.POST.get("create_title")
-        if not title:
-            messages.error(request, "Title is required.")
-            return render(request, "auctions/create.html", {'categories': Category.objects.all()})
-        m.title = title
-
-        # Validate and assign description
         desc = request.POST.get("create_desc")
-        if not desc:
-            messages.error(request, "Description is required.")
-            return render(request, "auctions/create.html", {'categories': Category.objects.all()})
-        m.desc = desc
-
-        # Validate and assign starting bid
         starting_bid = request.POST.get("create_initial_bid")
-        if not starting_bid or int(starting_bid) <= 0:
-            messages.error(request, "Starting bid must be a positive number.")
-            return render(request, "auctions/create.html", {'categories': Category.objects.all()})
-        m.starting_bid = int(starting_bid)
-
-        buy_now_price = request.POST.get("create_buy_now_price", 0)
-        m.buy_now_price = int(buy_now_price)
-
-        # Validate and assign expiration date
+        buy_now_price = request.POST.get("create_buy_now_price")
         expire_date = request.POST.get("expire_date")
-        if not expire_date:
-            messages.error(request, "Expiration date is required.")
-            return render(request, "auctions/create.html", {'categories': Category.objects.all()})
-        m.expire_date = expire_date
+        selected_category_slugs = request.POST.getlist("category[]")
 
-        # Save the auction first to get the instance
-        m.save()
+        if not title or not desc or not starting_bid or not expire_date:
+            messages.error(request, "All required fields must be filled out.")
+            return redirect("create")
 
-        # Handle category
-        selected_category_slug = request.POST.get("category")
+        # Create new auction
+        auction = AuctionList.objects.create(
+            title=title,
+            desc=desc,
+            starting_bid=starting_bid,
+            buy_now_price=buy_now_price,
+            expire_date=expire_date,
+            user=request.user
+        )
 
-        if selected_category_slug == "new":
-            new_category_title = request.POST.get("new_category_title")
-
-            if new_category_title:
-                category, created = Category.objects.get_or_create(
-                    title=new_category_title,
-                    defaults={'slug': new_category_title.lower().replace(' ', '-')}
-                )
-                m.categories.add(category)
+        # Handle categories
+        for slug in selected_category_slugs:
+            if slug == "new":
+                new_category_title = request.POST.get("new_category_title")
+                if new_category_title:
+                    category_slug = new_category_title.lower().replace(' ', '-')
+                    category, created = Category.objects.get_or_create(
+                        slug=category_slug,
+                        defaults={'title': new_category_title}
+                    )
+                    auction.categories.add(category)
+                else:
+                    messages.error(request, "New category title cannot be empty.")
+                    return redirect('create')
             else:
-                messages.error(request, "New category title cannot be empty.")
-                return render(request, "auctions/create.html", {'categories': Category.objects.all()})
-        else:
-            try:
-                category = Category.objects.get(slug=selected_category_slug)
-                m.categories.add(category)
-            except Category.DoesNotExist:
-                messages.error(request, f"Category with slug '{selected_category_slug}' does not exist.")
-                return render(request, "auctions/create.html", {'categories': Category.objects.all()})
+                try:
+                    category = Category.objects.get(slug=slug)
+                    auction.categories.add(category)
+                except Category.DoesNotExist:
+                    messages.error(request, f"Category with slug '{slug}' does not exist.")
+                    return redirect('create')
 
         # Handle image uploads
-        images = request.FILES.getlist("img_url")
-        for image in images:
-            AuctionImage.objects.create(auction=m, image_url=image)
+        if 'img_url' in request.FILES:
+            uploaded_files = request.FILES.getlist('img_url')
+            for file in uploaded_files:
+                AuctionImage.objects.create(auction=auction, image_url=file)
 
-        return redirect("index")
+        messages.success(request, "Auction created successfully.")
+        return redirect('create')
 
     return render(request, "auctions/create.html", {'categories': Category.objects.all()})
 
@@ -527,3 +514,94 @@ def delete_auction(request, auction_id):
         messages.error(request, "You are not authorized to delete this auction")
 
     return redirect("myAuction")
+
+
+@login_required(login_url='login')
+def update(request, auction_id):
+    auction = get_object_or_404(AuctionList, id=auction_id)
+
+    if request.method == "POST":
+        title = request.POST.get("create_title")
+        desc = request.POST.get("create_desc")
+        starting_bid = request.POST.get("create_initial_bid")
+        buy_now_price = request.POST.get("create_buy_now_price")
+        expire_date = request.POST.get("expire_date")
+
+        if not title or not desc or not starting_bid or not expire_date:
+            messages.error(request, "All required fields must be filled out.")
+            return redirect("update", auction_id=auction_id)
+
+        # Update auction
+        auction.title = title
+        auction.desc = desc
+        auction.starting_bid = starting_bid
+        auction.buy_now_price = buy_now_price
+        auction.expire_date = expire_date
+        auction.save()
+
+        selected_category_slugs = request.POST.getlist("category[]")
+
+        # Handle categories
+        for slug in selected_category_slugs:
+            if slug == "new":
+                new_category_title = request.POST.get("new_category_title")
+                if new_category_title:
+                    category_slug = new_category_title.lower().replace(' ', '-')
+                    category, created = Category.objects.get_or_create(
+                        slug=category_slug,
+                        defaults={'title': new_category_title}
+                    )
+                    auction.categories.add(category)
+                else:
+                    messages.error(request, "New category title cannot be empty.")
+                    return redirect('create')
+            else:
+                try:
+                    category = Category.objects.get(slug=slug)
+                    auction.categories.add(category)
+                except Category.DoesNotExist:
+                    messages.error(request, f"Category with slug '{slug}' does not exist.")
+                    return redirect('create')
+
+        # Handle image uploads
+        if 'img_url' in request.FILES:
+            uploaded_files = request.FILES.getlist('img_url')
+            for file in uploaded_files:
+                AuctionImage.objects.create(auction=auction, image_url=file)
+
+        messages.success(request, "Auction updated successfully.")
+        return redirect('update', auction_id=auction_id)
+
+    # Get existing images for the auction
+    image_urls = [image.image_url.url for image in auction.images.all()]
+
+    return render(request, "auctions/update.html", {
+        'auction': auction,
+        'categories': Category.objects.all(),
+        'image_urls': image_urls
+    })
+
+
+@csrf_exempt
+def remove_image(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        image_url = data.get('image_url')
+        auction_id = data.get('auction_id')
+
+        if not image_url or not auction_id:
+            return JsonResponse({'status': 'error', 'message': 'Invalid request data'}, status=400)
+
+        file_name = os.path.basename(image_url)
+
+        try:
+            auction_image = AuctionImage.objects.get(
+                auction_id=auction_id,
+                image_url__endswith=file_name
+            )
+            auction_image.delete()
+            return JsonResponse({'status': 'success', 'message': 'Image removed successfully'})
+        except AuctionImage.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Image not found'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
