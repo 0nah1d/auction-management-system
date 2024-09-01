@@ -26,6 +26,10 @@
                         <textarea name="message" id="message" placeholder="Type Your Message"
                             class="w-full focus:outline-none p-2 h-32 resize-none"></textarea>
                     </div>
+                    <center>
+                        <div class="g-recaptcha" data-sitekey="6LdRLDQqAAAAAJbT-riLKNptaIgFyVvmMtJQ7LXC"></div>
+                        <span id="captcha_message" class="text-red-600 text-sm mt-2"></span>
+                    </center>
                     <div class="text-center">
                         <button type="submit"
                             class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 focus:outline-none">
@@ -37,5 +41,26 @@
         </div>
     </section>
     <!--============= Contact Section Ends Here =============-->
+
+    <script>
+        document.getElementById('contact_form').addEventListener('submit', function(event) {
+          event.preventDefault();
+      
+          var recaptchaResponse = grecaptcha.getResponse();
+          var captchaMessage = document.getElementById('captcha_message');
+      
+          if (recaptchaResponse.length === 0) {
+            captchaMessage.classList.remove('hidden');
+            captchaMessage.classList.add('block');
+            captchaMessage.textContent = 'Please complete the reCAPTCHA';
+          } else {
+            captchaMessage.classList.remove('block');
+            captchaMessage.classList.add('hidden');
+            this.submit();
+          }
+        });
+      </script>
+      
+      
 
 {% endblock %}
