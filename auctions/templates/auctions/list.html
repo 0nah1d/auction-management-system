@@ -43,9 +43,9 @@
             </div>
 
             {% if total_auctions > 0 %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex flex-wrap justify-center gap-6">
                     {% for auction_p_list in auctions %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden mx-auto w-[278px]">
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]">
                             <!-- Image Section -->
                             <div class="relative">
                                 <a href="{% url 'auctionDetails' auction_p_list.id %}">
@@ -120,7 +120,7 @@
 
                     {% endfor %}
                 </div>
-                <div class="flex justify-center mt-8">
+                <div class="flex justify-center mt-12">
                     <ul class="flex space-x-2">
                         {% for num in auctions.paginator.page_range %}
                             <li>

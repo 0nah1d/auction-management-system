@@ -25,6 +25,7 @@
                             <div class="flex flex-col items-center">
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
                                     <img class="object-cover w-full h-full" src="
+                                            
                                             {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
@@ -58,7 +59,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'userWinBids' %}" class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                    <a href="{% url 'userWinBids' %}"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
                                         <i class="fas fa-trophy mr-2"></i> Winning Bids
                                     </a>
                                 </li>
@@ -70,7 +72,7 @@
                     <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
                         <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
                             <h5 class="text-xl font-semibold mb-6">My Bids</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="flex flex-wrap gap-6">
                                 {% for auction_p_list in userBids %}
                                     <div class="bg-gray-100 rounded-lg overflow-hidden shadow-md">
                                         <a href="{% url 'auctionDetails' auction_p_list.id %}">
@@ -113,6 +115,9 @@
                                         </a>
                                     </div>
                                 {% endfor %}
+                                {% if not auction_p_list.length > 0 %}
+                                    <p class="w-full text-center text-gray-600">Not found</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

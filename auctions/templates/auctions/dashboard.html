@@ -24,6 +24,8 @@
                             <div class="flex flex-col items-center">
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
                                     <img class="object-cover w-full h-full" src="
+                                            
+                                            
                                             {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
@@ -57,7 +59,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'userWinBids' %}" class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                    <a href="{% url 'userWinBids' %}"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
                                         <i class="fas fa-trophy mr-2"></i> Winning Bids
                                     </a>
                                 </li>
@@ -129,6 +132,9 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            {% if not auctions.length > 0 %}
+                                <p class="mt-10 w-full text-center text-gray-600">Not found</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
