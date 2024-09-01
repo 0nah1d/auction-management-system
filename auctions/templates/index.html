@@ -1,5 +1,7 @@
-{% extends "auctions/layout.html" %} {% load static %} {% block body %}
-    {% include "auctions/banner.html" %}
+{% extends "layout.html" %} 
+{% load static %} 
+{% block body %}
+{% include "banner.html" %}
 
     <!-- Top Auctions Section -->
     <section class="py-16 relative bg-gray-100">
@@ -77,9 +79,7 @@
                                         Bids:
                                         <span class="font-bold">{{ present_bid|default:"0" }}</span>
                                     </p>
-                                    <div
-                                            class="countdown-timer"
-                                            data-expire-date="{{ top_three_p_list.expire_date }}"
+                                    <div class="countdown-timer" data-expire-date="{{ top_three_p_list.expire_date }}"
                                     ></div>
                                 </div>
                             </div>

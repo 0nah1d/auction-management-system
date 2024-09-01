@@ -27,7 +27,7 @@ def index(request):
             if first_image:
                 auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
             else:
-                auction.first_image_url = None  # Or set a default image URL if you prefer
+                auction.first_image_url = None
         return auction_list
 
     top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
@@ -42,7 +42,7 @@ def index(request):
         'top_three_products': top_three_products,
         'watch_cat_products': watch_cat_products,
     }
-    return render(request, "auctions/index.html", context)
+    return render(request, "index.html", context)
 
 
 def register(request):
@@ -53,12 +53,12 @@ def register(request):
             login(request, user)
             return redirect(reverse("index"))
         else:
-            return render(request, "auctions/register.html", {
+            return render(request, "register.html", {
                 "form": form
             })
     else:
         form = CustomUserCreationForm()
-        return render(request, "auctions/register.html", {
+        return render(request, "register.html", {
             "form": form
         })
 
@@ -74,11 +74,11 @@ def login_view(request):
     else:
         form = AuthenticationForm(request)
 
-    return render(request, "auctions/login.html", {"form": form})
+    return render(request, "login.html", {"form": form})
 
 
 def contact(request):
-    return render(request, "auctions/contact.html")
+    return render(request, "contact.html")
 
 
 def logout_view(request):
@@ -110,7 +110,7 @@ def auction_list(request):
             auction.first_image_url = None
 
     categories = Category.objects.all()
-    return render(request, "auctions/list.html", {
+    return render(request, "list.html", {
         'auctions': page_obj,
         'categories': categories,
         'selected_category': selected_category,
@@ -129,7 +129,7 @@ def auction_details(request, bidid):
     total_bids = Bids.objects.filter(listingid=bidid)
     total_bidders = Bids.objects.filter(listingid=bidid).values('user').annotate(total_bids=Count('user'))
 
-    return render(request, "auctions/details.html", {
+    return render(request, "details.html", {
         "list": biddesc,
         "image_urls": image_urls,
         "comments": Comments.objects.filter(listingid=bidid),
@@ -216,7 +216,7 @@ def create(request):
         messages.success(request, "Auction created successfully.")
         return redirect('create')
 
-    return render(request, "auctions/create.html", {'categories': Category.objects.all()})
+    return render(request, "create.html", {'categories': Category.objects.all()})
 
 
 @login_required(login_url='login')
@@ -239,7 +239,7 @@ def dashboard(request):
     if user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
-    return render(request, "auctions/dashboard.html", {
+    return render(request, "dashboard.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
@@ -256,7 +256,7 @@ def listingpage(request, bidid):
     total_bidders = Bids.objects.filter(listingid=bidid).values('user').annotate(
         total_bids=Count('user'))
 
-    return render(request, "auctions/details.html", {
+    return render(request, "details.html", {
         "list": biddesc,
         "comments": Comments.objects.filter(listingid=bidid),
         "present_bid": minbid(biddesc.starting_bid, bids_present),
@@ -267,7 +267,7 @@ def listingpage(request, bidid):
 def watchlistpage(request, username):
     # present_w = watchlist.objects.get(user = "username")
     list_ = Watchlist.objects.filter(user=username)
-    return render(request, "auctions/watchlist.html", {
+    return render(request, "watchlist.html", {
         "user_watchlist": list_,
     })
 
@@ -377,7 +377,7 @@ def winnings(request):
     except:
         your_win = None
 
-    return render(request, "auctions/winnings.html", {
+    return render(request, "winnings.html", {
         "user_winlist": your_win,
     })
 
@@ -403,7 +403,7 @@ def user_bid(request):
     if user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
-    return render(request, "auctions/my-bid.html", {
+    return render(request, "my-bid.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
@@ -425,7 +425,7 @@ def user_profile(request):
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
     }
-    return render(request, "auctions/profile.html", context)
+    return render(request, "profile.html", context)
 
 
 @login_required(login_url='login')
@@ -454,7 +454,7 @@ def user_win_bids(request):
     if hasattr(user, 'profile_picture') and user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
-    return render(request, "auctions/winning-bids.html", {
+    return render(request, "winning-bids.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
@@ -494,7 +494,7 @@ def myauction(request):
     page_obj = paginator.get_page(page_number)
     total_auctions = paginator.count
 
-    return render(request, "auctions/myauction.html", {
+    return render(request, "myauction.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
@@ -575,7 +575,7 @@ def update(request, auction_id):
     # Get existing images for the auction
     image_urls = [image.image_url.url for image in auction.images.all()]
 
-    return render(request, "auctions/update.html", {
+    return render(request, "update.html", {
         'auction': auction,
         'categories': Category.objects.all(),
         'image_urls': image_urls

@@ -11,7 +11,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -454,8 +453,8 @@
       </div>
     </footer>
 
-    <script src="{% static 'js/main.js' %}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
     <script>
       // Change Navbar Background on Scroll
       window.addEventListener("scroll", function () {
@@ -514,6 +513,43 @@
           }
         });
       }
+
+      // Function to update the countdown timers
+      function updateCountdown() {
+        const countdownDivs = document.querySelectorAll(".countdown-timer");
+        let firstExpiredFound = false;
+
+        countdownDivs.forEach((countdownDiv, index) => {
+          const expireDateStr = countdownDiv.getAttribute("data-expire-date");
+
+          // Specify the exact format that matches your date string
+          const endTime = moment.tz(
+            expireDateStr,
+            "MMM. D, YYYY, h a",
+            "Asia/Dhaka"
+          );
+          const now = moment();
+          const duration = moment.duration(endTime.diff(now));
+
+          if (duration.asMilliseconds() <= 0 && !firstExpiredFound) {
+            countdownDiv.innerHTML = "EXPIRED";
+            firstExpiredFound = true;
+          } else if (!firstExpiredFound) {
+            const days = Math.max(0, Math.floor(duration.asDays()));
+            const hours = Math.max(0, duration.hours());
+            const minutes = Math.max(0, duration.minutes());
+            const seconds = Math.max(0, duration.seconds());
+
+            countdownDiv.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          }
+        });
+      }
+
+      // Update the countdown every second
+      setInterval(updateCountdown, 1000);
+
+      // Initial call to display the timers immediately
+      updateCountdown();
     </script>
   </body>
 </html>
