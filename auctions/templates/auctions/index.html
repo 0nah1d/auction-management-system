@@ -7,11 +7,11 @@
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-semibold">Top auctions list</h2>
                 <a href="{% url 'auctionList' %}"
-                        class="bg-blue-500 text-white px-4 py-2 rounded"
+                   class="bg-blue-500 text-white px-4 py-2 rounded"
                 >View All</a
                 >
             </div>
-            <div class="flex flex-wrap justify-center items-center gap-6">
+            <div class="flex flex-wrap justify-center gap-6">
                 {% for top_three_p_list in top_three_products %}
                     <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]"
                     >
@@ -19,8 +19,8 @@
                         <div class="relative">
                             <a href="{% url 'auctionDetails' top_three_p_list.id %}">
                                 <img src="{{ top_three_p_list.first_image_url }}"
-                                        alt="{{ top_three_p_list.title }}"
-                                        class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                     alt="{{ top_three_p_list.title }}"
+                                     class="w-full h-48 object-cover object-center hover:scale-110 transition"
                                 />
                             </a>
                             <div
@@ -127,44 +127,65 @@
                     >View All</a
                     >
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex flex-wrap justify-center gap-6">
                     {% for watch_p_list in watch_cat_products %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]"
+                        >
+                            <!-- Image Section -->
+                            <div class="relative">
+                                <a href="{% url 'auctionDetails' watch_p_list.id %}">
+                                    <img src="{{ watch_p_list.first_image_url }}"
+                                         alt="{{ watch_p_list.title }}"
+                                         class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                    />
+                                </a>
+                                <div
+                                        class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
+                                >
+                                    <a href="#!" class="text-white font-bold">Bid Now</a>
+                                </div>
+                            </div>
+
+                            <!-- Card Content -->
                             <div class="p-4">
-                                <h6 class="text-lg font-medium text-gray-800 mb-4">
+                                <!-- Title -->
+                                <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
                                     <a
                                             href="{% url 'auctionDetails' watch_p_list.id %}"
-                                            class="block truncate"
+                                            class="hover:text-blue-600"
                                     >
                                         {{ watch_p_list.title }}
                                     </a>
                                 </h6>
-                                <div class="h-48 flex justify-center items-center bg-gray-200">
-                                    <a href="{% url 'auctionDetails' watch_p_list.id %}">
-                                        <img
-                                                src="{{ watch_p_list.first_image_url }}"
-                                                alt="{{ watch_p_list.title }}"
-                                                class="w-full h-full object-cover"
-                                        />
-                                    </a>
-                                </div>
-                                <div class="p-4">
-                                    <div class="flex justify-between text-sm text-gray-600 mb-2">
-                                        <p><a href="#!" class="text-blue-500">Buy Now</a></p>
-                                        <p class="line-through text-red-500">
-                                            ৳ {{ watch_p_list.buy_now_price }}
-                                        </p>
-                                    </div>
+
+                                <!-- Price and Bid Information -->
+                                <div class="mb-4">
                                     <div
-                                            class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-3"
+                                            class="flex justify-between items-center text-sm text-gray-600 mb-2"
+                                    >
+                                        <p class="text-blue-500 font-semibold">
+                                            Buy Now: ৳ {{ watch_p_list.buy_now_price }}
+                                        </p>
+                                        {% if watch_p_list.current_bid != 0 %}
+                                            <p class="line-through text-red-500">
+                                                ৳ {{ watch_p_list.current_bid }}
+                                            </p>
+                                        {% else %}
+                                            <p class="line-through text-red-500">
+                                                ৳ {{ watch_p_list.starting_bid }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div
+                                            class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
                                     >
                                         <h5>Current Bid</h5>
                                         <h5>
-                                            {% if watch_p_list.current_bid != 0 %} ৳ {{
-                                                    watch_p_list.current_bid }} {% else %} ৳ {{
-                                                    watch_p_list.starting_bid }} {% endif %}
+                                            ৳ {{ watch_p_list.current_bid|default:watch_p_list.starting_bid }}
                                         </h5>
                                     </div>
+
                                     <div
                                             class="flex justify-between items-center text-sm text-gray-600"
                                     >
