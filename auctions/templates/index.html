@@ -1,7 +1,7 @@
-{% extends "layout.html" %} 
-{% load static %} 
+{% extends "layout.html" %}
+{% load static %}
 {% block body %}
-{% include "banner.html" %}
+    {% include "banner.html" %}
 
     <!-- Top Auctions Section -->
     <section class="py-16 relative bg-gray-100">
@@ -15,20 +15,18 @@
             </div>
             <div class="flex flex-wrap justify-center gap-6">
                 {% for top_three_p_list in top_three_products %}
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]"
-                    >
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
                         <!-- Image Section -->
-                        <div class="relative">
+                        <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                             <a href="{% url 'auctionDetails' top_three_p_list.id %}">
                                 <img src="{{ top_three_p_list.first_image_url }}"
                                      alt="{{ top_three_p_list.title }}"
-                                     class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                     class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
                                 />
                             </a>
-                            <div
-                                    class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
-                            >
-                                <a href="#!" class="text-white font-bold">Bid Now</a>
+                            <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                <a href="{% url 'auctionDetails' top_three_p_list.id %}" class="text-white font-bold">Bid
+                                    Now</a>
                             </div>
                         </div>
 
@@ -111,11 +109,9 @@
             <div class="container mx-auto max-w-[1280px] w-full m-auto">
                 <div class="flex justify-between items-center mb-8">
                     <div class="flex items-center">
-                        <img
-                                src="{% static 'images/header-icons/watch.png' %}"
-                                alt="header-icons"
-                                class="h-12 mr-4"
-                        />
+                        <img src="{% static 'images/header-icons/watch.png' %}"
+                             alt="header-icons"
+                             class="h-12 mr-4"/>
                         <div>
                             <h2 class="text-3xl font-semibold">Watches</h2>
                             <p class="text-gray-600">
@@ -129,20 +125,19 @@
                 </div>
                 <div class="flex flex-wrap justify-center gap-6">
                     {% for watch_p_list in watch_cat_products %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]"
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]"
                         >
                             <!-- Image Section -->
-                            <div class="relative">
+                            <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                                 <a href="{% url 'auctionDetails' watch_p_list.id %}">
                                     <img src="{{ watch_p_list.first_image_url }}"
                                          alt="{{ watch_p_list.title }}"
-                                         class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                         class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
                                     />
                                 </a>
-                                <div
-                                        class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
-                                >
-                                    <a href="#!" class="text-white font-bold">Bid Now</a>
+                                <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                    <a href="{% url 'auctionDetails' watch_p_list.id %}"
+                                       class="text-white font-bold">Bid Now</a>
                                 </div>
                             </div>
 

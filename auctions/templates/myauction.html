@@ -79,24 +79,24 @@
                         <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
                             <h5 class="text-xl font-semibold mb-6">My Auctions List</h5>
                             {% if total_auctions > 0 %}
-                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="flex flex-wrap justify-center gap-6">
                                     {% for auction_p_list in auctions %}
-                                        <div class="bg-white shadow-lg rounded-lg overflow-hidden mx-auto w-[278px]">
+                                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
                                             <!-- Image Section -->
-                                            <div class="relative">
+                                            <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                                                 {% if auction_p_list.active_status %}
                                                     <a href="{% url 'auctionDetails' auction_p_list.id %}"
-                                                       class="block">
+                                                       class="block h-full">
                                                         <img src="{{ auction_p_list.image_url }}"
                                                              alt="{{ auction_p_list.title }}"
-                                                             class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                                             class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
                                                         />
                                                     </a>
                                                 {% else %}
                                                     <span class="block cursor-not-allowed opacity-50">
                                                         <img src="{{ auction_p_list.image_url }}"
                                                              alt="{{ auction_p_list.title }}"
-                                                             class="w-full h-48 object-cover object-center"
+                                                             class="w-auto h-full m-auto"
                                                         />
                                                     </span>
                                                 {% endif %}
@@ -220,9 +220,8 @@
                                     <ul class="flex space-x-2">
                                         {% for num in auctions.paginator.page_range %}
                                             <li>
-                                                <a
-                                                        href="?page={{ num }}"
-                                                        class="{% if num == auctions.number %}bg-blue-500 text-white{% else %}bg-gray-200 text-gray-700{% endif %} px-3 py-1 rounded"
+                                                <a  href="?page={{ num }}"
+                                                    class="{% if num == auctions.number %}bg-blue-500 text-white{% else %}bg-gray-200 text-gray-700{% endif %} px-3 py-1 rounded"
                                                 >
                                                     {{ num }}
                                                 </a>

@@ -292,6 +292,15 @@ def bid(request):
         messages.warning(request, "You cannot bid on your own auction.")
         return redirect("auctionDetails", list_id)
 
+    try:
+        winner = Winner.objects.get(bid_win_list=auction_listing)
+    except Winner.DoesNotExist:
+        winner = None
+
+    if winner:
+        messages.warning(request, "This auction has already been won, so you can no longer place a bid.")
+        return redirect("auctionDetails", list_id)
+
     # Get the current time in UTC
     current_time = now()
 
@@ -311,7 +320,7 @@ def bid(request):
     min_req_bid = minbid(startingbid, bids_present)
 
     if int(bid_amnt) > int(min_req_bid):
-        mybid = Bids(user=request.user.username, listingid=list_id, bid=bid_amnt)
+        mybid = Bids(user=request.user, listingid=list_id, bid=bid_amnt)
         mybid.save()
         auction_listing.current_bid = bid_amnt
         auction_listing.save()

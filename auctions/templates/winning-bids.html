@@ -25,6 +25,8 @@
                             <div class="flex flex-col items-center">
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
                                     <img class="object-cover w-full h-full" src="
+                                            
+                                            
                                             {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}">
                                 </div>
@@ -70,53 +72,80 @@
                     <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
                         <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
                             <h5 class="text-xl font-semibold mb-6">My Winning Bids</h5>
-                            <div class="flex flex-wrap gap-6">
-                                {% for auction_p_list in auctions %}
-                                    <div class="bg-gray-100 rounded-lg overflow-hidden shadow-md">
-                                        <a href="{% url 'auctionDetails' auction_p_list.id %}">
-                                            <div class="h-48 bg-gray-200 flex items-center justify-center overflow-hidden">
-                                                <img src="{{ auction_p_list.image_url }}"
-                                                     alt="{{ auction_p_list.title }}"
-                                                     class="object-cover w-full h-full">
+                            {% if auctions %}
+                                <div class="flex flex-wrap gap-6">
+                                    {% for auction_p_list in auctions %}
+                                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
+                                            <!-- Image Section -->
+                                            <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
+                                                <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                                    <img src="{{ auction_p_list.image_url }}"
+                                                         alt="{{ auction_p_list.title }}"
+                                                         class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
+                                                    />
+                                                </a>
+                                                <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                       class="text-white font-bold">Bid
+                                                        Now</a>
+                                                </div>
                                             </div>
+
+                                            <!-- Card Content -->
                                             <div class="p-4">
-                                                <h6 class="text-lg font-semibold truncate">{{ auction_p_list.title }}</h6>
-                                                <div class="flex justify-between items-center mt-2 mb-4">
-                                                    <p class="text-gray-600"><a href="#!" class="text-muted">Buy Now</a>
-                                                    </p>
-                                                    <p class="text-red-600"><s>৳ {{ auction_p_list.buy_now_price }}</s>
-                                                    </p>
-                                                </div>
-                                                <div class="flex justify-between items-center mb-3">
-                                                    <h5 class="text-lg font-bold">Current Bid</h5>
-                                                    <h5 class="text-dark">
+                                                <!-- Title -->
+                                                <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
+                                                    <a
+                                                            href="{% url 'auctionDetails' auction_p_list.id %}"
+                                                            class="hover:text-blue-600"
+                                                    >
+                                                        {{ auction_p_list.title }}
+                                                    </a>
+                                                </h6>
+
+                                                <!-- Price and Bid Information -->
+                                                <div class="mb-4">
+                                                    <div
+                                                            class="flex justify-between items-center text-sm text-gray-600 mb-2"
+                                                    >
+                                                        <p class="text-blue-500 font-semibold">
+                                                            Buy Now: ৳ {{ auction_p_list.buy_now_price }}
+                                                        </p>
                                                         {% if auction_p_list.current_bid != 0 %}
-                                                            ৳ {{ auction_p_list.current_bid }}
+                                                            <p class="line-through text-red-500">
+                                                                ৳ {{ auction_p_list.current_bid }}
+                                                            </p>
                                                         {% else %}
-                                                            ৳ {{ auction_p_list.starting_bid }}
+                                                            <p class="line-through text-red-500">
+                                                                ৳ {{ auction_p_list.starting_bid }}
+                                                            </p>
                                                         {% endif %}
-                                                    </h5>
-                                                </div>
-                                                <div class="flex justify-between items-center mb-2">
-                                                    <p class="text-gray-600">Bids: <span
-                                                            class="font-bold">{{ present_bid|default:"0" }}</span></p>
-                                                    <div class="countdown">
+                                                    </div>
+
+                                                    <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
+                                                        <h5>Current Bid</h5>
+                                                        <h5>
+                                                            ৳ {{ auction_p_list.current_bid|default:auction_p_list.starting_bid }}
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="flex justify-between items-center text-sm text-gray-600">
+                                                        <p>
+                                                            Bids:
+                                                            <span class="font-bold">{{ present_bid|default:"0" }}</span>
+                                                        </p>
                                                         <div class="countdown-timer"
-                                                             data-expire-date="{{ auction_p_list.expire_date }}"></div>
+                                                             data-expire-date="{{ auction_p_list.expire_date }}"
+                                                        ></div>
                                                     </div>
                                                 </div>
-                                                <div class="text-center">
-                                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
-                                                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">View</a>
-                                                </div>
                                             </div>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                                {% if not auction_p_list.length > 0 %}
-                                    <p class="w-full text-center text-gray-600">Not found</p>
-                                {% endif %}
-                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="w-full text-center text-gray-600">Not found</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

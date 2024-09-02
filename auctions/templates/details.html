@@ -1,5 +1,5 @@
-{% extends "layout.html" %} 
-{% load static %} 
+{% extends "layout.html" %}
+{% load static %}
 {% block body %}
     <!--============= Product Details Section Starts Here =============-->
     <style>
@@ -17,6 +17,22 @@
             z-index: 1000;
             transform: translate(-50%, -50%);
         }
+
+        /* Hide scrollbar for Chrome, Safari, and Opera */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        .scrollbar-hide {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Cursor styles */
+        #thumbnail-slider {
+            cursor: grab;
+        }
     </style>
 
     <section class="py-24 bg-gray-100">
@@ -30,27 +46,27 @@
                             <img src="{{ image_urls.0 }}"
                                  alt="Auction Image"
                                  id="mainImage"
-                                 class="w-full h-full object-cover object-center rounded-lg cursor-pointer"
+                                 class="w-auto h-full m-auto object-cover object-center cursor-pointer"
                                  onclick="toggleImage(this.src)"
                             />
                             <div class="magnify" id="magnify"></div>
                         {% endif %}
                     </div>
-                    <!-- Thumbnail Images -->
-                    <div class="flex flex-wrap gap-2 mt-4">
-                        {% for image_url in image_urls %}
-                            <div
-                                    class="w-24 h-24 overflow-hidden border border-gray-300 rounded cursor-pointer"
-                                    onclick="showImg(this.querySelector('img').src)"
-                            >
-                                <img
-                                        src="{{ image_url }}"
-                                        alt="Thumbnail Image"
-                                        class="w-full h-full object-cover transition-transform transform hover:scale-110"
-                                />
-                            </div>
-                        {% endfor %}
+
+                    <div class="relative flex items-center">
+                        <!-- Slider Container -->
+                        <div class="flex gap-2 mt-4 overflow-x-auto scroll-smooth scrollbar-hide" id="thumbnail-slider">
+                            {% for image_url in image_urls %}
+                                <div class="w-16 h-16 flex-shrink-0 overflow-hidden border border-gray-300 rounded cursor-pointer snap-center"
+                                     onclick="showImg(this.querySelector('img').src)">
+                                    <img src="{{ image_url }}"
+                                         alt="Thumbnail Image"
+                                         class="w-full h-full object-cover transition-transform transform hover:scale-110"/>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
+
                 </div>
 
                 <!-- Product Details -->
@@ -103,7 +119,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-white shadow rounded-lg p-4 col-span-1">
                             <a
                                     href="#0"
@@ -244,5 +260,66 @@
         mainImage.addEventListener("mouseleave", function () {
             magnify.style.display = "none";
         });
+
+
+        const slider = document.getElementById('thumbnail-slider');
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        // Handle mouse down event to start dragging
+        slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+            slider.style.cursor = 'grabbing';
+        });
+
+        // Handle mouse leave and up events to stop dragging
+        slider.addEventListener('mouseleave', () => {
+            isDragging = false;
+            slider.style.cursor = 'grab';
+        });
+        slider.addEventListener('mouseup', () => {
+            isDragging = false;
+            slider.style.cursor = 'grab';
+        });
+
+        // Handle mouse move event to perform dragging
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Adjust the multiplier for sensitivity
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // Handle touch events for mobile support
+        slider.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        slider.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Adjust the multiplier for sensitivity
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // Handle mouse wheel event for smooth scrolling
+        slider.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            slider.scrollBy({
+                left: e.deltaY,
+                behavior: 'smooth'
+            });
+        });
+
     </script>
 {% endblock %}

@@ -10,12 +10,10 @@
                     <div class="text-gray-700 font-medium">Category:</div>
                     <form id="filterForm" method="get" action="/auctions">
                         <div class="relative">
-                            <select
-                                    name="filter-by"
+                            <select name="filter-by"
                                     id="filterCat"
                                     class="border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500 w-full appearance-none"
-                                    onchange="document.getElementById('filterForm').submit();"
-                            >
+                                    onchange="document.getElementById('filterForm').submit();">
                                 <option value="all" {% if selected_category == 'all' %} selected {% endif %}>All
                                 </option>
                                 {% for cat in categories %}
@@ -45,20 +43,18 @@
             {% if total_auctions > 0 %}
                 <div class="flex flex-wrap justify-center gap-6">
                     {% for auction_p_list in auctions %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[278px]">
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
                             <!-- Image Section -->
-                            <div class="relative">
+                            <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                                 <a href="{% url 'auctionDetails' auction_p_list.id %}">
-                                    <img
-                                            src="{{ auction_p_list.first_image_url }}"
-                                            alt="{{ auction_p_list.title }}"
-                                            class="w-full h-48 object-cover object-center hover:scale-110 transition"
+                                    <img src="{{ auction_p_list.first_image_url }}"
+                                         alt="{{ auction_p_list.title }}"
+                                         class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
                                     />
                                 </a>
-                                <div
-                                        class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded"
-                                >
-                                    <a href="#!" class="text-white font-bold">Bid Now</a>
+                                <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                       class="text-white font-bold">Bid Now</a>
                                 </div>
                             </div>
 

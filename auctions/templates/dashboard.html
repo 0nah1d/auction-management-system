@@ -23,7 +23,8 @@
                         <div class="bg-white shadow-lg rounded-lg p-4 sticky top-20">
                             <div class="flex flex-col items-center">
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
-                                    <img class="object-cover w-full h-full" src="
+                                    <img class="object-cover w-full h-full" src=" 
+                                            
                                             
                                             
                                             {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
@@ -105,34 +106,36 @@
 
                         <!-- Auctions Table -->
                         <div class="bg-white shadow-lg rounded-lg p-6">
-                            <table class="w-full border-collapse">
-                                <thead class="bg-gray-100 text-gray-600">
-                                <tr>
-                                    <th class="py-2 px-4 border-b">Item</th>
-                                    <th class="py-2 px-4 border-b">Bid Price</th>
-                                    <th class="py-2 px-4 border-b">Highest Bid</th>
-                                    <th class="py-2 px-4 border-b">Lowest Bid</th>
-                                    <th class="py-2 px-4 border-b">Expires</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for a_list in auctions %}
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-2 px-4" title="{{ a_list.title }}" data-purchase="item">
-                                            {{ a_list.title|truncatewords:2 }}{% if a_list.title.split|length > 2 %}
-                                                ...{% endif %}
-                                        </td>
-                                        <td class="py-2 px-4" data-purchase="bid price">${{ a_list.starting_bid }}</td>
-                                        <td class="py-2 px-4" data-purchase="highest bid">
-                                            ${{ a_list.highest_bid_price.bid__max }}</td>
-                                        <td class="py-2 px-4" data-purchase="lowest bid">
-                                            ${{ a_list.lowest_bid_price.bid__min }}</td>
-                                        <td class="py-2 px-4" data-purchase="expires">{{ a_list.expire_date }}</td>
+                            {% if auctions %}
+                                <table class="w-full border-collapse">
+                                    <thead class="bg-gray-100 text-gray-600">
+                                    <tr>
+                                        <th class="py-2 px-4 border-b">Item</th>
+                                        <th class="py-2 px-4 border-b">Bid Price</th>
+                                        <th class="py-2 px-4 border-b">Highest Bid</th>
+                                        <th class="py-2 px-4 border-b">Lowest Bid</th>
+                                        <th class="py-2 px-4 border-b">Expires</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            {% if not auctions.length > 0 %}
+                                    </thead>
+                                    <tbody>
+                                    {% for a_list in auctions %}
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="py-2 px-4" title="{{ a_list.title }}" data-purchase="item">
+                                                {{ a_list.title|truncatewords:2 }}{% if a_list.title.split|length > 2 %}
+                                                    ...{% endif %}
+                                            </td>
+                                            <td class="py-2 px-4" data-purchase="bid price">
+                                                ${{ a_list.starting_bid }}</td>
+                                            <td class="py-2 px-4" data-purchase="highest bid">
+                                                ${{ a_list.highest_bid_price.bid__max }}</td>
+                                            <td class="py-2 px-4" data-purchase="lowest bid">
+                                                ${{ a_list.lowest_bid_price.bid__min }}</td>
+                                            <td class="py-2 px-4" data-purchase="expires">{{ a_list.expire_date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
                                 <p class="mt-10 w-full text-center text-gray-600">Not found</p>
                             {% endif %}
                         </div>
