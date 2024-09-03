@@ -13,7 +13,7 @@ class auction(admin.ModelAdmin):
         AuctionCategoryAdmin,
     ]
     list_display = (
-    "id", "user", "active_bool", "title", "display_categories", "short_desc", "starting_bid", "buy_now_price")
+    "id", "user", "active_bool", "title", "display_categories", "starting_bid", "buy_now_price")
 
     def display_categories(self, obj):
         return ", ".join([category.title for category in obj.categories.all()])

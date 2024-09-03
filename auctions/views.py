@@ -117,6 +117,13 @@ def auction_list(request):
         'total_auctions': total_auctions
     })
 
+# this function returns minimum bid required to place a user's bid
+def minbid(min_bid, present_bid):
+    for bids_list in present_bid:
+        if min_bid < int(bids_list.bid):
+            min_bid = int(bids_list.bid)
+    return min_bid
+
 
 def auction_details(request, bidid):
     biddesc = get_object_or_404(AuctionList, pk=bidid, active_bool=True)
@@ -249,37 +256,6 @@ def dashboard(request):
     })
 
 
-def listingpage(request, bidid):
-    biddesc = AuctionList.objects.get(pk=bidid, active_bool=True)
-    bids_present = Bids.objects.filter(listingid=bidid)
-    total_bids = Bids.objects.filter(listingid=bidid)
-    total_bidders = Bids.objects.filter(listingid=bidid).values('user').annotate(
-        total_bids=Count('user'))
-
-    return render(request, "details.html", {
-        "list": biddesc,
-        "comments": Comments.objects.filter(listingid=bidid),
-        "present_bid": minbid(biddesc.starting_bid, bids_present),
-    })
-
-
-@login_required(login_url='login')
-def watchlistpage(request, username):
-    # present_w = watchlist.objects.get(user = "username")
-    list_ = Watchlist.objects.filter(user=username)
-    return render(request, "watchlist.html", {
-        "user_watchlist": list_,
-    })
-
-
-# this function returns minimum bid required to place a user's bid
-def minbid(min_bid, present_bid):
-    for bids_list in present_bid:
-        if min_bid < int(bids_list.bid):
-            min_bid = int(bids_list.bid)
-    return min_bid
-
-
 @login_required(login_url='login')
 def bid(request):
     bid_amnt = request.GET["bid_amnt"]
@@ -330,16 +306,6 @@ def bid(request):
     messages.warning(request, f"Sorry, {bid_amnt} is less. It should be more than {min_req_bid}$.")
     return redirect("auctionDetails", list_id)
 
-
-# shows comments made by different user and allows to add comments
-@login_required(login_url='login')
-def allcomments(request):
-    comment = request.GET["comment"]
-    username = request.user.username
-    list_id = request.GET["listid"]
-    new_comment = Comments(user=username, comment=comment, listingid=list_id)
-    new_comment.save()
-    return listingpage(request, list_id)
 
 
 # shows message abt winner when bid is closed

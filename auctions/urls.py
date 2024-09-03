@@ -24,12 +24,8 @@ urlpatterns = [
     path('user/auction', views.myauction, name="myAuction"),
     path("contact", views.contact, name="contact"),
     path("dashboard", views.dashboard, name="userDashboard"),
-
-    path("watchlist/<str:username>", views.watchlistpage, name="watchlistpage"),
     path("bidlist", views.bid, name="bid"),
-    path("comments", views.allcomments, name="allcomments"),
     path("win_ner", views.win_ner, name="win_ner"),
-    path("winnings", views.winnings, name="winnings"),
 ]
 
 if settings.DEBUG:

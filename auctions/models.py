@@ -23,7 +23,6 @@ class User(AbstractUser):
 class AuctionList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=64)
-    short_desc = models.TextField(default=None, blank=True, null=True)
     desc = tinymce_models.HTMLField()
     starting_bid = models.IntegerField()
     current_bid = models.IntegerField(default=0)
@@ -32,6 +31,12 @@ class AuctionList(models.Model):
     expire_date = models.DateTimeField(blank=False, null=True)
     categories = models.ManyToManyField('Category', through='AuctionCategory')
     active_bool = models.BooleanField(default=True)
+
+    def get_images(self):
+        return self.images.all()
+    
+    def __str__(self):
+        return f"{self.title}"
 
 
 class AuctionImage(models.Model):
@@ -48,17 +53,6 @@ class Bids(models.Model):
     bid = models.IntegerField()
 
 
-class Comments(models.Model):
-    user = models.CharField(max_length=64)
-    comment = models.TextField()
-    listingid = models.IntegerField()
-
-
-class Watchlist(models.Model):
-    watch_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
-    user = models.CharField(max_length=64)
-
-
 class Winner(models.Model):
     bid_win_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -73,6 +67,18 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+class Comments(models.Model):
+    user = models.CharField(max_length=64)
+    comment = models.TextField()
+    listingid = models.IntegerField()
+
+
+class Watchlist(models.Model):
+    watch_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
+    user = models.CharField(max_length=64)
 
 
 class AuctionCategory(models.Model):
