@@ -36,7 +36,7 @@ class AuctionList(models.Model):
         return self.images.all()
     
     def __str__(self):
-        return f"{self.title}"
+        return f"Auction id {self.pk}"
 
 
 class AuctionImage(models.Model):
@@ -44,7 +44,7 @@ class AuctionImage(models.Model):
     image_url = models.ImageField(upload_to='auction_image')
 
     def __str__(self):
-        return f"Image for {self.auction.title}"
+        return f"Image for auction id {self.auction.pk}"
 
 
 class Bids(models.Model):
@@ -52,13 +52,16 @@ class Bids(models.Model):
     listingid = models.IntegerField()
     bid = models.IntegerField()
 
+    def __str__(self):
+        return f"{self.user.username} bids {self.listingid}"
+
 
 class Winner(models.Model):
     bid_win_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user.username} won {self.bid_win_list.title}"
+        return f"{self.user.username} won {self.bid_win_list.pk}"
 
 
 class Category(models.Model):
@@ -76,11 +79,9 @@ class Comments(models.Model):
     listingid = models.IntegerField()
 
 
-class Watchlist(models.Model):
-    watch_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
-    user = models.CharField(max_length=64)
-
-
 class AuctionCategory(models.Model):
     auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.auction.pk}  {self.category.title}"
