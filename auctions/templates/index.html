@@ -50,9 +50,9 @@
                                     <p class="text-blue-500 font-semibold">
                                         Buy Now: ৳ {{ top_three_p_list.buy_now_price }}
                                     </p>
-                                    {% if top_three_p_list.current_bid != 0 %}
+                                    {% if top_three_p_list.highest_bid != 0 %}
                                         <p class="line-through text-red-500">
-                                            ৳ {{ top_three_p_list.current_bid }}
+                                            ৳ {{ top_three_p_list.highest_bid }}
                                         </p>
                                     {% else %}
                                         <p class="line-through text-red-500">
@@ -66,7 +66,7 @@
                                 >
                                     <h5>Current Bid</h5>
                                     <h5>
-                                        ৳ {{ top_three_p_list.current_bid|default:top_three_p_list.starting_bid }}
+                                        ৳ {{ top_three_p_list.highest_bid|default:top_three_p_list.starting_bid }}
                                     </h5>
                                 </div>
 
@@ -161,9 +161,9 @@
                                         <p class="text-blue-500 font-semibold">
                                             Buy Now: ৳ {{ watch_p_list.buy_now_price }}
                                         </p>
-                                        {% if watch_p_list.current_bid != 0 %}
+                                        {% if watch_p_list.highest_bid %}
                                             <p class="line-through text-red-500">
-                                                ৳ {{ watch_p_list.current_bid }}
+                                                ৳ {{ watch_p_list.highest_bid }}
                                             </p>
                                         {% else %}
                                             <p class="line-through text-red-500">
@@ -177,7 +177,7 @@
                                     >
                                         <h5>Current Bid</h5>
                                         <h5>
-                                            ৳ {{ watch_p_list.current_bid|default:watch_p_list.starting_bid }}
+                                            ৳ {{ watch_p_list.highest_bid|default:watch_p_list.starting_bid }}
                                         </h5>
                                     </div>
 

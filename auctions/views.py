@@ -10,7 +10,7 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
@@ -21,21 +21,26 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
-    def add_full_image_url(auction_list):
+    def add_full_image_url_and_highest_bid(auction_list):
         for auction in auction_list:
+            # Get the first image URL
             first_image = AuctionImage.objects.filter(auction=auction).first()
             if first_image:
                 auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
             else:
                 auction.first_image_url = None
+            
+            # Get the highest bid
+            auction.highest_bid = auction.get_highest_bid()
+        
         return auction_list
 
     top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
     watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
 
-    # Add first image URL to each auction
-    top_three_products = add_full_image_url(top_three_products)
-    watch_cat_products = add_full_image_url(watch_cat_products)
+    # Add first image URL and highest bid to each auction
+    top_three_products = add_full_image_url_and_highest_bid(top_three_products)
+    watch_cat_products = add_full_image_url_and_highest_bid(watch_cat_products)
 
     context = {
         'header_bg': True,
@@ -91,11 +96,16 @@ def auction_list(request):
     selected_category = request.GET.get('filter-by', 'all')
 
     auctions = AuctionList.objects.filter(active_bool=True)
+
     if search_query:
         auctions = auctions.filter(Q(title__icontains=search_query))
 
     if selected_category != 'all':
         auctions = auctions.filter(categories__title=selected_category)
+
+    auctions = auctions.prefetch_related(
+        Prefetch('images', queryset=AuctionImage.objects.order_by('id'))
+    )
 
     paginator = Paginator(auctions, 10)
     page_number = request.GET.get("page")
@@ -103,11 +113,13 @@ def auction_list(request):
     total_auctions = paginator.count
 
     for auction in page_obj:
-        first_image = AuctionImage.objects.filter(auction=auction).first()
+        first_image = auction.images.first()
         if first_image:
             auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
         else:
             auction.first_image_url = None
+
+        auction.highest_bid = auction.get_highest_bid()
 
     categories = Category.objects.all()
     return render(request, "list.html", {
@@ -116,8 +128,8 @@ def auction_list(request):
         'selected_category': selected_category,
         'total_auctions': total_auctions
     })
+    
 
-# this function returns minimum bid required to place a user's bid
 def minbid(min_bid, present_bid):
     for bids_list in present_bid:
         if min_bid < int(bids_list.bid):
@@ -126,25 +138,33 @@ def minbid(min_bid, present_bid):
 
 
 def auction_details(request, bidid):
+    # Fetch the auction listing
     biddesc = get_object_or_404(AuctionList, pk=bidid, active_bool=True)
 
+    # Fetch associated images
     images = AuctionImage.objects.filter(auction=biddesc)
-
     image_urls = [request.build_absolute_uri(image.image_url.url) for image in images if image.image_url]
 
-    bids_present = Bids.objects.filter(listingid=bidid)
-    total_bids = Bids.objects.filter(listingid=bidid)
-    total_bidders = Bids.objects.filter(listingid=bidid).values('user').annotate(total_bids=Count('user'))
+    # Fetch bids and related information
+    bids_present = Bids.objects.filter(auction=biddesc)
+    total_bids = bids_present.count()
+    total_bidders = Bids.objects.filter(auction=biddesc).values('user').annotate(total_bids=Count('user')).count()
 
-    return render(request, "details.html", {
+    # Get the highest bid
+    highest_bid = biddesc.get_highest_bid()
+
+    context = {
         "list": biddesc,
         "image_urls": image_urls,
-        "comments": Comments.objects.filter(listingid=bidid),
+        "comments": Comments.objects.filter(listing=biddesc),
         "present_bid": minbid(biddesc.starting_bid, bids_present),
-        "total_bids": len(total_bids),
-        "total_bidders": len(total_bidders),
+        "total_bids": total_bids,
+        "total_bidders": total_bidders,
+        "highest_bid": highest_bid,  # Add highest bid to context
         "is_owner": biddesc.user == request.user
-    })
+    }
+
+    return render(request, "details.html", context)
 
 
 @login_required
@@ -228,14 +248,17 @@ def create(request):
 
 @login_required(login_url='login')
 def dashboard(request):
+    # Fetch the user's bids and auctions they have bid on
     userBids = Bids.objects.filter(user=request.user)
-    user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
-    your_win = Winner.objects.filter(user=request.user.pk)
+    auction_ids = userBids.values_list('auction_id', flat=True)  # Get IDs of auctions
+    user_auctions = AuctionList.objects.filter(id__in=auction_ids)
+    your_win = Winner.objects.filter(user=request.user)
 
     # Get highest and lowest bid prices for each auction
     for auction in user_auctions:
-        highest_bid = Bids.objects.filter(listingid=auction.id).aggregate(Max('bid'))
-        lowest_bid = Bids.objects.filter(listingid=auction.id).aggregate(Min('bid'))
+        # Aggregate the highest and lowest bids
+        highest_bid = Bids.objects.filter(auction=auction).aggregate(Max('bid'))['bid__max']
+        lowest_bid = Bids.objects.filter(auction=auction).aggregate(Min('bid'))['bid__min']
 
         auction.highest_bid_price = highest_bid if highest_bid is not None else 0
         auction.lowest_bid_price = lowest_bid if lowest_bid is not None else 0
@@ -259,10 +282,15 @@ def dashboard(request):
 @login_required(login_url='login')
 def bid(request):
     bid_amnt = request.GET["bid_amnt"]
-    list_id = request.GET["list_d"]
+    list_id = request.GET["list_id"]
+
+    if not bid_amnt or not list_id:
+        messages.error(request, "Bid amount or listing ID is missing.")
+        return redirect("auctionDetails", list_id) 
+        
 
     # Fetch the auction listing
-    auction_listing = AuctionList.objects.get(pk=list_id)
+    auction_listing = get_object_or_404(AuctionList, pk=list_id)
 
     if auction_listing.user == request.user:
         messages.warning(request, "You cannot bid on your own auction.")
@@ -291,21 +319,18 @@ def bid(request):
         return redirect("auctionDetails", list_id)
 
     # Proceed with bid validation
-    bids_present = Bids.objects.filter(listingid=list_id)
-    startingbid = auction_listing.starting_bid
-    min_req_bid = minbid(startingbid, bids_present)
+    bids_present = Bids.objects.filter(auction=auction_listing)
+    starting_bid = auction_listing.starting_bid
+    min_req_bid = minbid(starting_bid, bids_present)  # Assuming `minbid` is a custom function you have implemented
 
     if int(bid_amnt) > int(min_req_bid):
-        mybid = Bids(user=request.user, listingid=list_id, bid=bid_amnt)
+        mybid = Bids(user=request.user, auction=auction_listing, bid=bid_amnt)
         mybid.save()
-        auction_listing.current_bid = bid_amnt
-        auction_listing.save()
         messages.success(request, "Bid placed successfully.")
         return redirect("auctionDetails", list_id)
 
     messages.warning(request, f"Sorry, {bid_amnt} is less. It should be more than {min_req_bid}$.")
     return redirect("auctionDetails", list_id)
-
 
 
 # shows message abt winner when bid is closed
@@ -361,19 +386,25 @@ def winnings(request):
 def user_bid(request):
     userBids = Bids.objects.filter(user=request.user)
 
-    user_auctions = AuctionList.objects.filter(id__in=[bid.listingid for bid in userBids])
+    user_auctions = AuctionList.objects.filter(id__in=[bid.auction_id for bid in userBids])
 
     for auction in user_auctions:
+        # Fetch the first image URL for the auction
         first_image = AuctionImage.objects.filter(auction=auction).first()
         if first_image:
             auction.image_url = request.build_absolute_uri(first_image.image_url.url)
         else:
             auction.image_url = None
 
-        auction.total_bids = Bids.objects.filter(listingid=auction.id).count()
+        # Add total bids count
+        auction.total_bids = Bids.objects.filter(auction=auction).count()
+
+        # Add the highest bid
+        auction.highest_bid = auction.get_highest_bid()
 
     user = request.user
 
+    # Get profile picture URL
     profile_picture_url = None
     if user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
@@ -382,7 +413,7 @@ def user_bid(request):
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
-        "userBids": user_auctions
+        'userBids': user_auctions
     })
 
 
@@ -418,7 +449,7 @@ def user_win_bids(request):
             'id': auction.id,
             'title': auction.title,
             'starting_bid': auction.starting_bid,
-            'current_bid': auction.current_bid,
+            'highest_bid': auction.get_highest_bid(),
             'buy_now_price': auction.buy_now_price,
             'expire_date': auction.expire_date,
             'image_url': image_url
@@ -439,8 +470,10 @@ def user_win_bids(request):
 
 @login_required(login_url='login')
 def myauction(request):
+    # Fetch auctions for the current user
     auctions = AuctionList.objects.filter(user=request.user)
 
+    # Prepare auction data
     auction_list = []
     for auction in auctions:
         first_image = AuctionImage.objects.filter(auction=auction).first()
@@ -450,7 +483,7 @@ def myauction(request):
             'id': auction.id,
             'title': auction.title,
             'starting_bid': auction.starting_bid,
-            'current_bid': auction.current_bid,
+            'highest_bid': auction.get_highest_bid(),
             'buy_now_price': auction.buy_now_price,
             'bid_watch_list': auction.bid_watch_list,
             'expire_date': auction.expire_date,
@@ -458,9 +491,10 @@ def myauction(request):
             'active_status': auction.active_bool
         })
 
+    # Get user profile picture URL
     user = request.user
     profile_picture_url = None
-    if hasattr(user, 'profile_picture') and user.profile_picture:
+    if user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
     # Pagination
@@ -469,6 +503,7 @@ def myauction(request):
     page_obj = paginator.get_page(page_number)
     total_auctions = paginator.count
 
+    # Render the template
     return render(request, "myauction.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
@@ -476,7 +511,6 @@ def myauction(request):
         'auctions': page_obj,
         'total_auctions': total_auctions
     })
-
 
 @login_required(login_url='login')
 def delete_auction(request, auction_id):

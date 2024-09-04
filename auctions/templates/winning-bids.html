@@ -111,9 +111,9 @@
                                                         <p class="text-blue-500 font-semibold">
                                                             Buy Now: ৳ {{ auction_p_list.buy_now_price }}
                                                         </p>
-                                                        {% if auction_p_list.current_bid != 0 %}
+                                                        {% if auction_p_list.highest_bid != 0 %}
                                                             <p class="line-through text-red-500">
-                                                                ৳ {{ auction_p_list.current_bid }}
+                                                                ৳ {{ auction_p_list.highest_bid }}
                                                             </p>
                                                         {% else %}
                                                             <p class="line-through text-red-500">
@@ -125,7 +125,7 @@
                                                     <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
                                                         <h5>Current Bid</h5>
                                                         <h5>
-                                                            ৳ {{ auction_p_list.current_bid|default:auction_p_list.starting_bid }}
+                                                            ৳ {{ auction_p_list.highest_bid|default:auction_p_list.starting_bid }}
                                                         </h5>
                                                     </div>
 

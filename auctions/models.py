@@ -25,7 +25,6 @@ class AuctionList(models.Model):
     title = models.CharField(max_length=64)
     desc = tinymce_models.HTMLField()
     starting_bid = models.IntegerField()
-    current_bid = models.IntegerField(default=0)
     buy_now_price = models.IntegerField(default=0)
     bid_watch_list = models.IntegerField(default=0)
     expire_date = models.DateTimeField(blank=False, null=True)
@@ -34,7 +33,11 @@ class AuctionList(models.Model):
 
     def get_images(self):
         return self.images.all()
-    
+
+    def get_highest_bid(self):
+        highest_bid = self.bids.order_by('-bid').first()
+        return highest_bid.bid if highest_bid else self.starting_bid
+
     def __str__(self):
         return f"Auction id {self.pk}"
 
@@ -49,11 +52,12 @@ class AuctionImage(models.Model):
 
 class Bids(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listingid = models.IntegerField()
+    auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE, related_name='bids')
     bid = models.IntegerField()
 
     def __str__(self):
-        return f"{self.user.username} bids {self.listingid}"
+        return f"{self.user.username} bids on {self.auction.title}"
+
 
 
 class Winner(models.Model):
@@ -71,17 +75,18 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
-
-
-class Comments(models.Model):
-    user = models.CharField(max_length=64)
-    comment = models.TextField()
-    listingid = models.IntegerField()
-
-
 class AuctionCategory(models.Model):
     auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.auction.pk}  {self.category.title}"
+    
+
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    listing = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
+    comment = models.TextField()
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.listing.title}"
