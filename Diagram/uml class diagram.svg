@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1488 813">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2, .cls-4, .cls-5 {
+        stroke: #595959;
+      }
+
+      .cls-1, .cls-3, .cls-5 {
+        stroke-miterlimit: 4;
+        stroke-width: 1px;
+      }
+
+      .cls-6 {
+        font-family: TimesNewRomanPSMT, 'Times New Roman';
+        font-size: 14px;
+        isolation: isolate;
+      }
+
+      .cls-6, .cls-4 {
+        fill: #000;
+      }
+
+      .cls-2, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        stroke: #000;
+      }
+
+      .cls-5 {
+        fill: #595959;
+      }
+    </style>
+  </defs>
+  <g id="node1">
+    <polygon class="cls-3" points="385 320.4 385 229.2 544 229.2 544 320.4 385 320.4"/>
+    <text class="cls-6" transform="translate(393 245.8)"><tspan x="0" y="0">auctions_auctioncategory</tspan></text>
+    <line class="cls-3" x1="385" y1="254" x2="544" y2="254"/>
+    <text class="cls-6" transform="translate(393 270.6)"><tspan x="0" y="0">auction_id : integer</tspan></text>
+    <text class="cls-6" transform="translate(393 287.4)"><tspan x="0" y="0">category_id : integer</tspan></text>
+    <line class="cls-3" x1="385" y1="295.6" x2="544" y2="295.6"/>
+    <text class="cls-6" transform="translate(393 312.2)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="node3">
+    <polygon class="cls-3" points="858.6 416.8 858.6 224.8 1014.9 224.8 1014.9 416.8 858.6 416.8"/>
+    <text class="cls-6" transform="translate(880.8 241.4)"><tspan x="0" y="0">auctions_auctionlist</tspan></text>
+    <line class="cls-3" x1="858.6" y1="249.6" x2="1014.9" y2="249.6"/>
+    <text class="cls-6" transform="translate(866.6 266.2)"><tspan x="0" y="0">title : varchar(64)</tspan></text>
+    <text class="cls-6" transform="translate(866.6 283)"><tspan x="0" y="0">desc : text</tspan></text>
+    <text class="cls-6" transform="translate(866.6 299.8)"><tspan x="0" y="0">starting_bid : integer</tspan></text>
+    <text class="cls-6" transform="translate(866.6 316.6)"><tspan x="0" y="0">buy_now_price : integer</tspan></text>
+    <text class="cls-6" transform="translate(866.6 333.4)"><tspan x="0" y="0">bid_watch_list : integer</tspan></text>
+    <text class="cls-6" transform="translate(866.6 350.2)"><tspan x="0" y="0">expire_date : datetime</tspan></text>
+    <text class="cls-6" transform="translate(866.6 367)"><tspan x="0" y="0">active_bool : bool</tspan></text>
+    <text class="cls-6" transform="translate(866.6 383.8)"><tspan x="0" y="0">user_id : integer</tspan></text>
+    <line class="cls-3" x1="858.6" y1="392" x2="1014.9" y2="392"/>
+    <text class="cls-6" transform="translate(866.6 408.6)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge1">
+    <path class="cls-1" d="M544,276.3h0s302.2,0,302.2,0"/>
+    <polygon class="cls-5" points="846.2 272.8 856.2 276.3 846.2 279.8 846.2 272.8"/>
+    <text class="cls-6" transform="translate(644.1 290.4)"><tspan x="0" y="0">auction_id:id</tspan></text>
+  </g>
+  <g id="node5">
+    <polygon class="cls-3" points="388.5 530.2 388.5 439 507.5 439 507.5 530.2 388.5 530.2"/>
+    <text class="cls-6" transform="translate(397.1 455.6)"><tspan x="0" y="0">auctions_category</tspan></text>
+    <line class="cls-3" x1="388.5" y1="463.8" x2="507.5" y2="463.8"/>
+    <text class="cls-6" transform="translate(396.5 480.4)"><tspan x="0" y="0">title : varchar(64)</tspan></text>
+    <text class="cls-6" transform="translate(396.5 497.2)"><tspan x="0" y="0">slug : varchar(64)</tspan></text>
+    <line class="cls-3" x1="388.5" y1="505.4" x2="507.5" y2="505.4"/>
+    <text class="cls-6" transform="translate(396.5 522)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge2">
+    <path class="cls-1" d="M448,319.2v106.6"/>
+    <polygon class="cls-5" points="451.5 425.8 448 435.8 444.5 425.8 451.5 425.8"/>
+    <text class="cls-6" transform="translate(402.2 366)"><tspan x="0" y="0">category_id:id</tspan></text>
+  </g>
+  <g id="node2">
+    <polygon class="cls-3" points="836.8 158.2 836.8 67 992.7 67 992.7 158.2 836.8 158.2"/>
+    <text class="cls-6" transform="translate(850.3 83.6)"><tspan x="0" y="0">auctions_auctionimage</tspan></text>
+    <line class="cls-3" x1="836.8" y1="91.8" x2="992.7" y2="91.8"/>
+    <text class="cls-6" transform="translate(844.8 108.4)"><tspan x="0" y="0">image_url : varchar(100)</tspan></text>
+    <text class="cls-6" transform="translate(844.8 125.2)"><tspan x="0" y="0">auction_id : integer</tspan></text>
+    <line class="cls-3" x1="836.8" y1="133.4" x2="992.7" y2="133.4"/>
+    <text class="cls-6" transform="translate(844.8 150)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge3">
+    <path class="cls-1" d="M890.8,158.2v56.1"/>
+    <polygon class="cls-5" points="894.3 214.3 890.8 224.3 887.3 214.3 894.3 214.3"/>
+    <text class="cls-6" transform="translate(846.2 196.7)"><tspan x="0" y="0">auction_id:id</tspan></text>
+  </g>
+  <g id="node7">
+    <polygon class="cls-3" points="843.9 712.9 843.9 470.5 1029.7 470.5 1029.7 712.9 843.9 712.9"/>
+    <text class="cls-6" transform="translate(898.3 487.1)"><tspan x="0" y="0">auctions_user</tspan></text>
+    <line class="cls-3" x1="843.9" y1="495.3" x2="1029.7" y2="495.3"/>
+    <text class="cls-6" transform="translate(851.9 511.9)"><tspan x="0" y="0">password : varchar(128)</tspan></text>
+    <text class="cls-6" transform="translate(851.9 528.7)"><tspan x="0" y="0">last_login : datetime</tspan></text>
+    <text class="cls-6" transform="translate(851.9 545.5)"><tspan x="0" y="0">is_superuser : bool</tspan></text>
+    <text class="cls-6" transform="translate(851.9 562.3)"><tspan x="0" y="0">username : varchar(150)</tspan></text>
+    <text class="cls-6" transform="translate(851.9 579.1)"><tspan x="0" y="0">first_name : varchar(150)</tspan></text>
+    <text class="cls-6" transform="translate(851.9 595.9)"><tspan x="0" y="0">last_name : varchar(150)</tspan></text>
+    <text class="cls-6" transform="translate(851.9 612.7)"><tspan x="0" y="0">is_staff : bool</tspan></text>
+    <text class="cls-6" transform="translate(851.9 629.5)"><tspan x="0" y="0">is_active : bool</tspan></text>
+    <text class="cls-6" transform="translate(851.9 646.3)"><tspan x="0" y="0">date_joined : datetime</tspan></text>
+    <text class="cls-6" transform="translate(851.9 663.1)"><tspan x="0" y="0">profile_picture : varchar(100)</tspan></text>
+    <text class="cls-6" transform="translate(851.9 679.9)"><tspan x="0" y="0">email : varchar(254)</tspan></text>
+    <line class="cls-3" x1="843.9" y1="688.1" x2="1029.7" y2="688.1"/>
+    <text class="cls-6" transform="translate(851.9 704.7)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge4">
+    <path class="cls-1" d="M936.8,417.1v43.1"/>
+    <polygon class="cls-5" points="940.3 460.2 936.8 470.1 933.3 460.2 940.3 460.2"/>
+    <text class="cls-6" transform="translate(909.3 441.6)"><tspan x="0" y="0">user_id:id</tspan></text>
+  </g>
+  <g id="node4">
+    <polygon class="cls-3" points="1023.6 166.6 1023.6 58.6 1151.9 58.6 1151.9 166.6 1023.6 166.6"/>
+    <text class="cls-6" transform="translate(1049.3 75.2)"><tspan x="0" y="0">auctions_bids</tspan></text>
+    <line class="cls-3" x1="1023.6" y1="83.4" x2="1151.9" y2="83.4"/>
+    <text class="cls-6" transform="translate(1031.6 100)"><tspan x="0" y="0">user_id : integer</tspan></text>
+    <text class="cls-6" transform="translate(1031.6 116.8)"><tspan x="0" y="0">bid : integer</tspan></text>
+    <text class="cls-6" transform="translate(1031.6 133.6)"><tspan x="0" y="0">auction_id : integer</tspan></text>
+    <line class="cls-3" x1="1023.6" y1="141.8" x2="1151.9" y2="141.8"/>
+    <text class="cls-6" transform="translate(1031.6 158.4)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge5">
+    <g>
+      <path class="cls-1" d="M1023.3,165.5h-33.2v49.1"/>
+      <polygon class="cls-5" points="996.1 214.6 990.1 224.6 984.2 214.6 996.1 214.6"/>
+    </g>
+    <text class="cls-6" transform="translate(945.7 193.3)"><tspan x="0" y="0">auction_id:id</tspan></text>
+  </g>
+  <g id="edge6">
+    <path class="cls-1" d="M1097.9,166.8h.3v280.2"/>
+    <polygon class="cls-5" points="1022.8 460.4 1019.3 470.4 1015.8 460.4 1022.8 460.4"/>
+    <text class="cls-6" transform="translate(1072.8 306.8)"><tspan x="0" y="0">user_id:id</tspan></text>
+  </g>
+  <g id="node6">
+    <polygon class="cls-3" points="691.2 166.6 691.2 58.6 818.4 58.6 818.4 166.6 691.2 166.6"/>
+    <text class="cls-6" transform="translate(699.2 75.2)"><tspan x="0" y="0">auctions_comments</tspan></text>
+    <line class="cls-3" x1="691.2" y1="83.4" x2="818.4" y2="83.4"/>
+    <text class="cls-6" transform="translate(699.2 100)"><tspan x="0" y="0">comment : text</tspan></text>
+    <text class="cls-6" transform="translate(699.2 116.8)"><tspan x="0" y="0">listing_id : integer</tspan></text>
+    <text class="cls-6" transform="translate(699.2 133.6)"><tspan x="0" y="0">user_id : integer</tspan></text>
+    <line class="cls-3" x1="691.2" y1="141.8" x2="818.4" y2="141.8"/>
+    <text class="cls-6" transform="translate(699.2 158.4)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge7">
+    <path class="cls-1" d="M754.8,166.9v59.6h93.7"/>
+    <polygon class="cls-5" points="848.5 223 857.6 226.5 848.5 230 848.5 223"/>
+    <text class="cls-6" transform="translate(759.9 219.6)"><tspan x="0" y="0">listing_id:id</tspan></text>
+  </g>
+  <g id="edge8">
+    <path class="cls-1" d="M818.7,161.5h15.2v294.9"/>
+    <polygon class="cls-5" points="849.8 460.2 846.3 470.1 842.8 460.2 849.8 460.2"/>
+    <text class="cls-6" transform="translate(807 441.6)"><tspan x="0" y="0">user_id:id</tspan></text>
+    <line class="cls-1" x1="833.4" y1="456.4" x2="846.8" y2="456.4"/>
+    <line class="cls-1" x1="846.3" y1="456.4" x2="846.3" y2="460.2"/>
+  </g>
+  <g id="node10">
+    <polygon class="cls-3" points="513 158.2 513 67 666.6 67 666.6 158.2 513 158.2"/>
+    <text class="cls-6" transform="translate(543.6 83.6)"><tspan x="0" y="0">auctions_winner</tspan></text>
+    <line class="cls-3" x1="513" y1="91.8" x2="666.6" y2="91.8"/>
+    <text class="cls-6" transform="translate(521 108.4)"><tspan x="0" y="0">bid_win_list_id : integer</tspan></text>
+    <text class="cls-6" transform="translate(521 125.2)"><tspan x="0" y="0">user_id : integer</tspan></text>
+    <line class="cls-3" x1="513" y1="133.4" x2="666.6" y2="133.4"/>
+    <text class="cls-6" transform="translate(521 150)"><tspan x="0" y="0">id : integer</tspan></text>
+  </g>
+  <g id="edge13">
+    <path class="cls-1" d="M637.7,157.8v95.1h209.8"/>
+    <polygon class="cls-5" points="847.6 249.4 857.6 252.9 847.6 256.4 847.6 249.4"/>
+    <text class="cls-6" transform="translate(646.8 249.6)"><tspan x="0" y="0">bid_win_list_id:id</tspan></text>
+  </g>
+  <g id="edge14">
+    <path class="cls-1" d="M610.6,158.6v433.8h223.1"/>
+    <polygon class="cls-5" points="833.8 588.9 843.8 592.4 833.8 595.9 833.8 588.9"/>
+    <text class="cls-6" transform="translate(581.7 416.8)"><tspan x="0" y="0">user_id:id</tspan></text>
+  </g>
+  <line class="cls-4" x1="1019.8" y1="447.2" x2="1098.6" y2="447.2"/>
+  <line class="cls-2" x1="1019.8" y1="446.7" x2="1019.8" y2="460"/>
+</svg>

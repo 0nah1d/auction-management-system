@@ -22,14 +22,18 @@ PAYPAL_SECRET = 'your_paypal_secret'
 
 # Application definition
 INSTALLED_APPS = [
-    'auctions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # installed apps
     'tinymce',
+
+    # project apps
+    'auctions',
 ]
 
 MIDDLEWARE = [
