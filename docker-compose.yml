@@ -7,4 +7,49 @@ services:
     volumes:
       - .:/app
     ports:
-      - 8000:8000
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - celery
+
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    build:
+      context: ./
+      dockerfile: celery.Dockerfile
+    command: celery -A backend worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+
+  celery_beat:
+    restart: always
+    build:
+      context: ./
+      dockerfile: celery.Dockerfile
+    command: celery -A backend beat -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - celery

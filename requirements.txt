@@ -2,4 +2,8 @@ django==4.2
 django-tinymce==4.1.0
 django-ckeditor==6.7.1
 Pillow==10.4.0
+celery[redis]==5.4.0
+redis==5.0.8
+django-celery-results==2.5.1
+django-celery-beat==2.7.0
 sslcommerz-python==0.0.7
