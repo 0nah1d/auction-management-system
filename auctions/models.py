@@ -47,7 +47,7 @@ class AuctionImage(models.Model):
     image_url = models.ImageField(upload_to='auction_image')
 
     def __str__(self):
-        return f"Image for auction id {self.auction.pk}"
+        return f"{self.auction.title}"
 
 
 class Bids(models.Model):
@@ -65,7 +65,7 @@ class Winner(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user.username} won {self.bid_win_list.pk}"
+        return f"{self.user.username} won {self.bid_win_list.title}"
 
 
 class Category(models.Model):
@@ -80,7 +80,7 @@ class AuctionCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.auction.pk}  {self.category.title}"
+        return f"{self.category.title}"
     
 
 class Comments(models.Model):
