@@ -9,12 +9,25 @@
             {% if messages %}
                 <div class="flex flex-col">
                     {% for message in messages %}
-                        <div class="alert w-full mb-4 rounded shadow-md text-center">
-                            {{ message }}
+                        <div class="alert w-full mb-4 rounded shadow-md text-center p-4 {{ message.tags }}">
+                            <div class="{% if message.tags == 'success' %}bg-green-100 border border-green-400 text-green-700{% elif message.tags == 'error' %}bg-red-100 border border-red-400 text-red-700{% elif message.tags == 'warning' %}bg-yellow-100 border border-yellow-400 text-yellow-700{% endif %}">
+                                {{ message }}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
             {% endif %}
+
+            <div class="mt-6">
+                <h2 class="text-xl font-semibold text-center">Transaction Details</h2>
+                <div class="mt-4">
+                    <p class="text-gray-700"><strong>Transaction ID:</strong> {{ request.POST.tran_id }}</p>
+                    <p class="text-gray-700"><strong>Status:</strong> {{ request.POST.status }}</p>
+                    <p class="text-gray-700"><strong>Amount:</strong> {{ request.POST.amount }} BDT</p>
+                    <p class="text-gray-700"><strong>Transaction Date:</strong> {{ request.POST.tran_date }}</p>
+                    <p class="text-gray-700"><strong>Error:</strong> {{ request.POST.error }}</p>
+                </div>
+            </div>
 
             <div class="mt-6 text-center">
                 <a href="{% url 'index' %}"
