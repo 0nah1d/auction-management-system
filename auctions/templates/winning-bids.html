@@ -129,14 +129,14 @@
                                             </td>
                                             <!-- Action Column -->
                                             <td class="py-2 px-4">
-                                                {% if auction_p_list.payment_status == 'Pending' %}
+{#                                                {% if auction_p_list.payment_status == 'Pending' %}#}
                                                     <div class="bg-green-500 text-white px-3 py-1 text-xs rounded">
-                                                        <a href="{% url 'paymentPage' auction_p_list.id %}"
+                                                        <a href="{% url 'paymentPage' %}"
                                                            class="text-white font-bold">Pay Now</a>
                                                     </div>
-                                                {% else %}
-                                                    <span class="text-gray-500 font-bold">Paid</span>
-                                                {% endif %}
+{#                                                {% else %}#}
+{#                                                    <span class="text-gray-500 font-bold">Paid</span>#}
+{#                                                {% endif %}#}
                                             </td>
                                         </tr>
                                     {% endfor %}

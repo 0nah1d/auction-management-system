@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 from . import views
 from .views import edit_profile_picture
+from .payment import initiate_payment, payment_status
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -26,6 +27,10 @@ urlpatterns = [
     path("dashboard", views.dashboard, name="userDashboard"),
     path("bidlist", views.bid, name="bid"),
     path("win_ner", views.win_ner, name="win_ner"),
+
+    path('initiate_payment/', initiate_payment, name='paymentPage'),
+    path('payment_status/', payment_status, name='payment_status'),
+    # path('payment_complete/', )
 ]
 
 if settings.DEBUG:

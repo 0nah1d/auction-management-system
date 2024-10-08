@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block body %}
+
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+            <h1 class="text-3xl font-bold text-center mb-6">Payment Status</h1>
+
+            {% if messages %}
+                <div class="flex flex-col">
+                    {% for message in messages %}
+                        <div class="alert w-full mb-4 rounded shadow-md text-center">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="mt-6 text-center">
+                <a href="{% url 'index' %}"
+                   class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Go
+                    to Home</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

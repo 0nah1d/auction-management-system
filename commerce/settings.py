@@ -1,21 +1,22 @@
 import os
+from pathlib import Path
+import environ
+from datetime import timedelta
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '6ps8j!crjgrxt34cqbqn7x&b3y%(fny8k8nh21+qa)%ws3fh!q'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+env = environ.Env()
+# select the file to read the env
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-STRIPE_SECRET_KEY = 'your_secret_key'
-STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
+SSLC_STORE_ID = env('SSLC_STORE_ID', default='')
+SSLC_STORE_PASS = env('SSLC_STORE_PASS', default='')
 
 PAYPAL_CLIENT_ID = 'your_paypal_client_id'
 PAYPAL_SECRET = 'your_paypal_secret'
