@@ -1,12 +1,73 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib import messages
 from sslcommerz_python.payment import SSLCSession
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
 from django.conf import settings
+import requests
 
 
+# bKash
+def generate_bkash_token():
+    url = settings.BKASH_TOKEN_URL
+    headers = {
+        'Content-Type': 'application/json',
+        'password': settings.BKASH_PASSWORD,
+        'username': settings.BKASH_USERNAME,
+    }
+    body = {
+        'app_key': settings.BKASH_APP_KEY,
+        'app_secret': settings.BKASH_APP_SECRET,
+    }
+
+    response = requests.post(url, headers=headers, json=body)
+    if response.status_code == 200:
+        return response.json()['id_token']
+    return None
+
+
+def create_bkash_payment(request, amount):
+    token = generate_bkash_token()
+    if not token:
+        return {"error": "Unable to generate token"}
+
+    payment_url = settings.BKASH_PAYMENT_URL
+    headers = {
+        'Authorization': token,
+        'X-APP-Key': settings.BKASH_APP_KEY,
+        'Content-Type': 'application/json',
+    }
+    body = {
+        'amount': amount,
+        'currency': 'BDT',  # Bangladeshi Taka
+        'intent': 'sale',
+    }
+
+    response = requests.post(payment_url, headers=headers, json=body)
+    if response.status_code == 200:
+        return response.json()
+    return {"error": "Payment creation failed"}
+
+
+def execute_bkash_payment(request, payment_id):
+    token = generate_bkash_token()
+    if not token:
+        return {"error": "Unable to generate token"}
+
+    execution_url = f'https://sandbox.bka.sh/v1.2.0-beta/checkout/payment/execute/{payment_id}'
+    headers = {
+        'Authorization': token,
+        'X-APP-Key': settings.BKASH_APP_KEY,
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.post(execution_url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return {"error": "Payment execution failed"}
+
+
+# SSL commerz
 def initiate_payment(request):
     # Payment parameters
     amount = Decimal('20.20')  # Example amount
@@ -25,7 +86,12 @@ def initiate_payment(request):
 
     # Set URLs for callbacks
     status_url = request.build_absolute_uri(reverse('payment_status'))
-    mypayment.set_urls(success_url=status_url, fail_url=status_url, cancel_url=status_url, ipn_url=status_url)
+    mypayment.set_urls(
+        success_url=status_url,
+        fail_url=status_url,
+        cancel_url=status_url,
+        ipn_url=status_url
+    )
 
     # Set product integration details
     mypayment.set_product_integration(
@@ -33,7 +99,7 @@ def initiate_payment(request):
         currency='BDT',
         product_category='clothing',
         product_name='demo-product',
-        num_of_item=2,
+        num_of_item=1,
         shipping_method='YES',
         product_profile='None'
     )
@@ -76,4 +142,4 @@ def payment_status(request):
     if request.method == 'post' or request.method == 'POST':
         print(request.POST)
 
-    return render(request, 'payment_status.html')
+    return render(request, "payment_status.html")
