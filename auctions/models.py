@@ -22,7 +22,7 @@ class User(AbstractUser):
 
 class AuctionList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    title = models.CharField(max_length=64)
+    title = models.CharField(max_length=2000)
     desc = tinymce_models.HTMLField()
     starting_bid = models.IntegerField()
     buy_now_price = models.IntegerField(default=0)
@@ -39,7 +39,7 @@ class AuctionList(models.Model):
         return highest_bid.bid if highest_bid else self.starting_bid
 
     def __str__(self):
-        return f"Auction id {self.pk}"
+        return f"{self.title}"
 
 
 class AuctionImage(models.Model):

@@ -29,10 +29,10 @@ def index(request):
                 auction.first_image_url = request.build_absolute_uri(first_image.image_url.url)
             else:
                 auction.first_image_url = None
-            
+
             # Get the highest bid
             auction.highest_bid = auction.get_highest_bid()
-        
+
         return auction_list
 
     top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
@@ -128,7 +128,7 @@ def auction_list(request):
         'selected_category': selected_category,
         'total_auctions': total_auctions
     })
-    
+
 
 def minbid(min_bid, present_bid):
     for bids_list in present_bid:
@@ -263,6 +263,13 @@ def dashboard(request):
         auction.highest_bid_price = highest_bid if highest_bid is not None else 0
         auction.lowest_bid_price = lowest_bid if lowest_bid is not None else 0
 
+    for auction in user_auctions:
+        first_image = auction.images.first()
+        if first_image:
+            auction.image_url = request.build_absolute_uri(first_image.image_url.url)
+        else:
+            auction.image_url = None
+
     user = request.user
 
     profile_picture_url = None
@@ -286,10 +293,9 @@ def bid(request):
 
     if not bid_amnt or not list_id:
         messages.error(request, "Bid amount or listing ID is missing.")
-        return redirect("auctionDetails", list_id) 
-        
+        return redirect("auctionDetails", list_id)
 
-    # Fetch the auction listing
+        # Fetch the auction listing
     auction_listing = get_object_or_404(AuctionList, pk=list_id)
 
     if auction_listing.user == request.user:
@@ -334,15 +340,23 @@ def bid(request):
 
 
 # shows message abt winner when bid is closed
+@login_required(login_url='login')
 def win_ner(request):
     bid_id = request.GET.get("listid")
-    bids_present = Bids.objects.filter(listingid=bid_id)
-    biddesc = AuctionList.objects.get(pk=bid_id, active_bool=True)
-    max_bid = minbid(biddesc.starting_bid, bids_present)
 
     try:
+        # Fetch the auction based on the provided bid ID
+        biddesc = AuctionList.objects.get(pk=bid_id, active_bool=True)
+        bids_present = Bids.objects.filter(auction=biddesc)
+
+        if not bids_present.exists():
+            messages.error(request, "No bids found for this auction. So you can't close it.")
+            return redirect("auctionDetails", bid_id)
+
+        max_bid = minbid(biddesc.starting_bid, bids_present)
+
         # Get the winning bid and user
-        winner_object = Bids.objects.get(bid=max_bid, listingid=bid_id)
+        winner_object = Bids.objects.get(bid=max_bid, auction=biddesc)
         winner_user = winner_object.user
 
         # Check if the winner is the owner of the auction
@@ -350,23 +364,16 @@ def win_ner(request):
             messages.error(request, "The auction owner cannot win their own bid.")
             return redirect("myAuction")
 
-        # If valid, save the winner details
-        win = Winner(bid_win_list=biddesc, user=winner_user)
-        winners_name = winner_user.username
+        # Save winner details
+        Winner.objects.create(bid_win_list=biddesc, user=winner_user)
+        messages.success(request, f"{winner_user.username} won {biddesc.title}.")
 
-    except ObjectDoesNotExist:
-        # Handle the case where no bid was found
-        # This should not happen if `max_bid` is properly computed
-        messages.error(request, "No valid bid found.")
-        return redirect("myAuction")
+        # Deactivate the auction
+        biddesc.active_bool = False
+        biddesc.save()
 
-    # Deactivate the auction
-    biddesc.active_bool = False
-    biddesc.save()
-
-    # Save winner details
-    win.save()
-    messages.success(request, f"{winners_name} won {win.bid_win_list.title}.")
+    except AuctionList.DoesNotExist:
+        messages.error(request, "Auction not found.")
     return redirect("myAuction")
 
 
@@ -511,6 +518,7 @@ def myauction(request):
         'auctions': page_obj,
         'total_auctions': total_auctions
     })
+
 
 @login_required(login_url='login')
 def delete_auction(request, auction_id):
