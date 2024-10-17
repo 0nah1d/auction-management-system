@@ -154,18 +154,49 @@
                                     </ul>
                                 </div>
                                 {% if is_owner %}
-                                    <form method="get" action="{% url 'win_ner' %}" class="mt-8">
-                                        <button
-                                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                                type="submit"
-                                                value="{{ list.id }}"
-                                                name="listid"
-                                        >
-                                            Close Bid
-                                        </button>
-                                    </form>
+                                    <a href="javascript:void(0);"
+                                       class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                                       onclick="openCloseBidModal('{{ list.id }}')">Close Bid</a>
                                 {% endif %}
                             </div>
+
+                            <!-- Close Bid Modal structure -->
+                            <div id="closeBidModal"
+                                 class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center z-50">
+                                <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm text-center relative">
+                                    <!-- Close Button -->
+                                    <button onclick="closeCloseBidModal()"
+                                            class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Modal Content -->
+                                    <div class="mb-4">
+                                        <h2 class="text-lg font-semibold text-gray-800 mb-2">Close Bid Confirmation</h2>
+                                        <p class="text-gray-600">Are you sure you want to close the bid for this item?
+                                            This action cannot be undone.</p>
+                                    </div>
+                                    <!-- Buttons -->
+                                    <div class="mt-6 flex justify-center space-x-4">
+                                        <!-- Submit form when user confirms -->
+                                        <form method="get" action="{% url 'win_ner' %}">
+                                            <input type="hidden" id="closeBidInput" name="listid" value="">
+                                            <button type="submit"
+                                                    class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                                                Yes, Close Bid
+                                            </button>
+                                        </form>
+                                        <button onclick="closeCloseBidModal()"
+                                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="bg-white shadow rounded-lg p-4 col-span-1">
                             <h6 class="text-lg font-medium">This Auction Ends in:</h6>
@@ -320,6 +351,25 @@
                 behavior: 'smooth'
             });
         });
+
+
+        function openCloseBidModal(itemId) {
+            const closeBidModal = document.getElementById("closeBidModal");
+            const closeBidInput = document.getElementById("closeBidInput");
+
+            // Set the hidden input value with the item ID
+            closeBidInput.value = itemId;
+
+            // Show the modal
+            closeBidModal.classList.remove("hidden");
+        }
+
+        function closeCloseBidModal() {
+            const closeBidModal = document.getElementById("closeBidModal");
+
+            // Hide the modal
+            closeBidModal.classList.add("hidden");
+        }
 
     </script>
 {% endblock %}
