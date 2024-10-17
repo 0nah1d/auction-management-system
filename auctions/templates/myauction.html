@@ -25,6 +25,8 @@
                                 <div class="relative w-24 h-24 rounded-full overflow-hidden">
                                     <img class="object-cover w-full h-full"
                                          src="
+                                                 
+                                                 
                                                  {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                                          alt="{{ username }}"
                                     />
@@ -106,7 +108,8 @@
                                                         </a>
                                                     {% else %}
                                                         <span class="block cursor-not-allowed opacity-50">
-                                                            <img src="{{ auction_p_list.image_url }}" alt="{{ auction_p_list.title }}"
+                                                            <img src="{{ auction_p_list.image_url }}"
+                                                                 alt="{{ auction_p_list.title }}"
                                                                  class="h-20 w-auto rounded-lg">
                                                         </span>
                                                     {% endif %}
@@ -162,6 +165,39 @@
                                         {% endfor %}
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <!-- Modal structure -->
+                                <div id="deleteModal"
+                                     class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center z-50">
+                                    <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm text-center">
+                                        <!-- Close Button -->
+                                        <button onclick="closeDeleteModal()"
+                                                class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                 viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                        <!-- Modal Content -->
+                                        <div class="mb-4">
+                                            <h2 class="text-lg font-semibold text-gray-800 mb-2">Are you sure?</h2>
+                                            <p class="text-gray-600">Do you really want to delete this item? This action
+                                                cannot be undone.</p>
+                                        </div>
+                                        <!-- Buttons -->
+                                        <div class="mt-6 flex justify-center space-x-4">
+                                            <a id="confirmDelete" href="#"
+                                               class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                                                Yes, Delete
+                                            </a>
+                                            <button onclick="closeDeleteModal()"
+                                                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
 
 
