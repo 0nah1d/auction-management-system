@@ -32,7 +32,7 @@ services:
     build:
       context: ./
       dockerfile: celery.Dockerfile
-    command: celery -A backend worker -l info
+    command: celery -A commerce worker -l info
     volumes:
       - .:/app
     env_file:
@@ -46,7 +46,7 @@ services:
     build:
       context: ./
       dockerfile: celery.Dockerfile
-    command: celery -A backend beat -l info
+    command: celery -A commerce beat -l info
     volumes:
       - .:/app
     env_file:

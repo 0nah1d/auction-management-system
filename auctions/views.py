@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Prefetch
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, UserProfileForm, AddressForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
 from django.core.files.storage import default_storage
@@ -432,13 +432,64 @@ def user_profile(request):
     if user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
+    # Check if the user has an associated address
+    address_info = None
+    if user.address:
+        address_info = {
+            'province': user.address.province,
+            'city': user.address.city,
+            'zone': user.address.zone,
+            'address': user.address.address,
+            'zip_code': user.address.zip_code,
+            'phone': user.address.phone,
+        }
+
     context = {
         'username': user.username,
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
+        'address': address_info,
     }
     return render(request, "profile.html", context)
+
+
+@login_required(login_url='login')
+def edit_profile(request):
+    user = request.user
+
+    profile_picture_url = None
+    if user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    # Instantiate the user form with the current user's data
+    user_form = UserProfileForm(instance=user)
+
+    # If the user has an address, initialize the form with it; otherwise, create a blank form
+    address_form = AddressForm(instance=user.address if hasattr(user, 'address') else None)
+
+    if request.method == 'POST':
+        user_form = UserProfileForm(request.POST, request.FILES, instance=user)
+        address_form = AddressForm(request.POST, instance=user.address if hasattr(user, 'address') else None)
+
+        if user_form.is_valid() and address_form.is_valid():
+            # Save user form
+            user_form.save()
+
+            # Save or create an address if it doesn't exist
+            address = address_form.save(commit=False)
+            address.user = user
+            address.save()
+
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('userProfile')  # Redirect to profile view
+
+    context = {
+        'user_form': user_form,
+        'address_form': address_form,
+        'profile_picture': profile_picture_url,
+    }
+    return render(request, 'edit_profile.html', context)
 
 
 @login_required(login_url='login')

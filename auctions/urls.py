@@ -19,6 +19,7 @@ urlpatterns = [
 
     path("user/bid", views.user_bid, name="userBids"),
     path("user/profile", views.user_profile, name="userProfile"),
+    path('user/profile/edit/', views.edit_profile, name='edit_profile'),
     path('edit-profile-picture/', edit_profile_picture, name='edit_profile_picture'),
     path("user/win/bids", views.user_win_bids, name="userWinBids"),
     path('user/auction', views.myauction, name="myAuction"),

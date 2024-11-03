@@ -7,9 +7,22 @@ from .manager import CustomUserManager
 from django.utils.translation import gettext_lazy as _
 
 
+class Address(models.Model):
+    province = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    zone = models.CharField(max_length=100)
+    address = models.TextField()
+    zip_code = models.CharField(max_length=20)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f"{self.address}, {self.zone}, {self.city}, {self.province}"
+
+
 class User(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
+    address = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name="user")
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
@@ -59,7 +72,6 @@ class Bids(models.Model):
         return f"{self.user.username} bids on {self.auction.title}"
 
 
-
 class Winner(models.Model):
     bid_win_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -75,16 +87,17 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+
 class AuctionCategory(models.Model):
     auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.category.title}"
-    
+
 
 class Comments(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     comment = models.TextField()
 
