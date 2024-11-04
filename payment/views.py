@@ -1,86 +1,131 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from sslcommerz_python.payment import SSLCSession
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
 from django.conf import settings
 import requests
+from auctions.models import AuctionList, Winner, Bids, User
+from django.db.models import Max
+from django.http import HttpResponseForbidden
 
 
-# SSL commerz
-# @login_required(login_url='login')
-def initiate_payment(request):
-    # Payment parameters
-    amount = Decimal('20.20')  # Example amount
-    customer_email = request.POST.get('email', 'johndoe@email.com')
+def initiate_payment(request, auction_id):
+    user = request.user
+    auction = get_object_or_404(AuctionList, pk=auction_id)
 
-    # Read SSLCommerz credentials from environment variables
-    sslc_store_id = settings.SSLC_STORE_ID
-    sslc_store_pass = settings.SSLC_STORE_PASS
+    try:
+        winner = Winner.objects.get(bid_win_list=auction, user=user)
+    except Winner.DoesNotExist:
+        return HttpResponseForbidden("You are not the winner of this auction.")
 
-    # Create SSLCommerz session
-    mypayment = SSLCSession(
-        sslc_is_sandbox=True,  # Set to False for live
-        sslc_store_id=sslc_store_id,
-        sslc_store_pass=sslc_store_pass
-    )
+    winning_bid_amount = Bids.objects.filter(auction=auction).aggregate(Max('bid'))['bid__max']
 
-    # Set URLs for callbacks
-    status_url = request.build_absolute_uri(reverse('payment_status'))
-    mypayment.set_urls(
-        success_url=status_url,
-        fail_url=status_url,
-        cancel_url=status_url,
-        ipn_url=status_url
-    )
+    if winning_bid_amount is None:
+        return HttpResponseForbidden("No bids available for this auction.")
 
-    # Set product integration details
-    mypayment.set_product_integration(
-        total_amount=amount,
-        currency='BDT',
-        product_category='clothing',
-        product_name='demo-product',
-        num_of_item=1,
-        shipping_method='YES',
-        product_profile='None'
-    )
+    amount = Decimal(winning_bid_amount)
 
-    # Set customer information
-    mypayment.set_customer_info(
-        name='John Doe',
-        email=customer_email,
-        address1='demo address',
-        address2=None,
-        city='Dhaka',
-        postcode='1207',
-        country='Bangladesh',
-        phone='01711111111'
-    )
+    if winner:
+        sslc_store_id = settings.SSLC_STORE_ID
+        sslc_store_pass = settings.SSLC_STORE_PASS
 
-    # Set shipping information
-    mypayment.set_shipping_info(
-        shipping_to='demo customer',
-        address='demo address',
-        city='Dhaka',
-        postcode='1209',
-        country='Bangladesh'
-    )
+        mypayment = SSLCSession(
+            sslc_is_sandbox=True,
+            sslc_store_id=sslc_store_id,
+            sslc_store_pass=sslc_store_pass
+        )
 
-    # Initiate payment
-    response_data = mypayment.init_payment()
-    print(response_data)
+        # Set URLs for callbacks with auction_id and user_id
+        status_url = request.build_absolute_uri(
+            reverse('payment_status')) + f"?auction_id={auction.id}&user_id={user.id}"
+        mypayment.set_urls(
+            success_url=status_url,
+            fail_url=status_url,
+            cancel_url=status_url,
+            ipn_url=status_url
+        )
 
-    # Check if the response indicates success
-    if response_data['status'] == 'SUCCESS':
-        # Redirect the user to the payment gateway
-        return redirect(response_data['GatewayPageURL'])
+        mypayment.set_product_integration(
+            total_amount=amount,
+            currency='BDT',
+            product_category=auction.categories,
+            product_name=auction.title,
+            num_of_item=1,
+            shipping_method='YES',
+            product_profile='None',
+        )
+
+        mypayment.set_customer_info(
+            name=f"{user.first_name} {user.last_name}",
+            email=user.email,
+            address1=f"{user.address.city}, {user.address.zone}, {user.address.address}",
+            address2=None,
+            city=user.address.province,
+            postcode=user.address.zip_code,
+            country='Bangladesh',
+            phone=user.address.phone
+        )
+
+        mypayment.set_shipping_info(
+            shipping_to=f"{user.first_name} {user.last_name}",
+            address=f"{user.address.city}, {user.address.zone}, {user.address.address}",
+            city=user.address.province,
+            postcode=user.address.zip_code,
+            country='Bangladesh'
+        )
+
+        # Initiate payment
+        response_data = mypayment.init_payment()
+
+        if response_data['status'] == 'SUCCESS':
+            return redirect(response_data['GatewayPageURL'])
+        else:
+            return redirect('paymentPage')
     else:
-        return redirect('paymentPage')
+        return HttpResponseForbidden("You are not the winner of this auction.")
 
 
 @csrf_exempt
 def payment_status(request):
-    if request.method == 'post' or request.method == 'POST':
-        print(request.POST)
+    if request.method == 'POST':
+        transaction_id = request.POST.get('tran_id')
+        status = request.POST.get('status')
+        amount = request.POST.get('amount')
+        payment_by = request.POST.get('card_issuer')
 
-    return render(request, "payment_status.html")
+        auction_id = request.GET.get('auction_id')
+        user_id = request.GET.get('user_id')
+
+        user = request.user
+        if not user.is_authenticated and user_id:
+            try:
+                user = User.objects.get(pk=user_id)
+                from django.contrib.auth import login
+                login(request, user)
+            except User.DoesNotExist:
+                user = None
+
+        print("Transaction ID:", transaction_id)
+        print("Amount:", amount)
+        print("Status:", status)
+        print("Payment by:", payment_by)
+        print("Auction ID:", auction_id)
+        print("User ID:", user_id)
+        print("Authenticated User:", request.user)
+
+
+    return render(request, "payment_status.html", {'user': request.user})
+
+
+# auction = get_object_or_404(AuctionList, pk=auction_id)
+# user = get_object_or_404(User, pk=user_id)
+
+# payment = Payment.objects.create(
+#     user=user,
+#     auction=auction,
+#     transaction_id=transaction_id,
+#     status=status,
+#     amount=Decimal(amount),
+#     transaction_date=timezone.now()
+# )

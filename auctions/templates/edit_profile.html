@@ -1,0 +1,422 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block body %}
+    <div class="max-w-[1280px] w-full m-auto">
+        <!--============= Hero Section Starts Here =============-->
+        <div class="pt-[100px]">
+            <div class="container mx-auto">
+                <ul class="flex space-x-2 text-gray-500">
+                    <li><a href="/" class="hover:text-blue-500">Home</a></li>
+                    <li><span> / Edit Profile</span></li>
+                </ul>
+            </div>
+        </div>
+        <!--============= Hero Section Ends Here =============-->
+
+        <!-- Cropper Modal -->
+        <div id="cropper-modal"
+             class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50 hidden">
+            <div class="bg-white p-4 rounded-lg shadow-lg max-w-xs w-full max-h-[90vh] overflow-hidden">
+                <div class="relative w-full h-64">
+                    <img id="cropper-image" class="w-full h-full object-contain" src="" alt="Profile Picture">
+                </div>
+                <div class="flex justify-between mt-4">
+                    <button id="cancel-button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                        Cancel
+                    </button>
+                    <button id="crop-button" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Crop
+                        and Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!--============= Dashboard Section Starts Here =============-->
+        <section class="my-10">
+            <div class="container mx-auto">
+                <div class="flex flex-wrap justify-center">
+                    <!-- Sidebar -->
+                    <div class="w-full sm:w-1/3 lg:w-1/4 p-4">
+                        <div class="bg-white shadow-lg rounded-lg p-4 sticky top-20">
+                            <div class="flex flex-col items-center">
+                                <div class="relative w-24 h-24 rounded-full overflow-hidden">
+                                    <form id="profile-pic-form" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <label for="profile-pic"
+                                               class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white cursor-pointer opacity-0 hover:opacity-100 transition-opacity">
+                                            <i class="fas fa-pencil-alt"></i> <!-- Font Awesome pencil icon -->
+                                        </label>
+                                        <input type="file" id="profile-pic" class="hidden" accept="image/*">
+                                        <img id="profile-pic-preview" class="object-cover w-full h-full"
+                                             src="
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                                             alt="{{ username }}">
+                                    </form>
+
+                                </div>
+                                <h5 class="mt-4 text-lg font-semibold text-gray-800">{% if name %} {{ name }} {% else %}
+                                    None {% endif %}</h5>
+                                <span class="text-gray-600">{{ user.email }}</span>
+                                <a href="{% url 'logout' %}"
+                                   class="mt-3 inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    Logout
+                                </a>
+                            </div>
+                            <ul class="mt-6 space-y-2">
+                                <li class="bg-[#242c5f] p-2 rounded w-full">
+                                    <a href="{% url 'userProfile' %}"
+                                       class="flex items-center text-white">
+                                        <i class="fas fa-user-cog mr-2"></i> Personal Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'userDashboard' %}"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/user/auction"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                        <i class="fas fa-gavel mr-2"></i> My Auction
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'userBids' %}"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                        <i class="fas fa-balance-scale mr-2"></i> My Bids
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'userWinBids' %}"
+                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
+                                        <i class="fas fa-trophy mr-2"></i> Winning Bids
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
+                        <div class="bg-white shadow-lg rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-xl font-semibold text-gray-800">Edit Profile Information</h4>
+                            </div>
+                            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                                {% csrf_token %}
+
+                                <!-- Personal Information Section -->
+                                <div class="bg-white shadow rounded-lg p-6">
+                                    <h2 class="text-xl font-semibold text-gray-600 mb-4">Personal Information</h2>
+
+                                    <div class="space-y-4">
+                                        <!-- Username Field -->
+                                        <div>
+                                            <label for="id_username" class="block text-gray-700">Username</label>
+                                            <input type="text" id="id_username" name="username"
+                                                   value="{{ user_form.username.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if user_form.username.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ user_form.username.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Email Field -->
+                                        <div>
+                                            <label for="id_email" class="block text-gray-700">Email</label>
+                                            <input type="email" id="id_email" name="email"
+                                                   value="{{ user_form.email.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if user_form.email.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ user_form.email.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- First Name Field -->
+                                        <div>
+                                            <label for="id_first_name" class="block text-gray-700">First Name</label>
+                                            <input type="text" id="id_first_name" name="first_name"
+                                                   value="{{ user_form.first_name.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if user_form.first_name.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ user_form.first_name.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Last Name Field -->
+                                        <div>
+                                            <label for="id_last_name" class="block text-gray-700">Last Name</label>
+                                            <input type="text" id="id_last_name" name="last_name"
+                                                   value="{{ user_form.last_name.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if user_form.last_name.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ user_form.last_name.errors }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Address Information Section -->
+                                <div class="bg-white shadow rounded-lg p-6">
+                                    <h2 class="text-xl font-semibold text-gray-600 mb-4">Address Information</h2>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="id_province" class="block text-gray-700">Province</label>
+                                            <select id="id_province" name="province"
+                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"
+                                                    onchange="fetchCities(this.value)">
+                                                <option value="">Select Province</option>
+                                                <option value="{{ address_form.province.value }}" selected></option>
+                                                <!-- Provinces will be populated here -->
+                                            </select>
+                                            {% if address_form.province.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.province.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- City Field -->
+                                        <div>
+                                            <label for="id_city" class="block text-gray-700">City</label>
+                                            <select id="id_city" name="city"
+                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"
+                                                    onchange="fetchZones(this.value)">
+                                                <option value="">Select City</option>
+                                                <!-- Cities will be populated here -->
+                                            </select>
+                                            {% if address_form.city.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.city.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Zone Field -->
+                                        <div>
+                                            <label for="id_zone" class="block text-gray-700">Zone</label>
+                                            <select id="id_zone" name="zone"
+                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200">
+                                                <option value="">Select Zone</option>
+                                                <!-- Zones will be populated here -->
+                                            </select>
+                                            {% if address_form.zone.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.zone.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Address Field -->
+                                        <div>
+                                            <label for="id_address" class="block text-gray-700">Address</label>
+                                            <input type="text" id="id_address" name="address"
+                                                   value="{{ address_form.address.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if address_form.address.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.address.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Zip Code Field -->
+                                        <div>
+                                            <label for="id_zip_code" class="block text-gray-700">Zip Code</label>
+                                            <input type="text" id="id_zip_code" name="zip_code"
+                                                   value="{{ address_form.zip_code.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if address_form.zip_code.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.zip_code.errors }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Phone Field -->
+                                        <div>
+                                            <label for="id_phone" class="block text-gray-700">Phone</label>
+                                            <input type="text" id="id_phone" name="phone"
+                                                   value="{{ address_form.phone.value }}"
+                                                   class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
+                                            {% if address_form.phone.errors %}
+                                                <p class="text-red-500 text-sm mt-1">{{ address_form.phone.errors }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Save Changes Button -->
+                                <div class="text-center mt-6">
+                                    <button type="submit"
+                                            class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+
+
+                            <!-- Back to Profile Link -->
+                            <div class="text-center mt-4">
+                                <a href="{% url 'userProfile' %}" class="text-indigo-500 hover:underline">Back to
+                                    Profile</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--============= Dashboard Section Ends Here =============-->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        let cropper;
+        const cropperModal = document.getElementById('cropper-modal');
+        const cropperImage = document.getElementById('cropper-image');
+        const cropButton = document.getElementById('crop-button');
+        const cancelButton = document.getElementById('cancel-button');
+
+        document.getElementById('profile-pic').addEventListener('change', function (event) {
+            const fileInput = event.target.files[0];
+            if (fileInput) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropperImage.src = e.target.result;
+                    cropperModal.style.display = 'flex';
+                    cropper = new Cropper(cropperImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        responsive: true
+                    });
+                };
+                reader.readAsDataURL(fileInput);
+            }
+        });
+
+        cropButton.addEventListener('click', function () {
+            const canvas = cropper.getCroppedCanvas();
+            canvas.toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('profile_picture', blob, 'profile-pic.jpg');
+                formData.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
+
+                fetch("{% url 'edit_profile_picture' %}", {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const previewImg = document.getElementById('profile-pic-preview');
+                            previewImg.src = URL.createObjectURL(blob);
+                            cropperModal.style.display = 'none';
+                        } else {
+                            alert('Failed to update profile picture.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+            }, 'image/jpeg');
+        });
+
+        cancelButton.addEventListener('click', function () {
+            cropperModal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch provinces on page load and select default values
+            fetchProvinces();
+        });
+
+        const defaultProvince = "{{ address_form.province.value }}";
+        const defaultCity = "{{ address_form.city.value }}";
+        const defaultZone = "{{ address_form.zone.value }}";
+
+        function fetchProvinces() {
+            fetch('https://bdapis.com/api/v1.2/divisions')
+                .then(response => response.json())
+                .then(data => {
+                    const provinceSelect = document.getElementById('id_province');
+                    provinceSelect.innerHTML = '<option value="">Select Province</option>';
+
+                    data.data.forEach(province => {
+                        const option = document.createElement('option');
+                        option.value = province.division;
+                        option.textContent = province.division;
+                        if (province.division === defaultProvince) {
+                            option.selected = true;
+                            fetchCities(defaultProvince);  // Load cities if a default province exists
+                        }
+                        provinceSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching provinces:', error));
+        }
+
+        let citys = []
+
+        function fetchCities(province) {
+            if (!province) {
+                document.getElementById('id_city').innerHTML = '<option value="">Select City</option>';
+                document.getElementById('id_zone').innerHTML = '<option value="">Select Zone</option>';
+                return;
+            }
+
+            fetch(`https://bdapis.com/api/v1.2/division/${province}`)
+                .then(response => response.json())
+                .then(data => {
+                    citys = data.data;
+                    const citySelect = document.getElementById('id_city');
+                    citySelect.innerHTML = '<option value="">Select City</option>';
+                    data.data.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.district;
+                        option.textContent = city.district;
+                        if (city.district === defaultCity) {
+                            option.selected = true;
+                            fetchZones(defaultCity);  // Load zones if a default city exists
+                        }
+                        citySelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching cities:', error));
+        }
+
+        function fetchZones(city) {
+            if (!city) {
+                document.getElementById('id_zone').innerHTML = '<option value="">Select Zone</option>';
+                return;
+            }
+
+            let zilla = citys.find(ci => ci.district === city);
+            let upazillas = zilla.upazilla;
+
+            const zoneSelect = document.getElementById('id_zone');
+            zoneSelect.innerHTML = '<option value="">Select Zone</option>';
+            upazillas.forEach(upazilla => {
+                const option = document.createElement('option');
+                option.value = upazilla;
+                option.textContent = upazilla;
+                if (upazilla === defaultZone) {
+                    option.selected = true;
+                }
+                zoneSelect.appendChild(option);
+            });
+        }
+    </script>
+
+
+{% endblock %}

@@ -103,3 +103,16 @@ class Comments(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.listing.title}"
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
+    transaction_id = models.CharField(max_length=100, unique=True)
+    payment_method = models.CharField(max_length=100)
+    status = models.CharField(max_length=20)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.transaction_id} - {self.user.username} - {self.auction.title}"

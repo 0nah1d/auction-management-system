@@ -23,7 +23,6 @@ BKASH_PASSWORD = env('BKASH_PASSWORD', default='')
 BKASH_TOKEN_URL = env('BKASH_TOKEN_URL', default='')
 BKASH_PAYMENT_URL = env('BKASH_PAYMENT_URL', default='')
 
-
 # SSL commerz
 SSLC_STORE_ID = env('SSLC_STORE_ID', default='')
 SSLC_STORE_PASS = env('SSLC_STORE_PASS', default='')

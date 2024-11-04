@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
 {% load static %}
 {% block body %}
-
     <div class="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
             <h1 class="text-3xl font-bold text-center mb-6">Payment Status</h1>
-
             {% if messages %}
                 <div class="flex flex-col">
                     {% for message in messages %}
@@ -22,10 +20,10 @@
                 <h2 class="text-xl font-semibold text-center">Transaction Details</h2>
                 <div class="mt-4">
                     <p class="text-gray-700"><strong>Transaction ID:</strong> {{ request.POST.tran_id }}</p>
+                    <p class="text-gray-700"><strong>Payment Method:</strong> {{ request.POST.card_issuer }}</p>
                     <p class="text-gray-700"><strong>Status:</strong> {{ request.POST.status }}</p>
                     <p class="text-gray-700"><strong>Amount:</strong> {{ request.POST.amount }} BDT</p>
                     <p class="text-gray-700"><strong>Transaction Date:</strong> {{ request.POST.tran_date }}</p>
-                    <p class="text-gray-700"><strong>Error:</strong> {{ request.POST.error }}</p>
                 </div>
             </div>
 
