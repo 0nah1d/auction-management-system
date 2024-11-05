@@ -295,6 +295,12 @@ def bid(request):
         messages.warning(request, "You cannot bid on your own auction.")
         return redirect("auctionDetails", list_id)
 
+    payments = Payment.objects.filter(auction=auction_listing)
+
+    if any(payment.status == "VALID" for payment in payments):
+        messages.info(request, "Already paid for this auction.")
+        return redirect('auctionDetails', list_id)
+
     try:
         winner = Winner.objects.get(bid_win_list=auction_listing)
     except Winner.DoesNotExist:

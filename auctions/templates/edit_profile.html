@@ -107,11 +107,11 @@
                                                     class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"
                                                     onchange="fetchCities(this.value)">
                                                 <option value="">Select Province</option>
-                                                <option value="{{ address_form.province.value }}" selected></option>
+                                                <option value="{{ user_form.province.value }}" selected></option>
                                                 <!-- Provinces will be populated here -->
                                             </select>
-                                            {% if address_form.province.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.province.errors }}</h6>
+                                            {% if user_form.province.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.province.errors }}</h6>
                                             {% endif %}
                                         </div>
 
@@ -124,8 +124,8 @@
                                                 <option value="">Select City</option>
                                                 <!-- Cities will be populated here -->
                                             </select>
-                                            {% if address_form.city.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.city.errors }}</h6>
+                                            {% if user_form.city.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.city.errors }}</h6>
                                             {% endif %}
                                         </div>
 
@@ -137,8 +137,8 @@
                                                 <option value="">Select Zone</option>
                                                 <!-- Zones will be populated here -->
                                             </select>
-                                            {% if address_form.zone.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.zone.errors }}</h6>
+                                            {% if user_form.zone.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.zone.errors }}</h6>
                                             {% endif %}
                                         </div>
 
@@ -146,10 +146,10 @@
                                         <div>
                                             <label for="id_address" class="block text-gray-700">Address</label>
                                             <input type="text" id="id_address" name="address"
-                                                   value="{{ address_form.address.value }}"
+                                                   value="{{ user_form.address.value }}"
                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
-                                            {% if address_form.address.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.address.errors }}</h6>
+                                            {% if user_form.address.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.address.errors }}</h6>
                                             {% endif %}
                                         </div>
 
@@ -157,10 +157,10 @@
                                         <div>
                                             <label for="id_zip_code" class="block text-gray-700">Zip Code</label>
                                             <input type="text" id="id_zip_code" name="zip_code"
-                                                   value="{{ address_form.zip_code.value }}"
+                                                   value="{{ user_form.zip_code.value }}"
                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
-                                            {% if address_form.zip_code.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.zip_code.errors }}</h6>
+                                            {% if user_form.zip_code.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.zip_code.errors }}</h6>
                                             {% endif %}
                                         </div>
 
@@ -168,10 +168,10 @@
                                         <div>
                                             <label for="id_phone" class="block text-gray-700">Phone</label>
                                             <input type="text" id="id_phone" name="phone"
-                                                   value="{{ address_form.phone.value }}"
+                                                   value="{{ user_form.phone.value }}"
                                                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:ring-indigo-200"/>
-                                            {% if address_form.phone.errors %}
-                                                <h6 class="text-red-500 text-sm mt-1">{{ address_form.phone.errors }}</h6>
+                                            {% if user_form.phone.errors %}
+                                                <h6 class="text-red-500 text-sm mt-1">{{ user_form.phone.errors }}</h6>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -268,13 +268,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Fetch provinces on page load and select default values
             fetchProvinces();
         });
 
-        const defaultProvince = "{{ address_form.province.value }}";
-        const defaultCity = "{{ address_form.city.value }}";
-        const defaultZone = "{{ address_form.zone.value }}";
+        const defaultProvince = "{{ user_form.province.value }}";
+        const defaultCity = "{{ user_form.city.value }}";
+        const defaultZone = "{{ user_form.zone.value }}";
 
         function fetchProvinces() {
             fetch('https://bdapis.com/api/v1.2/divisions')

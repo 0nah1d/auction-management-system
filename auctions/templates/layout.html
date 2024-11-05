@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
     <title>BidHub</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/fav.png' %}">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
@@ -132,7 +133,9 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="{% url 'index' %}" class="text-white text-xl font-semibold">BidHub</a>
+                    <a href="{% url 'index' %}" class="text-white text-xl font-semibold">
+                        <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[150px]"/>
+                    </a>
                 </div>
 
                 <!-- Hamburger Menu (Mobile) -->
@@ -284,7 +287,9 @@
         <!-- Footer Links and Payment Options -->
         <div class="flex flex-col lg:flex-row justify-between items-center mt-8 space-y-6 lg:space-y-0 lg:space-x-12">
             <div>
-                <a href="/" class="text-3xl font-bold text-white">BidHub</a>
+                <a href="/" class="text-3xl font-bold text-white">
+                    <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[150px]"/>
+                </a>
             </div>
             <ul class="flex space-x-8 bg-white px-4">
                 <li>
