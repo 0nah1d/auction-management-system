@@ -35,8 +35,8 @@ def index(request):
 
         return auction_list
 
-    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:3]
-    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:3]
+    top_three_products = AuctionList.objects.filter(active_bool=True).order_by('-buy_now_price')[:4]
+    watch_cat_products = AuctionList.objects.filter(active_bool=True, categories__slug='watch')[:4]
 
     # Add first image URL and highest bid to each auction
     top_three_products = add_full_image_url_and_highest_bid(top_three_products)
@@ -643,7 +643,7 @@ def update(request, auction_id):
                 AuctionImage.objects.create(auction=auction, image_url=file)
 
         messages.success(request, "Auction updated successfully.")
-        return redirect('update', auction_id=auction_id)
+        return redirect('myAuction')
 
     # Get existing images for the auction
     image_urls = [image.image_url.url for image in auction.images.all()]

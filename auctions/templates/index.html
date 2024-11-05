@@ -4,24 +4,23 @@
     {% include "banner.html" %}
 
     <!-- Top Auctions Section -->
-    <section class="py-16 relative bg-gray-100">
-        <div class="container mx-auto max-w-[1280px] w-full m-auto">
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto max-w-[1280px]">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-semibold">Top auctions list</h2>
-                <a href="{% url 'auctionList' %}"
-                   class="bg-blue-500 text-white px-4 py-2 rounded"
-                >View All</a
-                >
+                <a href="{% url 'auctionList' %}" class="bg-blue-500 text-white px-4 py-2 rounded">View All</a>
             </div>
-            <div class="flex flex-wrap justify-center gap-6">
+
+            <!-- Grid Layout for Auction Cards -->
+            <div class="grid gap-6 grid-cols-2 px-2 lg:px-0 md:grid-cols-3 lg:grid-cols-4 justify-items-center">
                 {% for top_three_p_list in top_three_products %}
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-[320px]">
                         <!-- Image Section -->
-                        <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
+                        <div class="relative w-full h-[180px] md:h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                             <a href="{% url 'auctionDetails' top_three_p_list.id %}">
                                 <img src="{{ top_three_p_list.first_image_url }}"
                                      alt="{{ top_three_p_list.title }}"
-                                     class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
+                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                                 />
                             </a>
                             <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
@@ -34,19 +33,14 @@
                         <div class="p-4">
                             <!-- Title -->
                             <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
-                                <a
-                                        href="{% url 'auctionDetails' top_three_p_list.id %}"
-                                        class="hover:text-blue-600"
-                                >
+                                <a href="{% url 'auctionDetails' top_three_p_list.id %}" class="hover:text-blue-600">
                                     {{ top_three_p_list.title }}
                                 </a>
                             </h6>
 
                             <!-- Price and Bid Information -->
                             <div class="mb-4">
-                                <div
-                                        class="flex justify-between items-center text-sm text-gray-600 mb-2"
-                                >
+                                <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
                                     <p class="text-blue-500 font-semibold">
                                         Buy Now: ৳ {{ top_three_p_list.buy_now_price }}
                                     </p>
@@ -61,24 +55,20 @@
                                     {% endif %}
                                 </div>
 
-                                <div
-                                        class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
-                                >
+                                <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
                                     <h5>Current Bid</h5>
                                     <h5>
                                         ৳ {{ top_three_p_list.highest_bid|default:top_three_p_list.starting_bid }}
                                     </h5>
                                 </div>
 
-                                <div
-                                        class="flex justify-between items-center text-sm text-gray-600"
-                                >
+                                <div class="flex justify-between items-center text-sm text-gray-600">
                                     <p>
                                         Bids:
                                         <span class="font-bold">{{ present_bid|default:"0" }}</span>
                                     </p>
-                                    <div class="countdown-timer" data-expire-date="{{ top_three_p_list.expire_date }}"
-                                    ></div>
+                                    <div class="countdown-timer"
+                                         data-expire-date="{{ top_three_p_list.expire_date }}"></div>
                                 </div>
                             </div>
                         </div>
@@ -87,6 +77,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Call to Action Section -->
     {% if not user.is_authenticated %}
@@ -106,7 +97,7 @@
     <!-- Watches Auction Section -->
     {% if watch_cat_products|length > 0 %}
         <section class="py-16 bg-gray-100">
-            <div class="container mx-auto max-w-[1280px] w-full m-auto">
+            <div class="container mx-auto max-w-[1280px]">
                 <div class="flex justify-between items-center mb-8">
                     <div class="flex items-center">
                         <img src="{% static 'images/header-icons/watch.png' %}"
@@ -119,25 +110,24 @@
                             </p>
                         </div>
                     </div>
-                    <a href="/auctions" class="bg-blue-500 text-white px-4 py-2 rounded"
-                    >View All</a
-                    >
+                    <a href="/auctions" class="bg-blue-500 text-white px-4 py-2 rounded w-[120px]">View All</a>
                 </div>
-                <div class="flex flex-wrap justify-center gap-6">
+
+                <!-- Responsive Grid Layout for Watch Cards -->
+                <div class="grid gap-6 grid-cols-2 px-2 lg:px-0 md:grid-cols-3 lg:grid-cols-4 justify-items-center">
                     {% for watch_p_list in watch_cat_products %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]"
-                        >
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-[320px]">
                             <!-- Image Section -->
                             <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                                 <a href="{% url 'auctionDetails' watch_p_list.id %}">
                                     <img src="{{ watch_p_list.first_image_url }}"
                                          alt="{{ watch_p_list.title }}"
-                                         class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
+                                         class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                                     />
                                 </a>
                                 <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
-                                    <a href="{% url 'auctionDetails' watch_p_list.id %}"
-                                       class="text-white font-bold">Bid Now</a>
+                                    <a href="{% url 'auctionDetails' watch_p_list.id %}" class="text-white font-bold">Bid
+                                        Now</a>
                                 </div>
                             </div>
 
@@ -145,19 +135,14 @@
                             <div class="p-4">
                                 <!-- Title -->
                                 <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
-                                    <a
-                                            href="{% url 'auctionDetails' watch_p_list.id %}"
-                                            class="hover:text-blue-600"
-                                    >
+                                    <a href="{% url 'auctionDetails' watch_p_list.id %}" class="hover:text-blue-600">
                                         {{ watch_p_list.title }}
                                     </a>
                                 </h6>
 
                                 <!-- Price and Bid Information -->
                                 <div class="mb-4">
-                                    <div
-                                            class="flex justify-between items-center text-sm text-gray-600 mb-2"
-                                    >
+                                    <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
                                         <p class="text-blue-500 font-semibold">
                                             Buy Now: ৳ {{ watch_p_list.buy_now_price }}
                                         </p>
@@ -172,26 +157,20 @@
                                         {% endif %}
                                     </div>
 
-                                    <div
-                                            class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
-                                    >
+                                    <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
                                         <h5>Current Bid</h5>
                                         <h5>
                                             ৳ {{ watch_p_list.highest_bid|default:watch_p_list.starting_bid }}
                                         </h5>
                                     </div>
 
-                                    <div
-                                            class="flex justify-between items-center text-sm text-gray-600"
-                                    >
+                                    <div class="flex justify-between items-center text-sm text-gray-600">
                                         <p>
                                             Bids:
                                             <span class="font-bold">{{ present_bid|default:"0" }}</span>
                                         </p>
-                                        <div
-                                                class="countdown-timer"
-                                                data-expire-date="{{ watch_p_list.expire_date }}"
-                                        ></div>
+                                        <div class="countdown-timer"
+                                             data-expire-date="{{ watch_p_list.expire_date }}"></div>
                                     </div>
                                 </div>
                             </div>
@@ -200,6 +179,7 @@
                 </div>
             </div>
         </section>
+
     {% endif %}
 
     <!-- How It Works Section -->

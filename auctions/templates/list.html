@@ -40,16 +40,16 @@
                 </form>
             </div>
 
-            {% if total_auctions > 0 %}
-                <div class="flex flex-wrap justify-center gap-6">
+            {% if total_auctions %}
+                <div class="grid gap-4 grid-cols-2 px-2 lg:px-0 md:grid-cols-3 lg:grid-cols-4 justify-items-center">
                     {% for auction_p_list in auctions %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-[320px]">
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-[320px]">
                             <!-- Image Section -->
-                            <div class="relative w-full h-[200px] bg-gray-200 rounded-lg overflow-hidden">
+                            <div class="relative w-full h-[180px] md:h-[200px] bg-gray-200 rounded-lg overflow-hidden">
                                 <a href="{% url 'auctionDetails' auction_p_list.id %}">
                                     <img src="{{ auction_p_list.first_image_url }}"
                                          alt="{{ auction_p_list.title }}"
-                                         class="w-auto h-full m-auto cursor-pointer hover:scale-110 transition"
+                                         class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                                     />
                                 </a>
                                 <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
@@ -62,19 +62,15 @@
                             <div class="p-4">
                                 <!-- Title -->
                                 <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
-                                    <a
-                                            href="{% url 'auctionDetails' auction_p_list.id %}"
-                                            class="hover:text-blue-600"
-                                    >
+                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
+                                       class="hover:text-blue-600">
                                         {{ auction_p_list.title }}
                                     </a>
                                 </h6>
 
                                 <!-- Price and Bid Information -->
                                 <div class="mb-4">
-                                    <div
-                                            class="flex justify-between items-center text-sm text-gray-600 mb-2"
-                                    >
+                                    <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
                                         <p class="text-blue-500 font-semibold">
                                             Buy Now: ৳ {{ auction_p_list.buy_now_price }}
                                         </p>
@@ -89,33 +85,28 @@
                                         {% endif %}
                                     </div>
 
-                                    <div
-                                            class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2"
-                                    >
+                                    <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
                                         <h5>Current Bid</h5>
                                         <h5>
                                             ৳ {{ auction_p_list.highest_bid|default:auction_p_list.starting_bid }}
                                         </h5>
                                     </div>
 
-                                    <div
-                                            class="flex justify-between items-center text-sm text-gray-600"
-                                    >
+                                    <div class="flex justify-between items-center text-sm text-gray-600">
                                         <p>
                                             Bids:
                                             <span class="font-bold">{{ present_bid|default:"0" }}</span>
                                         </p>
-                                        <div
-                                                class="countdown-timer"
-                                                data-expire-date="{{ auction_p_list.expire_date }}"
-                                        ></div>
+                                        <div class="countdown-timer"
+                                             data-expire-date="{{ auction_p_list.expire_date }}"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     {% endfor %}
                 </div>
+
+
                 <div class="flex justify-center mt-12">
                     <ul class="flex space-x-2">
                         {% for num in auctions.paginator.page_range %}
