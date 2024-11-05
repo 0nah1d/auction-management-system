@@ -25,6 +25,7 @@ urlpatterns = [
     path('user/auction', views.myauction, name="myAuction"),
     path("contact", views.contact, name="contact"),
     path("dashboard", views.dashboard, name="userDashboard"),
+    path("payment_information/", views.payment_information, name="paymentInformation"),
     path("bidlist", views.bid, name="bid"),
     path("win_ner", views.win_ner, name="win_ner"),
 ]

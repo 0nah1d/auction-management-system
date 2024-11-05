@@ -60,13 +60,6 @@
             <h2 class="text-3xl font-semibold text-center mb-6">Edit Auction</h2>
             <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="bg-red-100 text-yellow-800 p-4 rounded-lg mb-4">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
 
                 <div class="mb-4">
                     <label for="title" class="block text-sm font-medium text-gray-700">Title</label>

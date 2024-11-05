@@ -19,57 +19,7 @@
         <section class="my-10">
             <div class="container mx-auto">
                 <div class="flex flex-wrap justify-center">
-                    <!-- Sidebar -->
-                    <div class="w-full sm:w-1/3 lg:w-1/4 p-4">
-                        <div class="bg-white shadow-lg rounded-lg p-4 sticky top-20">
-                            <div class="flex flex-col items-center">
-                                <div class="relative w-24 h-24 rounded-full overflow-hidden">
-                                    <img class="object-cover w-full h-full" src="
-                                            
-                                            
-                                            
-                                            
-                                            {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
-                                         alt="{{ username }}">
-                                </div>
-                                <h5 class="mt-4 text-lg font-semibold text-gray-800">{% if name %} {{ name }} {% else %}
-                                    None {% endif %}</h5>
-                                <span class="text-gray-600">{{ user.email }}</span>
-                            </div>
-                            <ul class="mt-6 space-y-2">
-                                <li>
-                                    <a href="{% url 'userProfile' %}"
-                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
-                                        <i class="fas fa-user-cog mr-2"></i> Personal Profile
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'userDashboard' %}"
-                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
-                                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/user/auction"
-                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
-                                        <i class="fas fa-gavel mr-2"></i> My Auction
-                                    </a>
-                                </li>
-                                <li class="bg-[#242c5f] p-2 rounded w-full">
-                                    <a href="{% url 'userBids' %}"
-                                       class="flex items-center text-white">
-                                        <i class="fas fa-balance-scale mr-2"></i> My Bids
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'userWinBids' %}"
-                                       class="flex items-center p-2 text-black hover:bg-[#242c5f] hover:text-white rounded w-full">
-                                        <i class="fas fa-trophy mr-2"></i> Winning Bids
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    {% include "sidebar.html" %}
 
                     <!-- Main Content -->
                     <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
@@ -82,7 +32,6 @@
                                         <th class="py-2 px-4 border-b">Image</th>
                                         <th class="py-2 px-4 border-b">Item</th>
                                         <th class="py-2 px-4 border-b">Buy Now Price</th>
-                                        <th class="py-2 px-4 border-b">Highest Bid</th>
                                         <th class="py-2 px-4 border-b">Current Bid</th>
                                         <th class="py-2 px-4 border-b">Bids</th>
                                         <th class="py-2 px-4 border-b">Expires</th>
@@ -111,24 +60,13 @@
                                             <td class="py-2 px-4 text-blue-500 font-semibold">
                                                 ৳ {{ auction_p_list.buy_now_price }}
                                             </td>
-                                            <!-- Highest Bid Column -->
-                                            <td class="py-2 px-4">
-                                                {% if auction_p_list.highest_bid != 0 %}
-                                                    <p class="line-through text-red-500">
-                                                        ৳ {{ auction_p_list.highest_bid }}</p>
-                                                {% else %}
-                                                    <p class="line-through text-red-500">
-                                                        ৳ {{ auction_p_list.starting_bid }}</p>
-                                                {% endif %}
-                                            </td>
                                             <!-- Current Bid Column -->
                                             <td class="py-2 px-4">
                                                 ৳ {{ auction_p_list.highest_bid|default:auction_p_list.starting_bid }}
                                             </td>
                                             <!-- Bids Column -->
                                             <td class="py-2 px-4">
-                                                <p>Bids: <span class="font-bold">{{ present_bid|default:"0" }}</span>
-                                                </p>
+                                                <span class="font-bold">{{ auction_p_list.total_bids|default:"0" }}</span>
                                             </td>
                                             <!-- Expires Column -->
                                             <td class="py-2 px-4">
@@ -137,7 +75,7 @@
                                             </td>
                                             <!-- Action Column -->
                                             <td class="py-2 px-4">
-                                                <div class="bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                                <div class="bg-gray-800 text-center px-3 py-1 text-xs rounded">
                                                     <a href="{% url 'auctionDetails' auction_p_list.id %}"
                                                        class="text-white font-bold">Bid Now</a>
                                                 </div>

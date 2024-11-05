@@ -248,27 +248,8 @@ def create(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    # Fetch the user's bids and auctions they have bid on
     userBids = Bids.objects.filter(user=request.user)
-    auction_ids = userBids.values_list('auction_id', flat=True)  # Get IDs of auctions
-    user_auctions = AuctionList.objects.filter(id__in=auction_ids)
     your_win = Winner.objects.filter(user=request.user)
-
-    # Get highest and lowest bid prices for each auction
-    for auction in user_auctions:
-        # Aggregate the highest and lowest bids
-        highest_bid = Bids.objects.filter(auction=auction).aggregate(Max('bid'))['bid__max']
-        lowest_bid = Bids.objects.filter(auction=auction).aggregate(Min('bid'))['bid__min']
-
-        auction.highest_bid_price = highest_bid if highest_bid is not None else 0
-        auction.lowest_bid_price = lowest_bid if lowest_bid is not None else 0
-
-    for auction in user_auctions:
-        first_image = auction.images.first()
-        if first_image:
-            auction.image_url = request.build_absolute_uri(first_image.image_url.url)
-        else:
-            auction.image_url = None
 
     user = request.user
 
@@ -280,7 +261,6 @@ def dashboard(request):
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
-        'auctions': user_auctions,
         'your_win': len(your_win),
         'active_bids': len(userBids)
     })
@@ -406,9 +386,6 @@ def user_bid(request):
         # Add total bids count
         auction.total_bids = Bids.objects.filter(auction=auction).count()
 
-        # Add the highest bid
-        auction.highest_bid = auction.get_highest_bid()
-
     user = request.user
 
     # Get profile picture URL
@@ -494,14 +471,24 @@ def edit_profile(request):
 
 @login_required(login_url='login')
 def user_win_bids(request):
+    # Retrieve all winning bids for the logged-in user
     win_lists = Winner.objects.filter(user=request.user)
 
     auctions = []
     for win in win_lists:
         auction = AuctionList.objects.get(id=win.bid_win_list.pk)
 
+        # Get the first image URL if available
         first_image = AuctionImage.objects.filter(auction=auction).first()
         image_url = request.build_absolute_uri(first_image.image_url.url) if first_image else None
+
+        # Retrieve all payments for this auction and user
+        payments = Payment.objects.filter(auction=auction, user=request.user)
+        payment_status = "Pending"  # Default status
+
+        # Check if any payment has a "VALID" status
+        if any(payment.status == "VALID" for payment in payments):
+            payment_status = "VALID"
 
         auctions.append({
             'id': auction.id,
@@ -510,7 +497,8 @@ def user_win_bids(request):
             'highest_bid': auction.get_highest_bid(),
             'buy_now_price': auction.buy_now_price,
             'expire_date': auction.expire_date,
-            'image_url': image_url
+            'image_url': image_url,
+            'payment_status': payment_status
         })
 
     user = request.user
@@ -528,8 +516,8 @@ def user_win_bids(request):
 
 @login_required(login_url='login')
 def myauction(request):
-    # Fetch auctions for the current user
-    auctions = AuctionList.objects.filter(user=request.user)
+    # Fetch auctions for the current user and annotate with bid count
+    auctions = AuctionList.objects.filter(user=request.user).annotate(total_bids=Count('bids'))
 
     # Prepare auction data
     auction_list = []
@@ -546,7 +534,8 @@ def myauction(request):
             'bid_watch_list': auction.bid_watch_list,
             'expire_date': auction.expire_date,
             'image_url': first_image_url,
-            'active_status': auction.active_bool
+            'active_status': auction.active_bool,
+            'total_bids': auction.total_bids
         })
 
     # Get user profile picture URL
@@ -673,3 +662,27 @@ def remove_image(request):
             return JsonResponse({'status': 'error', 'message': 'Image not found'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@login_required(login_url='login')
+def payment_information(request):
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    payments = Payment.objects.filter(user=user)
+
+    # Pagination
+    paginator = Paginator(payments, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    total_payment = paginator.count
+
+    return render(request, "payment_information.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+        'payments': page_obj,
+        'total_payment': total_payment
+    })

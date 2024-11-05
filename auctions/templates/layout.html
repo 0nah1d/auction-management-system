@@ -2,554 +2,577 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>The Auction Management system by Django</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
-      rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+            rel="stylesheet"
     />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <script
-      src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-      async
-      defer
+            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async
+            defer
     ></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script
-      src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
-      referrerpolicy="origin"
+            src="https://cdn.tiny.cloud/1/k7ej3hhvg2d4880r7yloye7khutw0euztnbo8jmv5l7jwlio/tinymce/7/tinymce.min.js"
+            referrerpolicy="origin"
     ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Custom styles for loader */
-      #overlayer {
         /* Custom styles for loader */
-
         #overlayer {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.7);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
-          transition: opacity 0.5s ease;
+            /* Custom styles for loader */
+
+            #overlayer {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                transition: opacity 0.5s ease;
+            }
+
+            #overlayer.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .loader {
+                border: 8px solid rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                border-top: 8px solid white;
+                width: 50px;
+                height: 50px;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
 
         #overlayer.hidden {
-          opacity: 0;
-          visibility: hidden;
+            opacity: 0;
+            visibility: hidden;
         }
 
         .loader {
-          border: 8px solid rgba(255, 255, 255, 0.2);
-          border-radius: 50%;
-          border-top: 8px solid white;
-          width: 50px;
-          height: 50px;
-          animation: spin 1s linear infinite;
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top: 8px solid white;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
 
-      #overlayer.hidden {
-        opacity: 0;
-        visibility: hidden;
-      }
-
-      .loader {
-        border: 8px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        border-top: 8px solid white;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
+        .scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 50%;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 9999;
+            transition: background-color 0.3s;
         }
-        100% {
-          transform: rotate(360deg);
+
+        .scrollToTop:hover {
+            background-color: #333;
         }
-      }
 
-      .scrollToTop {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #000;
-        color: #fff;
-        border-radius: 50%;
-        padding: 10px 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        cursor: pointer;
-        z-index: 9999;
-        transition: background-color 0.3s;
-      }
+        /* Navbar background for home page */
+        .home-page {
+            background-color: transparent;
+        }
 
-      .scrollToTop:hover {
-        background-color: #333;
-      }
+        .home-page.scrolled {
+            background-color: #242c5f; /* Example: bg-gray-800 */
+        }
 
-      /* Navbar background for home page */
-      .home-page {
-        background-color: transparent;
-      }
-
-      .home-page.scrolled {
-        background-color: #242c5f; /* Example: bg-gray-800 */
-      }
-
-      /* Navbar background for other pages */
-      .always-background {
-        background-color: #242c5f; /* Example: bg-gray-800 */
-      }
+        /* Navbar background for other pages */
+        .always-background {
+            background-color: #242c5f; /* Example: bg-gray-800 */
+        }
     </style>
-  </head>
+</head>
 
-  <body>
-    <!-- Global Page Loader -->
-    <div id="overlayer">
-      <div class="loader"></div>
-    </div>
+<body>
+<!--============= Toast =============-->
+<div class="fixed top-20 right-4 space-y-4 z-50">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast-message bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow-lg transition-opacity duration-500 ease-out">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
 
-    <!-- Scroll Tip -->
-    <a href="#" class="scrollToTop">
-      <i class="fas fa-angle-up"></i>
-    </a>
 
-    <header
-      id="navbar"
-      class="fixed w-full z-10 transition-colors duration-300 ease-in-out {% if request.path == '/' %}home-page{% else %}always-background{% endif %}"
-    >
-      <div class="bg-transparent">
+<!-- Global Page Loader -->
+<div id="overlayer">
+    <div class="loader"></div>
+</div>
+
+<!-- Scroll Tip -->
+<a href="#" class="scrollToTop">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<header
+        id="navbar"
+        class="fixed w-full z-10 transition-colors duration-300 ease-in-out {% if request.path == '/' %}home-page{% else %}always-background{% endif %}"
+>
+    <div class="bg-transparent">
         <div class="max-w-[1280px] w-full mx-auto px-4 lg:px-0">
-          <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
-            <div class="flex-shrink-0">
-              <a
-                href="{% url 'index' %}"
-                class="text-white text-xl font-semibold"
-                >BidHub</a
-              >
-            </div>
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a
+                            href="{% url 'index' %}"
+                            class="text-white text-xl font-semibold"
+                    >BidHub</a
+                    >
+                </div>
 
-            <!-- Hamburger Menu (Mobile) -->
-            <div class="lg:hidden">
-              <button id="nav-toggle" class="text-white focus:outline-none">
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
+                <!-- Hamburger Menu (Mobile) -->
+                <div class="lg:hidden">
+                    <button id="nav-toggle" class="text-white focus:outline-none">
+                        <svg
+                                class="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M4 6h16M4 12h16m-7 6h7"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
 
-            <!-- Search Form -->
-            <form
-              method="get"
-              action="/auctions"
-              class="space-y-2 relative hidden lg:block"
-            >
-              <div class="relative">
-                <input
-                  name="q"
-                  type="text"
-                  placeholder="Product Name"
-                  class="w-full px-3 py-2 rounded-md bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
-                />
-                <button
-                  type="submit"
-                  class="absolute top-0 right-0 h-full flex items-center px-3 text-black rounded-r-md"
+                <!-- Search Form -->
+                <form
+                        method="get"
+                        action="/auctions"
+                        class="space-y-2 relative hidden lg:block"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="8"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    ></circle>
-                    <line
-                      x1="16.5"
-                      y1="16.5"
-                      x2="22"
-                      y2="22"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    ></line>
-                  </svg>
-                </button>
-              </div>
-            </form>
+                    <div class="relative">
+                        <input
+                                name="q"
+                                type="text"
+                                placeholder="Product Name"
+                                class="w-full px-3 py-2 rounded-md bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+                        />
+                        <button
+                                type="submit"
+                                class="absolute top-0 right-0 h-full flex items-center px-3 text-black rounded-r-md"
+                        >
+                            <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <circle
+                                        cx="11"
+                                        cy="11"
+                                        r="8"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                ></circle>
+                                <line
+                                        x1="16.5"
+                                        y1="16.5"
+                                        x2="22"
+                                        y2="22"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                ></line>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
 
-            <!-- Navbar Links -->
-            <div class="hidden lg:flex space-x-4 items-center">
-              <nav class="flex space-x-4">
-                <a
-                  href="{% url 'index' %}"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Home</a
-                >
-                <a
-                  href="{% url 'auctionList' %}"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Auction</a
-                >
-                <a
-                  href="{% url 'contact' %}"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Contact</a
-                >
-                {% if not user.is_authenticated %}
-                <a
-                  href="/register"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Register</a
-                >
-                <a
-                  href="/login"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Login</a
-                >
-                {% else %}
-                <a
-                  href="/create"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  >Add Auction</a
-                >
-                <a
-                  href="{% url 'userProfile' %}"
-                  class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                  ><i class="fas fa-user"></i>
-                </a>
-                {% endif %}
-              </nav>
+                <!-- Navbar Links -->
+                <div class="hidden lg:flex space-x-4 items-center">
+                    <nav class="flex space-x-4">
+                        <a
+                                href="{% url 'index' %}"
+                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                        >Home</a
+                        >
+                        <a
+                                href="{% url 'auctionList' %}"
+                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                        >Auction</a
+                        >
+                        <a
+                                href="{% url 'contact' %}"
+                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                        >Contact</a
+                        >
+                        {% if not user.is_authenticated %}
+                            <a
+                                    href="/register"
+                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                            >Register</a
+                            >
+                            <a
+                                    href="/login"
+                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                            >Login</a
+                            >
+                        {% else %}
+                            <a
+                                    href="/create"
+                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                            >Add Auction</a
+                            >
+                            <a
+                                    href="{% url 'userProfile' %}"
+                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                            ><i class="fas fa-user"></i>
+                            </a>
+                        {% endif %}
+                    </nav>
+                </div>
             </div>
-          </div>
         </div>
 
         <!-- Mobile Menu -->
         <div id="nav-menu" class="lg:hidden hidden bg-gray-700 px-4 py-4">
-          <nav class="space-y-2">
-            <a
-              href="{% url 'index' %}"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Home</a
-            >
-            <a
-              href="{% url 'auctionList' %}"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Auction</a
-            >
-            <a
-              href="{% url 'contact' %}"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Contact</a
-            >
-            {% if not user.is_authenticated %}
-            <a
-              href="/register"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Register</a
-            >
-            <a
-              href="/login"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Login</a
-            >
-            {% else %}
-            <a
-              href="/create"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              >Add Auction</a
-            >
-            <a
-              href="{% url 'userProfile' %}"
-              class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
-              ><i class="fas fa-user"></i>
-            </a>
-            {% endif %}
-          </nav>
-          <!-- Search Form (Mobile) -->
-          <form method="get" action="/auctions" class="mt-4 space-y-2 relative">
-            <div class="relative">
-              <input
-                name="q"
-                type="text"
-                placeholder="Product Name"
-                class="w-full px-3 py-2 rounded-md bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
-              />
-              <button
-                type="submit"
-                class="absolute top-0 right-0 h-full flex items-center px-3 text-white rounded-r-md"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+            <nav class="space-y-2">
+                <a
+                        href="{% url 'index' %}"
+                        class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                >Home</a
                 >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="8"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  ></circle>
-                  <line
-                    x1="16.5"
-                    y1="16.5"
-                    x2="22"
-                    y2="22"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  ></line>
-                </svg>
-              </button>
-            </div>
-          </form>
+                <a
+                        href="{% url 'auctionList' %}"
+                        class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                >Auction</a
+                >
+                <a
+                        href="{% url 'contact' %}"
+                        class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                >Contact</a
+                >
+                {% if not user.is_authenticated %}
+                    <a
+                            href="/register"
+                            class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                    >Register</a
+                    >
+                    <a
+                            href="/login"
+                            class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                    >Login</a
+                    >
+                {% else %}
+                    <a
+                            href="/create"
+                            class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                    >Add Auction</a
+                    >
+                    <a
+                            href="{% url 'userProfile' %}"
+                            class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600"
+                    ><i class="fas fa-user"></i>
+                    </a>
+                {% endif %}
+            </nav>
+            <!-- Search Form (Mobile) -->
+            <form method="get" action="/auctions" class="mt-4 space-y-2 relative">
+                <div class="relative">
+                    <input
+                            name="q"
+                            type="text"
+                            placeholder="Product Name"
+                            class="w-full px-3 py-2 rounded-md bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+                    />
+                    <button
+                            type="submit"
+                            class="absolute top-0 right-0 h-full flex items-center px-3 text-white rounded-r-md"
+                    >
+                        <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <circle
+                                    cx="11"
+                                    cy="11"
+                                    r="8"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                            ></circle>
+                            <line
+                                    x1="16.5"
+                                    y1="16.5"
+                                    x2="22"
+                                    y2="22"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                            ></line>
+                        </svg>
+                    </button>
+                </div>
+            </form>
         </div>
-      </div>
-    </header>
+    </div>
+</header>
 
-    {% block body %} {% endblock %}
+{% block body %} {% endblock %}
 
-    <!--============= Footer Section Starts Here =============-->
-    <footer class="bg-[#242c5f] text-white py-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!--============= Footer Section Starts Here =============-->
+<footer class="bg-[#242c5f] text-white py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Subscription Section -->
         <div
-          class="flex flex-col lg:flex-row justify-between items-center border-b border-gray-700 pb-8"
+                class="flex flex-col lg:flex-row justify-between items-center border-b border-gray-700 pb-8"
         >
-          <div class="flex items-center space-x-4">
-            <img
-              src="{% static 'images/banner/banner-1-1.png' %}"
-              alt="footer"
-              class="w-[150px]"
-            />
-            <div>
-              <h5 class="text-lg font-semibold">Subscribe to BidHub</h5>
-              <h3 class="text-2xl font-bold">To Get Exclusive Benefits</h3>
+            <div class="flex items-center space-x-4">
+                <img
+                        src="{% static 'images/banner/banner-1-1.png' %}"
+                        alt="footer"
+                        class="w-[150px]"
+                />
+                <div>
+                    <h5 class="text-lg font-semibold">Subscribe to BidHub</h5>
+                    <h3 class="text-2xl font-bold">To Get Exclusive Benefits</h3>
+                </div>
             </div>
-          </div>
-          <form class="mt-6 lg:mt-0 flex space-x-4">
-            <input
-              type="email"
-              placeholder="Enter Your Email"
-              name="email"
-              aria-label="Email"
-              class="px-4 py-2 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <button
-              type="submit"
-              class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
-            >
-              Subscribe
-            </button>
-          </form>
+            <form class="mt-6 lg:mt-0 flex space-x-4">
+                <input
+                        type="email"
+                        placeholder="Enter Your Email"
+                        name="email"
+                        aria-label="Email"
+                        class="px-4 py-2 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <button
+                        type="submit"
+                        class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+                >
+                    Subscribe
+                </button>
+            </form>
         </div>
 
         <!-- Footer Links and Payment Options -->
         <div
-          class="flex flex-col lg:flex-row justify-between items-center mt-8 space-y-6 lg:space-y-0 lg:space-x-12"
+                class="flex flex-col lg:flex-row justify-between items-center mt-8 space-y-6 lg:space-y-0 lg:space-x-12"
         >
-          <div>
-            <a href="/" class="text-3xl font-bold text-white">BidHub</a>
-          </div>
-          <ul class="flex space-x-8 bg-white px-4">
-            <li>
-              <a href="#">
-                <img
-                  src="{% static 'images/footer/nagad.png' %}"
-                  alt="Nagad"
-                  class="w-16"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <img
-                  src="{% static 'images/footer/bikash.png' %}"
-                  alt="Bikash"
-                  class="w-16"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <img
-                  src="{% static 'images/footer/rocket.png' %}"
-                  alt="Rocket"
-                  class="w-16"
-                />
-              </a>
-            </li>
-          </ul>
+            <div>
+                <a href="/" class="text-3xl font-bold text-white">BidHub</a>
+            </div>
+            <ul class="flex space-x-8 bg-white px-4">
+                <li>
+                    <a href="#">
+                        <img
+                                src="{% static 'images/footer/nagad.png' %}"
+                                alt="Nagad"
+                                class="w-16"
+                        />
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img
+                                src="{% static 'images/footer/bikash.png' %}"
+                                alt="Bikash"
+                                class="w-16"
+                        />
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img
+                                src="{% static 'images/footer/rocket.png' %}"
+                                alt="Rocket"
+                                class="w-16"
+                        />
+                    </a>
+                </li>
+            </ul>
         </div>
 
         <!-- Copyright Section -->
         <div class="mt-8 text-center">
-          <p class="text-sm">
-            &copy; <span id="year"></span>
-            <a href="/" class="text-indigo-500">BidHub</a> By
-            <a
-              href="https://github.com/nahidthedeveloper"
-              target="_blank"
-              class="text-indigo-500"
-              >Nahid</a
-            >
-          </p>
+            <p class="text-sm">
+                &copy; <span id="year"></span>
+                <a href="/" class="text-indigo-500">BidHub</a> By
+                <a
+                        href="https://github.com/nahidthedeveloper"
+                        target="_blank"
+                        class="text-indigo-500"
+                >Nahid</a
+                >
+            </p>
         </div>
-      </div>
-    </footer>
+    </div>
+</footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
-    <script>
-      // Change Navbar Background on Scroll
-      window.addEventListener("scroll", function () {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+<script>
+    // Change Navbar Background on Scroll
+    window.addEventListener("scroll", function () {
         const navbar = document.getElementById("navbar");
         const isHomePage = navbar.classList.contains("home-page");
 
         if (isHomePage) {
-          if (window.scrollY > 50) {
-            navbar.classList.add("scrolled");
-          } else {
-            navbar.classList.remove("scrolled");
-          }
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
         }
-      });
+    });
 
-      // Toggle Mobile Menu
-      document
+    // Toggle Mobile Menu
+    document
         .getElementById("nav-toggle")
         .addEventListener("click", function () {
-          const menu = document.getElementById("nav-menu");
-          menu.classList.toggle("hidden");
+            const menu = document.getElementById("nav-menu");
+            menu.classList.toggle("hidden");
         });
 
-      // Set current year in the footer
-      document.getElementById("year").textContent = new Date().getFullYear();
+    // Set current year in the footer
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-      // Function to hide the loader with a delay
-      function hideLoader() {
+    // Function to hide the loader with a delay
+    function hideLoader() {
         const overlayer = document.getElementById("overlayer");
         if (overlayer) {
-          // Set a minimum display time of 1 second
-          setTimeout(() => {
-            overlayer.classList.add("hidden");
-          }, 1000);
+            // Set a minimum display time of 1 second
+            setTimeout(() => {
+                overlayer.classList.add("hidden");
+            }, 1000);
         }
-      }
+    }
 
-      // Event listener to hide the loader when the window loads
-      window.addEventListener("load", function () {
+    // Event listener to hide the loader when the window loads
+    window.addEventListener("load", function () {
         hideLoader();
-      });
+    });
 
-      // Optionally handle route changes if you use a JavaScript framework that supports routing
-      // Example for Vue.js with Vue Router
-      if (typeof window.Vue !== "undefined" && window.VueRouter) {
+    // Optionally handle route changes if you use a JavaScript framework that supports routing
+    // Example for Vue.js with Vue Router
+    if (typeof window.Vue !== "undefined" && window.VueRouter) {
         const router = window.VueRouter;
         router.afterEach((to, from) => {
-          // Show loader for route changes
-          const overlayer = document.getElementById("overlayer");
-          if (overlayer) {
-            overlayer.classList.remove("hidden");
-            // Set a delay before hiding the loader
-            setTimeout(() => {
-              hideLoader();
-            }, 1000);
-          }
+            // Show loader for route changes
+            const overlayer = document.getElementById("overlayer");
+            if (overlayer) {
+                overlayer.classList.remove("hidden");
+                // Set a delay before hiding the loader
+                setTimeout(() => {
+                    hideLoader();
+                }, 1000);
+            }
         });
-      }
+    }
 
-      // Function to update the countdown timers
-      function updateCountdown() {
+    // Function to update the countdown timers
+    function updateCountdown() {
         const countdownDivs = document.querySelectorAll(".countdown-timer");
         let firstExpiredFound = false;
 
         countdownDivs.forEach((countdownDiv, index) => {
-          const expireDateStr = countdownDiv.getAttribute("data-expire-date");
+            const expireDateStr = countdownDiv.getAttribute("data-expire-date");
 
-          // Specify the exact format that matches your date string
-          const endTime = moment.tz(
-            expireDateStr,
-            "MMM. D, YYYY, h a",
-            "Asia/Dhaka"
-          );
-          const now = moment();
-          const duration = moment.duration(endTime.diff(now));
+            // Specify the exact format that matches your date string
+            const endTime = moment.tz(
+                expireDateStr,
+                "MMM. D, YYYY, h a",
+                "Asia/Dhaka"
+            );
+            const now = moment();
+            const duration = moment.duration(endTime.diff(now));
 
-          if (duration.asMilliseconds() <= 0 && !firstExpiredFound) {
-            countdownDiv.innerHTML = "EXPIRED";
-            firstExpiredFound = true;
-          } else if (!firstExpiredFound) {
-            const days = Math.max(0, Math.floor(duration.asDays()));
-            const hours = Math.max(0, duration.hours());
-            const minutes = Math.max(0, duration.minutes());
-            const seconds = Math.max(0, duration.seconds());
+            if (duration.asMilliseconds() <= 0 && !firstExpiredFound) {
+                countdownDiv.innerHTML = "EXPIRED";
+                firstExpiredFound = true;
+            } else if (!firstExpiredFound) {
+                const days = Math.max(0, Math.floor(duration.asDays()));
+                const hours = Math.max(0, duration.hours());
+                const minutes = Math.max(0, duration.minutes());
+                const seconds = Math.max(0, duration.seconds());
 
-            countdownDiv.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-          }
+                countdownDiv.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
         });
-      }
+    }
 
-      // Update the countdown every second
-      setInterval(updateCountdown, 1000);
+    // Update the countdown every second
+    setInterval(updateCountdown, 1000);
 
-      // Initial call to display the timers immediately
-      updateCountdown();
-    </script>
-  </body>
+    // Initial call to display the timers immediately
+    updateCountdown();
+
+
+    // toast
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            document.querySelectorAll('.toast-message').forEach(function (toast) {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 500);
+            });
+        }, 5000);
+    });
+</script>
+</body>
 </html>

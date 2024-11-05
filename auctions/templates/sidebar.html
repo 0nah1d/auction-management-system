@@ -1,0 +1,157 @@
+{% load static %}
+{% block body %}
+    {% url 'userProfile' as user_profile_url %}
+    {% url 'userDashboard' as user_dashboard_url %}
+    {% url 'myAuction' as my_auction_url %}
+    {% url 'userBids' as user_bids_url %}
+    {% url 'userWinBids' as user_win_bids_url %}
+    {% url 'paymentInformation' as payment_info %}
+
+
+    <!-- Cropper Modal -->
+    <div id="cropper-modal"
+         class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50 hidden">
+        <div class="bg-white p-4 rounded-lg shadow-lg max-w-xs w-full max-h-[90vh] overflow-hidden">
+            <div class="relative w-full h-64">
+                <img id="cropper-image" class="w-full h-full object-contain" src="" alt="Profile Picture">
+            </div>
+            <div class="flex justify-between mt-4">
+                <button id="cancel-button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    Cancel
+                </button>
+                <button id="crop-button" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Crop
+                    and Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="w-full sm:w-1/3 lg:w-1/4 p-4">
+        <div class="bg-white shadow-lg rounded-lg p-4 sticky top-20">
+            <div class="flex flex-col items-center">
+                <div class="relative w-24 h-24 rounded-full overflow-hidden">
+                    <form id="profile-pic-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="profile-pic"
+                               class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white cursor-pointer opacity-0 hover:opacity-100 transition-opacity">
+                            <i class="fas fa-pencil-alt"></i> <!-- Font Awesome pencil icon -->
+                        </label>
+                        <input type="file" id="profile-pic" class="hidden" accept="image/*">
+                        <img id="profile-pic-preview" class="object-cover w-full h-full"
+                             src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                             alt="{{ username }}">
+                    </form>
+                </div>
+                <h5 class="mt-4 text-lg font-semibold text-gray-800">
+                    {% if name %}{{ name }}{% else %}None{% endif %}
+                </h5>
+                <span class="text-gray-600">{{ user.email }}</span>
+            </div>
+            <ul class="mt-6 space-y-2">
+                <li>
+                    <a href="{{ user_profile_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == user_profile_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-user-cog mr-2"></i> Personal Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ user_dashboard_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == user_dashboard_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ my_auction_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == my_auction_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-gavel mr-2"></i> My Auction
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ user_bids_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == user_bids_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-balance-scale mr-2"></i> My Bids
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ user_win_bids_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == user_win_bids_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-trophy mr-2"></i> Winning Bids
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ payment_info }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == payment_info %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-receipt mr-2"></i> Payment Information
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        let cropper;
+        const cropperModal = document.getElementById('cropper-modal');
+        const cropperImage = document.getElementById('cropper-image');
+        const cropButton = document.getElementById('crop-button');
+        const cancelButton = document.getElementById('cancel-button');
+
+        document.getElementById('profile-pic').addEventListener('change', function (event) {
+            const fileInput = event.target.files[0];
+            if (fileInput) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropperImage.src = e.target.result;
+                    cropperModal.style.display = 'flex';
+                    cropper = new Cropper(cropperImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        responsive: true
+                    });
+                };
+                reader.readAsDataURL(fileInput);
+            }
+        });
+
+        cropButton.addEventListener('click', function () {
+            const canvas = cropper.getCroppedCanvas();
+            canvas.toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('profile_picture', blob, 'profile-pic.jpg');
+                formData.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
+
+                fetch("{% url 'edit_profile_picture' %}", {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const previewImg = document.getElementById('profile-pic-preview');
+                            previewImg.src = URL.createObjectURL(blob);
+                            cropperModal.style.display = 'none';
+                        } else {
+                            alert('Failed to update profile picture.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+            }, 'image/jpeg');
+        });
+
+        cancelButton.addEventListener('click', function () {
+            cropperModal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+            }
+        });
+    </script>
+{% endblock %}
