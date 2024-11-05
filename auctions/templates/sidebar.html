@@ -5,7 +5,8 @@
     {% url 'myAuction' as my_auction_url %}
     {% url 'userBids' as user_bids_url %}
     {% url 'userWinBids' as user_win_bids_url %}
-    {% url 'paymentInformation' as payment_info %}
+    {% url 'paymentInformation' as payment_info_url %}
+    {% url 'create' as create_auction_url %}
 
 
     <!-- Cropper Modal -->
@@ -40,6 +41,8 @@
                         <input type="file" id="profile-pic" class="hidden" accept="image/*">
                         <img id="profile-pic-preview" class="object-cover w-full h-full"
                              src="
+                                     
+                                     
                                      {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                              alt="{{ username }}">
                     </form>
@@ -62,12 +65,37 @@
                         <i class="fas fa-user-cog mr-2"></i> Personal Profile
                     </a>
                 </li>
-                <li>
-                    <a href="{{ my_auction_url }}"
-                       class="flex items-center p-2 rounded w-full {% if request.path == my_auction_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
-                        <i class="fas fa-gavel mr-2"></i> My Auction
-                    </a>
+                <li class="w-full">
+                    <button onclick="toggleMenu('auction-menu', 'chevron-icon')"
+                            class="flex items-center justify-between p-2 rounded w-full text-black hover:bg-[#242c5f] hover:text-white transition-colors"
+                            data-url="{{ create_auction_url }}">
+                        <span class="flex items-center">
+                            <i class="fas fa-gavel mr-2"></i> Auction
+                        </span>
+                        <i id="chevron-icon" class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+
+                    <!-- Collapsible Submenu -->
+                    <ul id="auction-menu"
+                        class="overflow-hidden max-h-0 transition-[max-height] duration-300 ease-in-out bg-gray-100 shadow-lg rounded mt-1 ml-4 flex flex-col gap-1">
+                        <li>
+                            <a href="{{ create_auction_url }}"
+                               class="flex items-center pl-5 py-2 text-sm text-gray-700 {% if request.path == create_auction_url %}bg-[#242c5f] text-white{% else %}hover:bg-[#242c5f] hover:text-white{% endif %} rounded transition-colors"
+                               onclick="checkMenuState('auction-menu', '{{ create_auction_url }}')">
+                                <i class="fas fa-plus mr-2"></i> Create Auction
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ my_auction_url }}"
+                               class="flex items-center pl-5 py-2 text-sm text-gray-700 {% if request.path == my_auction_url %}bg-[#242c5f] text-white{% else %}hover:bg-[#242c5f] hover:text-white{% endif %} rounded transition-colors"
+                               onclick="checkMenuState('auction-menu', '{{ my_auction_url }}')">
+                                <i class="fas fa-gavel mr-2"></i> My Auction
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
+
                 <li>
                     <a href="{{ user_bids_url }}"
                        class="flex items-center p-2 rounded w-full {% if request.path == user_bids_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
@@ -81,8 +109,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ payment_info }}"
-                       class="flex items-center p-2 rounded w-full {% if request.path == payment_info %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                    <a href="{{ payment_info_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == payment_info_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
                         <i class="fas fa-receipt mr-2"></i> Payment Information
                     </a>
                 </li>
@@ -90,6 +118,42 @@
         </div>
     </div>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            
+            const createAuctionUrl = "{{ create_auction_url }}";
+            const myAuctionUrl = "{{ my_auction_url }}";
+
+            if (currentPath === createAuctionUrl || currentPath === myAuctionUrl) {
+                openMenu('auction-menu', 'chevron-icon');
+            }
+        });
+
+        function toggleMenu(menuId, iconId) {
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+            
+            if (menu.style.maxHeight) {
+                menu.style.maxHeight = null;
+                icon.classList.remove('rotate-180');
+            } else {
+                menu.style.maxHeight = menu.scrollHeight + "px";
+                icon.classList.add('rotate-180');
+            }
+        }
+
+        function openMenu(menuId, iconId) {
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+
+            menu.style.maxHeight = menu.scrollHeight + "px";
+            icon.classList.add('rotate-180');
+        }
+
+
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>

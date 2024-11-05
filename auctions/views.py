@@ -243,13 +243,25 @@ def create(request):
         messages.success(request, "Auction created successfully.")
         return redirect('create')
 
-    return render(request, "create.html", {'categories': Category.objects.all()})
+    user = request.user
+
+    profile_picture_url = None
+    if user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    return render(request, "create.html", {
+        'categories': Category.objects.all(),
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+    })
 
 
 @login_required(login_url='login')
 def dashboard(request):
-    userBids = Bids.objects.filter(user=request.user)
-    your_win = Winner.objects.filter(user=request.user)
+    user_bids = Bids.objects.filter(user=request.user)
+    user_win = Winner.objects.filter(user=request.user)
+    user_total_auction = AuctionList.objects.filter(user=request.user)
 
     user = request.user
 
@@ -261,8 +273,9 @@ def dashboard(request):
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
-        'your_win': len(your_win),
-        'active_bids': len(userBids)
+        'your_win': len(user_win),
+        'your_total_auction': len(user_total_auction),
+        'active_bids': len(user_bids)
     })
 
 
@@ -372,7 +385,6 @@ def winnings(request):
 @login_required(login_url='login')
 def user_bid(request):
     userBids = Bids.objects.filter(user=request.user)
-
     user_auctions = AuctionList.objects.filter(id__in=[bid.auction_id for bid in userBids])
 
     for auction in user_auctions:
@@ -385,6 +397,10 @@ def user_bid(request):
 
         # Add total bids count
         auction.total_bids = Bids.objects.filter(auction=auction).count()
+
+        # Find the current (highest) bid for this auction
+        current_bid = Bids.objects.filter(auction=auction).aggregate(Max('bid'))['bid__max']
+        auction.current_bid = current_bid if current_bid is not None else 0
 
     user = request.user
 

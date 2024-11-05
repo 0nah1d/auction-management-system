@@ -29,8 +29,20 @@
                                 <div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6">
                                     <div class="bg-gray-100 rounded-lg p-4 flex items-center">
                                         <div class="w-16 h-16 flex-shrink-0">
-                                            <img class=" object-cover w-full"
-                                                 src="{% static 'images/dashboard/01.png' %}" alt="Active Bids">
+                                            <img class="w-14"
+                                                 src="{% static 'images/dashboard/img.png' %}" alt="Items Won">
+                                        </div>
+                                        <div class="ml-4">
+                                            <h2 class="text-2xl font-semibold text-gray-800"><span
+                                                    class="counter">{{ your_total_auction }}</span></h2>
+                                            <h6 class="text-gray-600">Total Auction</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6">
+                                    <div class="bg-gray-100 rounded-lg p-4 flex items-center">
+                                        <div class="w-16 h-16">
+                                            <img src="{% static 'images/dashboard/auction.png' %}" alt="Active Bids">
                                         </div>
                                         <div class="ml-4">
                                             <h2 class="text-2xl font-semibold text-gray-800"><span
@@ -41,9 +53,9 @@
                                 </div>
                                 <div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-6">
                                     <div class="bg-gray-100 rounded-lg p-4 flex items-center">
-                                        <div class="w-16 h-16 flex-shrink-0">
-                                            <img class=" object-cover h-full"
-                                                 src="{% static 'images/dashboard/02.png' %}" alt="Items Won">
+                                        <div class="w-16 h-16 flex items-center">
+                                            <img class="w-12"
+                                                 src="{% static 'images/dashboard/trophy.png' %}" alt="Items Won">
                                         </div>
                                         <div class="ml-4">
                                             <h2 class="text-2xl font-semibold text-gray-800"><span
@@ -58,8 +70,7 @@
                         <div class="bg-white shadow-lg rounded-lg p-6">
                             nothing
                         </div>
-
-
+                        
                     </div>
                 </div>
             </div>
