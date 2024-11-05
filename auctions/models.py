@@ -7,22 +7,16 @@ from .manager import CustomUserManager
 from django.utils.translation import gettext_lazy as _
 
 
-class Address(models.Model):
-    province = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    zone = models.CharField(max_length=100)
-    address = models.TextField()
-    zip_code = models.CharField(max_length=20)
-    phone = models.CharField(max_length=15)
-
-    def __str__(self):
-        return f"{self.address}, {self.zone}, {self.city}, {self.province}"
-
-
 class User(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
-    address = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name="user")
+    province = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    zone = models.CharField(max_length=100, blank=True)
+    address = models.TextField(null=True, blank=True)
+    zip_code = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=15, blank=True)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'

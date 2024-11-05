@@ -13,8 +13,21 @@ from django.contrib import messages
 
 
 def initiate_payment(request, auction_id):
-    user = request.user
+    user = get_object_or_404(User, pk=request.user.id)
     auction = get_object_or_404(AuctionList, pk=auction_id)
+
+    # Extract address information
+    province = user.province
+    city = user.city
+    zone = user.zone
+    address = user.address
+    zipcode = user.zip_code
+    phone = user.phone
+
+    # Check if any of the required fields are empty
+    if not province or not city or not zone or not address or not zipcode or not phone:
+        messages.error(request, "Please complete your address information before proceeding to payment.")
+        return redirect('edit_profile')
 
     try:
         winner = Winner.objects.get(bid_win_list=auction, user=user)
@@ -71,20 +84,20 @@ def initiate_payment(request, auction_id):
     mypayment.set_customer_info(
         name=f"{user.first_name} {user.last_name}",
         email=user.email,
-        address1=f"{user.address.city}, {user.address.zone}, {user.address.address}",
+        address1=f"{user.city}, {user.zone}, {user.address}",
         address2=None,
-        city=user.address.province,
-        postcode=user.address.zip_code,
+        city=user.province,
+        postcode=user.zip_code,
         country='Bangladesh',
-        phone=user.address.phone
+        phone=user.phone
     )
 
     # Set shipping information
     mypayment.set_shipping_info(
         shipping_to=f"{user.first_name} {user.last_name}",
-        address=f"{user.address.city}, {user.address.zone}, {user.address.address}",
-        city=user.address.province,
-        postcode=user.address.zip_code,
+        address=f"{user.city}, {user.zone}, {user.address}",
+        city=user.province,
+        postcode=user.zip_code,
         country='Bangladesh'
     )
 

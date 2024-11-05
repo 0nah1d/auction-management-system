@@ -4,7 +4,6 @@ from .models import *
 
 
 admin.site.register(User)
-admin.site.register(Address)
 admin.site.register(AuctionList)
 admin.site.register(AuctionImage)
 admin.site.register(Category)
