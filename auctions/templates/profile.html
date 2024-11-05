@@ -12,14 +12,14 @@
             </div>
         </div>
         <!--============= Hero Section Ends Here =============-->
-    
-    
+
+
         <!--============= Dashboard Section Starts Here =============-->
         <section class="my-10">
             <div class="container mx-auto">
                 <div class="flex flex-wrap justify-center">
                   {% include "sidebar.html" %}
-                
+
                     <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
                         <div class="bg-white shadow-lg rounded-lg p-6">
                             <div class="flex justify-between items-center mb-4">
@@ -34,45 +34,65 @@
                                     </svg>
                                 </a>
                             </div>
-                            <ul class="space-y-4">
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Username</span>
-                                    <span class="text-gray-800">{{ username }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Name</span>
-                                    <span class="text-gray-800">{% if name %} {{ name }} {% else %}
-                                        None {% endif %}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Email</span>
-                                    <span class="text-gray-800">{{ email }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Phone</span>
-                                    <span class="text-gray-800">{{ address.phone }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Province</span>
-                                    <span class="text-gray-800">{{ address.province }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">City</span>
-                                    <span class="text-gray-800">{{ address.city }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Zone</span>
-                                    <span class="text-gray-800">{{ address.zone }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Address</span>
-                                    <span class="text-gray-800">{{ address.address }}</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-600">Zip Code</span>
-                                    <span class="text-gray-800">{{ address.zip_code }}</span>
-                                </li>
-                            </ul>
+                        
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-user text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Username:</span>
+        <span class="text-gray-800 ml-2">{{ username }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-id-card text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Name:</span>
+        <span class="text-gray-800 ml-2">{% if name %} {{ name }} {% else %} None {% endif %}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-envelope text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Email:</span>
+        <span class="text-gray-800 ml-2">{{ email }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-phone text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Phone:</span>
+        <span class="text-gray-800 ml-2">{{ address.phone }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-map-marker-alt text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Province:</span>
+        <span class="text-gray-800 ml-2">{{ address.province }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-city text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">City:</span>
+        <span class="text-gray-800 ml-2">{{ address.city }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-map-marker-alt text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Zone:</span>
+        <span class="text-gray-800 ml-2">{{ address.zone }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-home text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Address:</span>
+        <span class="text-gray-800 ml-2">{{ address.address }}</span>
+    </div>
+
+    <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <i class="fas fa-envelope-open-text text-gray-600 mr-2"></i>
+        <span class="text-gray-600 font-semibold">Zip Code:</span>
+        <span class="text-gray-800 ml-2">{{ address.zip_code }}</span>
+    </div>
+</div>
+
+                        
+                        
                         </div>
                     </div>
                 </div>

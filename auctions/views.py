@@ -671,7 +671,7 @@ def payment_information(request):
     if hasattr(user, 'profile_picture') and user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
-    payments = Payment.objects.filter(user=user)
+    payments = Payment.objects.filter(user=user).order_by('-transaction_date')
 
     # Pagination
     paginator = Paginator(payments, 10)
