@@ -39,7 +39,8 @@
                         </label>
                         <input type="file" id="profile-pic" class="hidden" accept="image/*">
                         <img id="profile-pic-preview" class="object-cover w-full h-full"
-                             src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
+                             src="
+                                     {% if profile_picture %}{{ profile_picture }}{% else %}{% static 'auctions/images/user-3296.png' %}{% endif %}"
                              alt="{{ username }}">
                     </form>
                 </div>
@@ -50,15 +51,15 @@
             </div>
             <ul class="mt-6 space-y-2">
                 <li>
-                    <a href="{{ user_profile_url }}"
-                       class="flex items-center p-2 rounded w-full {% if request.path == user_profile_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
-                        <i class="fas fa-user-cog mr-2"></i> Personal Profile
-                    </a>
-                </li>
-                <li>
                     <a href="{{ user_dashboard_url }}"
                        class="flex items-center p-2 rounded w-full {% if request.path == user_dashboard_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
                         <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ user_profile_url }}"
+                       class="flex items-center p-2 rounded w-full {% if request.path == user_profile_url %}bg-[#242c5f] text-white{% else %}text-black hover:bg-[#242c5f] hover:text-white{% endif %}">
+                        <i class="fas fa-user-cog mr-2"></i> Personal Profile
                     </a>
                 </li>
                 <li>

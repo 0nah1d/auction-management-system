@@ -246,43 +246,24 @@
                 <!-- Navbar Links -->
                 <div class="hidden lg:flex space-x-4 items-center">
                     <nav class="flex space-x-4">
-                        <a
-                                href="{% url 'index' %}"
-                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                        >Home</a
-                        >
-                        <a
-                                href="{% url 'auctionList' %}"
-                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                        >Auction</a
-                        >
-                        <a
-                                href="{% url 'contact' %}"
-                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                        >Contact</a
-                        >
+                        <a href="{% url 'index' %}"
+                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
+                        <a href="{% url 'auctionList' %}"
+                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Auction</a>
+                        <a href="{% url 'contact' %}"
+                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Contact</a>
                         {% if not user.is_authenticated %}
-                            <a
-                                    href="/register"
-                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                            >Register</a
-                            >
-                            <a
-                                    href="/login"
-                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                            >Login</a
-                            >
+                            <a href="{% url 'register' %}"
+                               class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Register</a>
+                            <a href="{% url 'login' %}"
+                               class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Login</a>
                         {% else %}
-                            <a
-                                    href="/create"
-                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                            >Add Auction</a
-                            >
-                            <a
-                                    href="{% url 'userProfile' %}"
-                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
-                            ><i class="fas fa-user"></i>
-                            </a>
+                            <a href="{% url 'create' %}"
+                               class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Add Auction</a>
+                            <a href="{% url 'userDashboard' %}"
+                               class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Dashboard</a>
+                            <a href="{% url 'logout' %}"
+                               class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Logout</a>
                         {% endif %}
                     </nav>
                 </div>
