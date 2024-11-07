@@ -35,6 +35,84 @@
         }
     </style>
 
+    <!--============= Assistant =============-->
+    <div class="fixed bottom-24 right-5 lg:right-4 z-50">
+        <!-- Assistant Button -->
+        <button id="assistantButton"
+                class="bg-black hover:bg-gray-800 h-12 w-12 lg:h-14 lg:w-14 rounded-full flex items-center justify-center cursor-pointer">
+            <img src="{% static 'images/assistant/assistant.png' %}" alt="Assistant" class="h-8 w-8"/>
+        </button>
+
+        <!-- Assistant Modal (Positioned above the button with zoom and transition from button) -->
+        <div id="assistantModal"
+             class="absolute bottom-16 right-2 max-w-xs w-72 hidden z-50 opacity-0 transform transition-transform duration-500 origin-bottom-right scale-50">
+
+            <div id="ads"
+                 class="p-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg text-white space-y-4">
+                <!-- Title with Icon -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-gift text-3xl"></i>
+                    <h2 class="text-xl font-semibold">Special Offer!</h2>
+                </div>
+
+                <!-- Description Text -->
+                <p class="text-gray-100 mb-4 text-sm sm:text-base">
+                    Get assistance with your bids by setting your maximum bid amount, and the assistant will bid
+                    automatically.
+                    Click 'Get Started' to open the assistant.
+                </p>
+
+                <!-- Get Started Button -->
+                <button id="getStartedButton"
+                        class="w-full bg-purple-700 text-white py-3 rounded-lg text-sm font-medium hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 flex items-center justify-center space-x-2">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Get Started</span>
+                </button>
+            </div>
+
+
+            <div id="ass"
+                 class="p-6 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-lg shadow-lg text-white space-y-6">
+                <!-- Title Section with Icon -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-hand-holding-usd text-white text-3xl"></i>
+                    <h2 class="text-xl font-semibold text-white mb-3">Bid Assistant</h2>
+                </div>
+                <h3 class="text-lg font-medium text-gray-200 mb-3 line-clamp-2">
+                    {{ list.title }}
+                </h3>
+
+                <!-- Form to get user maximum bid amount and auction ID -->
+                <form id="bidForm" class="space-y-5">
+                    <div>
+                        <label for="maxBid" class="block text-sm font-medium text-gray-200">Set Your Maximum Bid
+                            Amount</label>
+                        <input type="number" id="maxBid" name="maxBid"
+                               class="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
+                               required>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-purple-600 text-white py-3 rounded text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Start Bid</span>
+                    </button>
+                </form>
+
+                <!-- Close Button -->
+                <button id="closeModalButton"
+                        class="w-full bg-gray-300 text-gray-700 py-3 mt-4 rounded text-sm font-medium hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Close</span>
+                </button>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
     <section class="py-24 bg-gray-100">
         <div class="container mx-auto px-4 lg:px-0 max-w-[1280px] w-full m-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -189,9 +267,8 @@
                         </div>
                         <div class="bg-white shadow rounded-lg p-4 col-span-1">
                             <h6 class="text-lg font-medium">This Auction Ends in:</h6>
-                            <div
-                                    class="countdown"
-                                    data-expire-date="{{ list.expire_date }}"
+                            <div class="countdown"
+                                 data-expire-date="{{ list.expire_date }}"
                             ></div>
                             <div class="mt-6 space-y-4">
                                 <div class="flex items-center space-x-4">
@@ -226,6 +303,49 @@
     </section>
 
     <!--============= Product Details Section Ends Here =============-->
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const assistantButton = document.getElementById('assistantButton');
+            const assistantModal = document.getElementById('assistantModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+
+            const ads = document.getElementById('ads')
+            const ass = document.getElementById('ass')
+            const getStartedButton = document.getElementById('getStartedButton')
+
+            ass.classList.add('hidden')
+
+            getStartedButton.onclick = function () {
+                {#localStorage.setItem('assistant_permission', 'yes');#}
+                ads.classList.add('hidden');
+                ass.classList.remove('hidden');
+            };
+
+            const showModal = () => {
+                assistantModal.classList.remove('hidden', 'opacity-0', 'scale-50');
+                assistantModal.classList.add('opacity-100', 'scale-100');
+            };
+
+            const hideModal = () => {
+                assistantModal.classList.add('opacity-0', 'scale-50');
+                assistantModal.classList.remove('opacity-100', 'scale-100');
+                setTimeout(() => {
+                    assistantModal.classList.add('hidden');
+                }, 300);
+            };
+
+            setTimeout(showModal, 3000);
+
+            assistantButton.addEventListener('click', () => {
+                assistantModal.classList.contains('hidden') ? showModal() : hideModal();
+            });
+            closeModalButton.addEventListener('click', hideModal);
+        });
+
+    </script>
 
     <script>
         function toggleTitle(element) {

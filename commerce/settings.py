@@ -15,23 +15,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# bKash
-BKASH_APP_KEY = env('BKASH_APP_KEY', default='')
-BKASH_APP_SECRET = env('BKASH_APP_SECRET', default='')
-BKASH_USERNAME = env('BKASH_USERNAME', default='')
-BKASH_PASSWORD = env('BKASH_PASSWORD', default='')
-BKASH_TOKEN_URL = env('BKASH_TOKEN_URL', default='')
-BKASH_PAYMENT_URL = env('BKASH_PAYMENT_URL', default='')
-
 # SSL commerz
 SSLC_STORE_ID = env('SSLC_STORE_ID', default='')
 SSLC_STORE_PASS = env('SSLC_STORE_PASS', default='')
 
-PAYPAL_CLIENT_ID = 'your_paypal_client_id'
-PAYPAL_SECRET = 'your_paypal_secret'
-
 # Application definition
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +36,7 @@ INSTALLED_APPS = [
     # project apps
     'auctions',
     'payment',
+    'assistant',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +67,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'commerce.wsgi.application'
+# Redis channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+
+# WSGI_APPLICATION = 'commerce.wsgi.application'
+ASGI_APPLICATION = 'commerce.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -126,3 +129,22 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+# env('CELERY_BROKER_URL', default='')
+
+# VAPID keys for Web Push Notifications (Generate using tools like web-push)
+VAPID_PRIVATE_KEY = '<Your VAPID Private Key>'
+VAPID_PUBLIC_KEY = '<Your VAPID Public Key>'
+VAPID_EMAIL = 'mailto:<Your VAPID Email>'
+
+CELERY_BEAT_SCHEDULE = {
+    'auto_bid_task': {
+        'task': 'assistant.tasks.auto_bid_task',
+        'schedule': timedelta(minutes=5),  # Runs every 5 minutes
+    },
+}

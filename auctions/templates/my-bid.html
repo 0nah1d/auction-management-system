@@ -70,8 +70,8 @@
                                             </td>
                                             <!-- Expires Column -->
                                             <td class="py-2 px-4">
-                                                <div class="countdown-timer"
-                                                     data-expire-date="{{ auction_p_list.expire_date }}"></div>
+                                                <span class="countdown-timer"
+                                                      data-expire-date="{{ auction_p_list.expire_date }}"></span>
                                             </td>
                                             <!-- Action Column -->
                                             <td class="py-2 px-4">
@@ -84,6 +84,58 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+
+                                <!-- Pagination -->
+                                <div class="mt-6 flex justify-center">
+                                    <ul class="flex space-x-2">
+                                        <!-- Previous Arrow -->
+                                        {% if user_auctions.has_previous %}
+                                            <li>
+                                                <a href="?page={{ user_auctions.previous_page_number }}"
+                                                   class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                        <!-- Pagination Numbers with Ellipsis -->
+                                        {% for num in user_auctions.paginator.page_range %}
+                                            {% if num == 1 or num == user_auctions.paginator.num_pages %}
+                                                <!-- Always show the first and last page -->
+                                                <li>
+                                                    <a href="?page={{ num }}"
+                                                       class="{% if num == user_auctions.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                        {{ num }}
+                                                    </a>
+                                                </li>
+                                            {% elif num >= user_auctions.number|add:"-1" and num <= user_auctions.number|add:"1" %}
+                                                <!-- Show pages around the current page -->
+                                                <li>
+                                                    <a href="?page={{ num }}"
+                                                       class="{% if num == user_auctions.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                        {{ num }}
+                                                    </a>
+                                                </li>
+                                            {% elif num == user_auctions.number|add:"-2" or num == user_auctions.number|add:"2" %}
+                                                <!-- Show ellipsis if there is a gap -->
+                                                <li>
+                                                    <span class="px-3 py-1">...</span>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        <!-- Next Arrow -->
+                                        {% if user_auctions.has_next %}
+                                            <li>
+                                                <a href="?page={{ user_auctions.next_page_number }}"
+                                                   class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                
                             {% else %}
                                 <p class="w-full text-center text-gray-600">Not found</p>
                             {% endif %}
@@ -94,7 +146,5 @@
             </div>
         </section>
         <!--============= Dashboard Section Ends Here =============-->
-
     </div>
-
 {% endblock %}

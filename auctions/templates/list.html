@@ -109,17 +109,107 @@
 
                 <div class="flex justify-center mt-12">
                     <ul class="flex space-x-2">
-                        {% for num in auctions.paginator.page_range %}
+                        <!-- Previous Arrow -->
+                        {% if auctions.has_previous %}
                             <li>
-                                <a href="?page={{ num }}"
-                                   class="{% if num == auctions.number %} bg-blue-500 text-white {% else %}
-                        bg-gray-200 text-gray-800 {% endif %} py-2 px-3 rounded-lg">
-                                    {{ num }}
+                                <a href="?page={{ auctions.previous_page_number }}"
+                                   class="bg-gray-200 text-gray-800 py-2 px-3 rounded-lg">
+                                    &laquo;
                                 </a>
                             </li>
+                        {% endif %}
+
+                        <!-- Pagination Numbers with Ellipsis -->
+                        {% for num in auctions.paginator.page_range %}
+                            {% if num == 1 or num == auctions.paginator.num_pages %}
+                                <!-- Always show the first and last page -->
+                                <li>
+                                    <a href="?page={{ num }}"
+                                       class="{% if num == auctions.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-800 {% endif %} py-2 px-3 rounded-lg">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% elif num >= auctions.number|add:"-1" and num <= auctions.number|add:"1" %}
+                                <!-- Show pages around the current page -->
+                                <li>
+                                    <a href="?page={{ num }}"
+                                       class="{% if num == auctions.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-800 {% endif %} py-2 px-3 rounded-lg">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% elif num == auctions.number|add:"-2" or num == auctions.number|add:"2" %}
+                                <!-- Show ellipsis if there is a gap -->
+                                <li>
+                                    <span class="py-2 px-3">...</span>
+                                </li>
+                            {% endif %}
                         {% endfor %}
+
+                        <!-- Next Arrow -->
+                        {% if auctions.has_next %}
+                            <li>
+                                <a href="?page={{ auctions.next_page_number }}"
+                                   class="bg-gray-200 text-gray-800 py-2 px-3 rounded-lg">
+                                    &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
+
+                <!-- Pagination -->
+                <div class="mt-6 flex justify-center">
+                    <ul class="flex space-x-2">
+                        <!-- Previous Arrow -->
+                        {% if payments.has_previous %}
+                            <li>
+                                <a href="?page={{ payments.previous_page_number }}"
+                                   class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                    &laquo;
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <!-- Pagination Numbers with Ellipsis -->
+                        {% for num in payments.paginator.page_range %}
+                            {% if num == 1 or num == payments.paginator.num_pages %}
+                                <!-- Always show the first and last page -->
+                                <li>
+                                    <a href="?page={{ num }}"
+                                       class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% elif num >= payments.number|add:"-1" and num <= payments.number|add:"1" %}
+                                <!-- Show pages around the current page -->
+                                <li>
+                                    <a href="?page={{ num }}"
+                                       class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% elif num == payments.number|add:"-2" or num == payments.number|add:"2" %}
+                                <!-- Show ellipsis if there is a gap -->
+                                <li>
+                                    <span class="px-3 py-1">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Next Arrow -->
+                        {% if payments.has_next %}
+                            <li>
+                                <a href="?page={{ payments.next_page_number }}"
+                                   class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                    &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+
+
             {% else %}
                 <p class="text-center text-gray-600">Product not found</p>
             {% endif %}

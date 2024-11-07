@@ -4,7 +4,8 @@ django-ckeditor==6.7.1
 django-environ==0.11.2
 Pillow==10.4.0
 celery[redis]==5.4.0
-redis==5.0.8
+channels-redis==4.2.0
+daphne==4.1.2
 django-celery-results==2.5.1
 django-celery-beat==2.7.0
 sslcommerz-python==0.0.7

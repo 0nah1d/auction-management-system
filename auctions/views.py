@@ -107,7 +107,7 @@ def auction_list(request):
         Prefetch('images', queryset=AuctionImage.objects.order_by('id'))
     )
 
-    paginator = Paginator(auctions, 10)
+    paginator = Paginator(auctions, 12)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     total_auctions = paginator.count
@@ -408,6 +408,12 @@ def user_bid(request):
         current_bid = Bids.objects.filter(auction=auction).aggregate(Max('bid'))['bid__max']
         auction.current_bid = current_bid if current_bid is not None else 0
 
+    # Pagination
+    paginator = Paginator(user_auctions, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    total_auctions = paginator.count
+
     user = request.user
 
     # Get profile picture URL
@@ -419,7 +425,9 @@ def user_bid(request):
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
-        'userBids': user_auctions
+        'userBids': user_auctions,
+        'user_auctions': page_obj,
+        'total_auctions': total_auctions
     })
 
 
@@ -509,6 +517,12 @@ def user_win_bids(request):
             'payment_status': payment_status
         })
 
+    # Pagination
+    paginator = Paginator(win_lists, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    total_auctions = paginator.count
+
     user = request.user
     profile_picture_url = None
     if hasattr(user, 'profile_picture') and user.profile_picture:
@@ -518,7 +532,9 @@ def user_win_bids(request):
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
-        'auctions': auctions
+        'auctions': auctions,
+        'win_auctions': page_obj,
+        'total_auctions': total_auctions
     })
 
 
@@ -553,7 +569,7 @@ def myauction(request):
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
     # Pagination
-    paginator = Paginator(auction_list, 10)
+    paginator = Paginator(auction_list, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     total_auctions = paginator.count
@@ -682,7 +698,7 @@ def payment_information(request):
     payments = Payment.objects.filter(user=user).order_by('-transaction_date')
 
     # Pagination
-    paginator = Paginator(payments, 10)
+    paginator = Paginator(payments, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     total_payment = paginator.count
