@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.utils import timezone
 from auctions.models import AuctionList, Bids, BidAssistant
+from assistant.notifications import publish_notification
 import math
 
 
