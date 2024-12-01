@@ -15,7 +15,7 @@ class BidAssistant(models.Model):
 
 class PushSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subscription = models.JSONField()  # This will store the subscription data from the client
+    subscription = models.JSONField()
     auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE, related_name='subscriptions')
 
     def __str__(self):
