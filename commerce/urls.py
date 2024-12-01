@@ -6,4 +6,5 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path("", include("auctions.urls")),
     path("", include("payment.urls")),
+    path("", include("assistant.urls")),
 ]

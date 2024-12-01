@@ -178,8 +178,7 @@
                                        onclick="openCloseBidModal('{{ list.id }}')">Close Bid</a>
                                 </div>
                             {% else %}
-                                <form class="space-y-4 flex flex-col items-center" method="get"
-                                      action="{% url 'bid' %}">
+                                <form class="space-y-4 flex flex-col items-center" method="POST">
                                     <input required name="bid_amnt"
                                            placeholder="Enter bid amount"
                                            type="number"
