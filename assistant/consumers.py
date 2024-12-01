@@ -4,8 +4,8 @@ import json
 
 class AuctionNotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.auction_id = self.scope['url_route']['kwargs']['auction_id']
-        self.room_group_name = f"auction_{self.auction_id}_notifications"
+        self.user_id = self.scope['url_route']['kwargs']['user_id']
+        self.room_group_name = f"auction_{self.user_id}_notifications"
 
         # Join the auction group
         await self.channel_layer.group_add(
