@@ -5,9 +5,9 @@
     <!--============= Product Auction Section Starts Here =============-->
     <div class="pt-24 pb-16 bg-gray-100">
         <div class="container mx-auto max-w-[1280px] w-full m-auto">
-            <div class="flex flex-col lg:flex-row items-center justify-between mb-8 bg-white shadow rounded-lg p-4">
-                <div class="flex items-center space-x-4">
-                    <div class="text-gray-700 font-medium">Category:</div>
+            <div class="flex gap-2 items-center justify-between mb-8 bg-white shadow rounded-lg py-4 px-2">
+                <div class="flex items-center">
+                    <div class="hidden md:block text-gray-700 font-medium">Category:</div>
                     <form id="filterForm" method="get" action="/auctions">
                         <div class="relative">
                             <select name="filter-by"
@@ -30,7 +30,7 @@
                     </form>
 
                 </div>
-                <form method="get" action="/auctions" class="mt-4 lg:mt-0 flex items-center space-x-2">
+                <form method="get" action="/auctions" class="flex items-center space-x-2">
                     <input name="q" type="text" placeholder="Item Name"
                            class="border border-gray-300 rounded-lg p-2 w-full focus:ring-blue-500 focus:border-blue-500">
                     <button type="submit"
@@ -43,66 +43,65 @@
             {% if total_auctions %}
                 <div class="grid gap-4 grid-cols-2 px-2 lg:px-0 md:grid-cols-3 lg:grid-cols-4 justify-items-center">
                     {% for auction_p_list in auctions %}
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-[320px]">
-                            <!-- Image Section -->
-                            <div class="relative w-full h-[180px] md:h-[200px] bg-gray-200 rounded-lg overflow-hidden">
-                                <a href="{% url 'auctionDetails' auction_p_list.id %}">
-                                    <img src="{{ auction_p_list.first_image_url }}"
-                                         alt="{{ auction_p_list.title }}"
-                                         class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                                    />
-                                </a>
-                                <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
-                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
-                                       class="text-white font-bold">Bid Now</a>
-                                </div>
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-[320px]">
+                        <!-- Image Section -->
+                        <div class="relative w-full h-[180px] md:h-[200px] bg-gray-200 rounded-lg overflow-hidden">
+                            <a href="{% url 'auctionDetails' auction_p_list.id %}">
+                                <img src="{{ auction_p_list.first_image_url }}"
+                                     alt="{{ auction_p_list.title }}"
+                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                                />
+                            </a>
+                            <div class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 text-xs rounded">
+                                <a href="{% url 'auctionDetails' auction_p_list.id %}" class="text-white font-bold">Bid
+                                    Now</a>
                             </div>
+                        </div>
 
-                            <!-- Card Content -->
-                            <div class="p-4">
-                                <!-- Title -->
-                                <h6 class="text-lg font-medium text-gray-800 mb-2 truncate">
-                                    <a href="{% url 'auctionDetails' auction_p_list.id %}"
-                                       class="hover:text-blue-600">
-                                        {{ auction_p_list.title }}
-                                    </a>
-                                </h6>
+                        <!-- Card Content -->
+                        <div class="p-2 md:p-4">
+                            <!-- Title -->
+                            <h6 class="text-sm md:text-lg font-medium text-gray-800 mb-2 truncate">
+                                <a href="{% url 'auctionDetails' auction_p_list.id %}" class="hover:text-blue-600">
+                                    {{ auction_p_list.title }}
+                                </a>
+                            </h6>
 
-                                <!-- Price and Bid Information -->
-                                <div class="mb-4">
-                                    <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
-                                        <p class="text-blue-500 font-semibold">
-                                            Buy Now: ৳ {{ auction_p_list.buy_now_price }}
+                            <!-- Price and Bid Information -->
+                            <div class="mb-0 md:mb-4">
+                                <div class="hidden md:block flex justify-between items-center text-sm text-gray-600 mb-2">
+                                    <p class="text-blue-500 font-semibold">
+                                        Buy Now: ৳ {{ auction_p_list.buy_now_price }}
+                                    </p>
+                                    {% if auction_p_list.highest_bid != 0 %}
+                                        <p class="line-through text-red-500">
+                                            ৳ {{ auction_p_list.highest_bid }}
                                         </p>
-                                        {% if auction_p_list.highest_bid %}
-                                            <p class="line-through text-red-500">
-                                                ৳ {{ auction_p_list.highest_bid }}
-                                            </p>
-                                        {% else %}
-                                            <p class="line-through text-red-500">
-                                                ৳ {{ auction_p_list.starting_bid }}
-                                            </p>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="flex justify-between items-center text-lg font-semibold text-gray-900 mb-2">
-                                        <h5>Current Bid</h5>
-                                        <h5>
-                                            ৳ {{ auction_p_list.highest_bid|default:auction_p_list.starting_bid }}
-                                        </h5>
-                                    </div>
-
-                                    <div class="flex justify-between items-center text-sm text-gray-600">
-                                        <p>
-                                            Bids:
-                                            <span class="font-bold">{{ present_bid|default:"0" }}</span>
+                                    {% else %}
+                                        <p class="line-through text-red-500">
+                                            ৳ {{ auction_p_list.starting_bid }}
                                         </p>
-                                        <div class="countdown-timer"
-                                             data-expire-date="{{ auction_p_list.expire_date }}"></div>
-                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex justify-between items-center text-sm md:text-lg font-semibold text-gray-900 mb-2">
+                                    <h5>Current Bid</h5>
+                                    <h5>
+                                        ৳ {{ auction_p_list.highest_bid|default:auction_p_list.starting_bid }}
+                                    </h5>
+                                </div>
+
+                                <div class="flex justify-between items-center text-sm text-gray-600">
+                                    <p>
+                                        Bids:
+                                        <span class="font-bold">{{ present_bid|default:"0" }}</span>
+                                    </p>
+                                    <div class="countdown-timer"
+                                         data-expire-date="{{ auction_p_list.expire_date }}"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
 

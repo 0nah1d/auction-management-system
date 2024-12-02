@@ -134,7 +134,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a href="{% url 'index' %}" class="text-white text-xl font-semibold">
-                        <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[150px]"/>
+                        <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[100px] md:w-[150px]"/>
                     </a>
                 </div>
 
@@ -171,7 +171,7 @@
                         <a href="{% url 'index' %}"
                            class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
                         <a href="{% url 'auctionList' %}"
-                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Auction</a>
+                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Auctions</a>
                         <a href="{% url 'contact' %}"
                            class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Contact</a>
                         {% if not user.is_authenticated %}
@@ -218,7 +218,7 @@
                 <a href="{% url 'index' %}"
                    class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Home</a>
                 <a href="{% url 'auctionList' %}"
-                   class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Auction</a>
+                   class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Auctions</a>
                 <a href="{% url 'contact' %}"
                    class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Contact</a>
                 {% if not user.is_authenticated %}
@@ -264,10 +264,10 @@
         <!-- Subscription Section -->
         <div class="flex flex-col lg:flex-row justify-between items-center border-b border-gray-700 pb-8">
             <div class="flex items-center space-x-4">
-                <img src="{% static 'images/banner/banner-1-1.png' %}" alt="footer" class="w-[150px]"/>
+                <img src="{% static 'images/banner/banner-1-1.png' %}" alt="footer" class="w-[100px] md:w-[150px]"/>
                 <div>
-                    <h5 class="text-lg font-semibold">Subscribe to BidHub</h5>
-                    <h3 class="text-2xl font-bold">To Get Exclusive Benefits</h3>
+                    <h5 class="text-sm md:text-lg font-semibold">Subscribe to BidHub</h5>
+                    <h3 class="text-xl md:text-2xl font-bold">To Get Exclusive Benefits</h3>
                 </div>
             </div>
             <form class="mt-6 lg:mt-0 flex space-x-4">
@@ -285,26 +285,26 @@
         </div>
 
         <!-- Footer Links and Payment Options -->
-        <div class="flex flex-col lg:flex-row justify-between items-center mt-8 space-y-6 lg:space-y-0 lg:space-x-12">
+        <div class="flex justify-between items-center mt-8">
             <div>
-                <a href="/" class="text-3xl font-bold text-white">
-                    <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[150px]"/>
+                <a href="/" class="md:text-3xl font-bold text-white">
+                    <img src="{% static 'images/logo.png' %}" alt="BidHub" class="w-[100px] md:w-[150px]"/>
                 </a>
             </div>
-            <ul class="flex space-x-8 bg-white px-4">
+            <ul class="flex items-cneter justify-cneter bg-white">
                 <li>
                     <a href="#">
-                        <img src="{% static 'images/footer/nagad.png' %}" alt="Nagad" class="w-16"/>
+                        <img src="{% static 'images/footer/nagad.png' %}" alt="Nagad" class="w-10 md:w-16"/>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <img src="{% static 'images/footer/bikash.png' %}" alt="Bikash" class="w-16"/>
+                        <img src="{% static 'images/footer/bikash.png' %}" alt="Bikash" class="w-10 md:w-16"/>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <img src="{% static 'images/footer/rocket.png' %}" alt="Rocket" class="w-16"/>
+                        <img src="{% static 'images/footer/rocket.png' %}" alt="Rocket" class="w-10 md:w-16"/>
                     </a>
                 </li>
             </ul>

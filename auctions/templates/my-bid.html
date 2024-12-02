@@ -26,6 +26,7 @@
                         <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
                             <h5 class="text-xl font-semibold mb-6">My Bids</h5>
                             {% if userBids %}
+                            <div class="w-full overflow-x-auto">
                                 <table class="w-full border-collapse">
                                     <thead>
                                     <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -84,6 +85,7 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+                            </div>
 
                                 <!-- Pagination -->
                                 <div class="mt-6 flex justify-center">
