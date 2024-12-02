@@ -11,9 +11,9 @@ env = environ.Env()
 # select the file to read the env
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # SSL commerz
 SSLC_STORE_ID = env('SSLC_STORE_ID', default='')
