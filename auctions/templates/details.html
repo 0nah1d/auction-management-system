@@ -83,7 +83,7 @@
                 </h3>
 
                 <!-- Form to get user maximum bid amount and auction ID -->
-                <form id="bidForm" class="space-y-5">
+                <form id="bidForm" class="space-y-5" onsubmit="handleSetBidAssistant(event)">
                     <div>
                         <label for="maxBid" class="block text-sm font-medium text-gray-200">Set Your Maximum Bid
                             Amount</label>
@@ -303,6 +303,59 @@
 
     <!--============= Product Details Section Ends Here =============-->
 
+    <script>
+        async function handleSetBidAssistant(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('bidForm');
+            const maxBid = document.getElementById('maxBid').value;
+
+            if (!maxBid) {
+                alert('Please enter a bid amount.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/auction/bid_assistant/{{ list.id }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // CSRF token for security
+                    },
+                    body: JSON.stringify({
+                        max_bid: parseFloat(maxBid)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(result.message);
+                } else {
+                    alert(`Error: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred. Please try again later.');
+            }
+        }
+
+        // Function to get CSRF token from cookies for security
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 
 
     <script>

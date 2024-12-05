@@ -11,7 +11,7 @@ env = environ.Env()
 # select the file to read the env
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     # installed apps
     'tinymce',
+    'django_celery_results',
 
     # project apps
     'auctions',
@@ -133,7 +134,9 @@ MEDIA_URL = '/media/'
 
 # Celery Configuration
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # env('CELERY_BROKER_URL', default='')
