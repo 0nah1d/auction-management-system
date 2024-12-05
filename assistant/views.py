@@ -28,7 +28,8 @@ def bid_assistant(request, auction_id):
         assAuction = BidAssistant.objects.create(
             user=request.user,
             auction=auction,
-            max_bid=max_bid_amount
+            max_bid=max_bid_amount,
+            last_bid_time=auction.expire_date
         )
         return JsonResponse({'message': 'Bid Assistant set successfully.'})
 
