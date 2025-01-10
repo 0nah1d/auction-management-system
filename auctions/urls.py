@@ -28,6 +28,9 @@ urlpatterns = [
     path("payment_information/", views.payment_information, name="paymentInformation"),
     path("bidlist", views.bid, name="bid"),
     path("win_ner", views.win_ner, name="win_ner"),
+
+    path('shipping/to/', views.shipping_to, name='shipping_to'),
+    path('shipping/from/', views.shipping_from, name='shipping_from'),
 ]
 
 if settings.DEBUG:

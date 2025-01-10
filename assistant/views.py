@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from auctions.models import AuctionList
 from .models import BidAssistant
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.core.paginator import Paginator
 import json
 
 
@@ -38,3 +40,23 @@ def bid_assistant(request, auction_id):
         return JsonResponse({'error': 'Invalid JSON payload.'}, status=400)
     except Exception as e:
         return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
+
+
+@login_required(login_url='login')
+def bid_assistant(request):
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    # Pagination
+    # paginator = Paginator(payments, 5)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
+    # total_payment = paginator.count
+
+    return render(request, "assistant_information.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+    })

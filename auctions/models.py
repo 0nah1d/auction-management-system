@@ -1,10 +1,12 @@
 from datetime import datetime
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from tinymce import models as tinymce_models
 from .manager import CustomUserManager
 from django.utils.translation import gettext_lazy as _
+import random
+import string
+from django.utils.timezone import now
 
 
 class User(AbstractUser):
@@ -47,6 +49,49 @@ class AuctionList(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class ShippingAddress(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('PACKED', 'Packed'),
+        ('SHIPPED', 'Shipped'),
+        ('IN_TRANSIT', 'In Transit'),
+        ('OUT_FOR_DELIVERY', 'Out for Delivery'),
+        ('DELIVERED', 'Delivered'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shipping_addresses')
+    auction = models.ForeignKey(AuctionList, on_delete=models.SET_NULL, null=True, blank=True,
+                                related_name='shipping_addresses')
+    recipient_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    province = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    zone = models.CharField(max_length=100, blank=True)
+    street_address = models.TextField()
+    zip_code = models.CharField(max_length=20)
+    additional_instructions = models.TextField(blank=True, null=True)
+    tracking_number = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    estimated_delivery_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.tracking_number:
+            self.tracking_number = self.generate_tracking_number()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_tracking_number():
+        prefix = "TRK"
+        date_part = now().strftime("%Y%m%d")
+        random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+        return f"{prefix}-{date_part}-{random_part}"
+
+    def __str__(self):
+        return f"Shipping for {self.user.username} ({self.city}, {self.province}) - {self.get_status_display()}"
 
 
 class AuctionImage(models.Model):

@@ -16,7 +16,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.timezone import now, make_aware, get_default_timezone
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -709,4 +708,44 @@ def payment_information(request):
         'profile_picture': profile_picture_url,
         'payments': page_obj,
         'total_payment': total_payment
+    })
+
+
+@login_required(login_url='login')
+def shipping_to(request):
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    # Pagination
+    # paginator = Paginator(payments, 5)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
+    # total_payment = paginator.count
+
+    return render(request, "shipping_to.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
+    })
+
+
+@login_required(login_url='login')
+def shipping_from(request):
+    user = request.user
+    profile_picture_url = None
+    if hasattr(user, 'profile_picture') and user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
+    # Pagination
+    # paginator = Paginator(payments, 5)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
+    # total_payment = paginator.count
+
+    return render(request, "shipping_from.html", {
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
     })

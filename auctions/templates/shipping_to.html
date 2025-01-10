@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block body %}
+
+    <div class="max-w-[1280px] w-full m-auto">
+        <!--============= Hero Section Starts Here =============-->
+        <div class="pt-[100px]">
+            <div class="container mx-auto">
+                <ul class="flex space-x-2 text-gray-500">
+                    <li><a href="/" class="hover:text-blue-500">Home</a></li>
+                    <li><span> / Shipping To</span></li>
+                </ul>
+            </div>
+        </div>
+        <!--============= Hero Section Ends Here =============-->
+
+        <!--============= Dashboard Section Starts Here =============-->
+        <section class="my-10">
+            <div class="container mx-auto">
+                <div class="flex flex-wrap justify-center">
+                    {% include "sidebar.html" %}
+                    <!-- Main Content -->
+                    <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
+                        <div class="bg-white shadow-lg rounded-lg p-6 mb-10">
+                            <h5 class="text-xl font-semibold mb-6">All Shipping To Information</h5>
+
+                            <!-- Payment Table -->
+                            <div class="w-full overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                    <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                        <th class="py-3 px-6 text-left">Transaction ID</th>
+                                        <th class="py-3 px-6 text-left">Amount</th>
+                                        <th class="py-3 px-6 text-left">Transaction Date</th>
+                                        <th class="py-3 px-6 text-left">Payment Method</th>
+                                        <th class="py-3 px-6 text-left">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="text-gray-600 text-sm font-light">
+                                    {% for payment in payments %}
+                                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                            <td class="py-3 px-6">{{ payment.transaction_id }}</td>
+                                            <td class="py-3 px-6">{{ payment.amount }}</td>
+                                            <td class="py-3 px-6">{{ payment.transaction_date|date:"Y-m-d H:i" }}</td>
+                                            <!-- Displaying the transaction date -->
+                                            <td class="py-3 px-6">{{ payment.payment_method }}</td>
+                                            <td class="py-3 px-6">{{ payment.status }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-3">No Assistant information
+                                                available.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="mt-6 flex justify-center">
+                                <ul class="flex space-x-2">
+                                    <!-- Previous Arrow -->
+                                    {% if payments.has_previous %}
+                                        <li>
+                                            <a href="?page={{ payments.previous_page_number }}"
+                                               class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                                &laquo;
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    <!-- Pagination Numbers with Ellipsis -->
+                                    {% for num in payments.paginator.page_range %}
+                                        {% if num == 1 or num == payments.paginator.num_pages %}
+                                            <!-- Always show the first and last page -->
+                                            <li>
+                                                <a href="?page={{ num }}"
+                                                   class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                    {{ num }}
+                                                </a>
+                                            </li>
+                                        {% elif num >= payments.number|add:"-1" and num <= payments.number|add:"1" %}
+                                            <!-- Show pages around the current page -->
+                                            <li>
+                                                <a href="?page={{ num }}"
+                                                   class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                    {{ num }}
+                                                </a>
+                                            </li>
+                                        {% elif num == payments.number|add:"-2" or num == payments.number|add:"2" %}
+                                            <!-- Show ellipsis if there is a gap -->
+                                            <li>
+                                                <span class="px-3 py-1">...</span>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <!-- Next Arrow -->
+                                    {% if payments.has_next %}
+                                        <li>
+                                            <a href="?page={{ payments.next_page_number }}"
+                                               class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
+                                                &raquo;
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!--============= Dashboard Section Ends Here =============-->
+
+    </div>
+
+{% endblock %}

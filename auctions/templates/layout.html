@@ -156,6 +156,36 @@
                 <!-- Navbar Links -->
                 <div class="hidden lg:flex space-x-4 items-center">
                     <nav class="flex space-x-4">
+                        <!-- Shopping Cart -->
+                        <div class="relative">
+                            <button id="cart-toggle"
+                                    class="text-white px-3 py-2 rounded-md focus:outline-none hover:bg-gray-700">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
+                            <!-- Cart Dropdown -->
+                            <div id="cart-dropdown"
+                                 class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg hidden">
+                                <div class="p-4">
+                                    <h3 class="text-lg font-semibold mb-2">Shopping Cart</h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex justify-between items-center">
+                                            <span>Item 1</span>
+                                            <span>$10.00</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span>Item 2</span>
+                                            <span>$15.00</span>
+                                        </li>
+                                    </ul>
+                                    <div class="mt-4">
+                                        {#                                    {% url 'cart' %}#}
+                                        <a href=""
+                                           class="block text-center bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600">View
+                                            Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <a href="{% url 'index' %}"
                            class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
                         <a href="{% url 'auctionList' %}"
@@ -184,11 +214,9 @@
                         <h2 class="text-xl font-semibold mb-4">Confirm Logout</h2>
                         <p class="text-gray-700 mb-6">Are you sure you want to log out?</p>
                         <div class="flex justify-center gap-4">
-                            <!-- Confirm Logout Button -->
                             <a href="{% url 'logout' %}"
                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Yes,
                                 Logout</a>
-                            <!-- Cancel Button -->
                             <button onclick="hideLogoutModal()"
                                     class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">
                                 Cancel
@@ -196,7 +224,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -239,10 +266,9 @@
                 </div>
             </form>
         </div>
-
-
     </div>
 </header>
+
 
 {% block body %} {% endblock %}
 
@@ -312,6 +338,12 @@
 </footer>
 
 <script>
+
+    // Show/Hide Cart Dropdown
+    document.getElementById('cart-toggle').addEventListener('click', () => {
+        document.getElementById('cart-dropdown').classList.toggle('hidden');
+    });
+
     function showLogoutModal() {
         document.getElementById('logout-modal').classList.remove('hidden');
     }
@@ -388,6 +420,7 @@
                 }
             });
         }
+
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
