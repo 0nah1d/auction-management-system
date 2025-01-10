@@ -3,115 +3,52 @@
 {% block body %}
     <!--============= Product Details Section Starts Here =============-->
     <style>
-        .magnify {
+        /* Fullscreen modal styling */
+        .fullscreen-modal {
+            display: none;
             position: fixed;
-            border: 1px solid #333;
-            border-radius: 50%;
-            pointer-events: none;
-            width: 200px;
-            height: 200px;
-            background-repeat: no-repeat;
-            background-size: 200%;
-            background-position: center;
-            display: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
-            transform: translate(-50%, -50%);
         }
 
-        /* Hide scrollbar for Chrome, Safari, and Opera */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
+        .fullscreen-modal img {
+            max-width: 90%;
+            max-height: 90%;
         }
 
-        /* Hide scrollbar for IE, Edge, and Firefox */
-        .scrollbar-hide {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+        .fullscreen-modal .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
         }
 
-        /* Cursor styles */
-        #thumbnail-slider {
-            cursor: grab;
+        .fullscreen-modal .nav-btn {
+            position: absolute;
+            top: 50%;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+        }
+
+        .fullscreen-modal .prev-btn {
+            left: 10px;
+        }
+
+        .fullscreen-modal .next-btn {
+            right: 10px;
         }
     </style>
 
-    <!--============= Assistant =============-->
-    <div class="fixed bottom-24 right-5 lg:right-4 z-50">
-        <!-- Assistant Button -->
-        <button id="assistantButton"
-                class="bg-black hover:bg-gray-800 h-12 w-12 lg:h-14 lg:w-14 rounded-full flex items-center justify-center cursor-pointer">
-            <img src="{% static 'images/assistant/assistant.png' %}" alt="Assistant" class="h-8 w-8"/>
-        </button>
-
-        <!-- Assistant Modal (Positioned above the button with zoom and transition from button) -->
-        <div id="assistantModal"
-             class="absolute bottom-16 right-2 max-w-xs w-72 hidden z-50 opacity-0 transform transition-transform duration-500 origin-bottom-right scale-50">
-
-            <div id="ads"
-                 class="p-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg text-white space-y-4">
-                <!-- Title with Icon -->
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-gift text-3xl"></i>
-                    <h2 class="text-xl font-semibold">Special Offer!</h2>
-                </div>
-
-                <!-- Description Text -->
-                <p class="text-gray-100 mb-4 text-sm sm:text-base">
-                    Get assistance with your bids by setting your maximum bid amount, and the assistant will bid
-                    automatically.
-                    Click 'Get Started' to open the assistant.
-                </p>
-
-                <!-- Get Started Button -->
-                <button id="getStartedButton"
-                        class="w-full bg-purple-700 text-white py-3 rounded-lg text-sm font-medium hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 flex items-center justify-center space-x-2">
-                    <i class="fas fa-play-circle"></i>
-                    <span>Get Started</span>
-                </button>
-            </div>
-
-
-            <div id="ass"
-                 class="p-6 bg-gradient-to-r from-purple-700 to-indigo-700 rounded-lg shadow-lg text-white space-y-6">
-                <!-- Title Section with Icon -->
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-hand-holding-usd text-white text-3xl"></i>
-                    <h2 class="text-xl font-semibold text-white mb-3">Bid Assistant</h2>
-                </div>
-                <h3 class="text-lg font-medium text-gray-200 mb-3 line-clamp-2">
-                    {{ list.title }}
-                </h3>
-
-                <!-- Form to get user maximum bid amount and auction ID -->
-                <form id="bidForm" class="space-y-5" onsubmit="handleSetBidAssistant(event)">
-                    <div>
-                        <label for="maxBid" class="block text-sm font-medium text-gray-200">Set Your Maximum Bid
-                            Amount</label>
-                        <input type="number" id="maxBid" name="maxBid"
-                               class="mt-1 block w-full text-black px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
-                               required>
-                    </div>
-
-                    <button type="submit"
-                            class="w-full bg-purple-600 text-white py-3 rounded text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200 flex items-center justify-center space-x-2">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Start Bid</span>
-                    </button>
-                </form>
-
-                <!-- Close Button -->
-                <button id="closeModalButton"
-                        class="w-full bg-gray-300 text-gray-700 py-3 mt-4 rounded text-sm font-medium hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 flex items-center justify-center space-x-2">
-                    <i class="fas fa-times-circle"></i>
-                    <span>Close</span>
-                </button>
-            </div>
-
-
-        </div>
-
-    </div>
-
+    {% include "assistant.html" %}
 
     <section class="py-24 bg-gray-100">
         <div class="container mx-auto px-4 lg:px-0 max-w-[1280px] w-full m-auto">
@@ -125,9 +62,8 @@
                                  alt="Auction Image"
                                  id="mainImage"
                                  class="w-auto h-full m-auto object-cover object-center cursor-pointer"
-                                 onclick="toggleImage(this.src)"
+                                 onclick="openFullscreen(this.src)"
                             />
-                            <div class="magnify" id="magnify"></div>
                         {% endif %}
                     </div>
 
@@ -159,7 +95,8 @@
                                 </li>
                                 <li class="flex gap-2 items-center text-lg font-medium">
                                     <span>Current Price:</span>
-                                    <span class="text-xl font-bold font-mono">BDT ৳ {{ present_bid|floatformat:2 }}</span>
+                                    <span class="text-xl font-bold font-mono">BDT ৳
+                                        {{ present_bid|floatformat:2 }}</span>
                                 </li>
                                 <li class="flex gap-2 items-center text-lg font-medium">
                                     <span>Time Left:</span>
@@ -226,43 +163,6 @@
                                 </div>
                             </div>
 
-                            <!-- Close Bid Modal structure -->
-                            <div id="closeBidModal"
-                                 class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center z-50">
-                                <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm text-center relative">
-                                    <!-- Close Button -->
-                                    <button onclick="closeCloseBidModal()"
-                                            class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                    </button>
-                                    <!-- Modal Content -->
-                                    <div class="mb-4">
-                                        <h2 class="text-lg font-semibold text-gray-800 mb-2">Close Bid Confirmation</h2>
-                                        <p class="text-gray-600">Are you sure you want to close the bid for this item?
-                                            This action cannot be undone.</p>
-                                    </div>
-                                    <!-- Buttons -->
-                                    <div class="mt-6 flex justify-center space-x-4">
-                                        <!-- Submit form when user confirms -->
-                                        <form method="get" action="{% url 'win_ner' %}">
-                                            <input type="hidden" id="closeBidInput" name="listid" value="">
-                                            <button type="submit"
-                                                    class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                                                Yes, Close Bid
-                                            </button>
-                                        </form>
-                                        <button onclick="closeCloseBidModal()"
-                                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                         <div class="bg-white shadow rounded-lg p-4 col-span-1">
                             <h6 class="text-lg font-medium">This Auction Ends in:</h6>
@@ -298,175 +198,47 @@
                     </textarea>
                 </div>
             </div>
+
         </div>
     </section>
 
-    <!--============= Product Details Section Ends Here =============-->
+    <!-- Fullscreen Image Modal -->
+    <div id="fullscreenModal" class="fullscreen-modal">
+        <span class="close-btn" onclick="closeFullscreen()">&times;</span>
+        <img id="fullscreenImage" src="" alt="Full Image">
+        <span class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</span>
+        <span class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</span>
+    </div>
 
+    <script src="{% static 'js/detailsPage/others.js' %}"></script>
     <script>
-        async function handleSetBidAssistant(e) {
-            e.preventDefault();
+        let currentIndex = 0;
+        const images = {{ image_urls|safe }};
 
-            const form = document.getElementById('bidForm');
-            const maxBid = document.getElementById('maxBid').value;
-
-            if (!maxBid) {
-                alert('Please enter a bid amount.');
-                return;
-            }
-
-            try {
-                const response = await fetch(`/auction/bid_assistant/{{ list.id }}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken') // CSRF token for security
-                    },
-                    body: JSON.stringify({
-                        max_bid: parseFloat(maxBid)
-                    })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert(result.message);
-                } else {
-                    alert(`Error: ${result.error}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An unexpected error occurred. Please try again later.');
-            }
+        function openFullscreen(src) {
+            document.getElementById("fullscreenModal").style.display = "flex";
+            document.getElementById("fullscreenImage").src = src;
+            currentIndex = images.indexOf(src);
         }
 
-        // Function to get CSRF token from cookies for security
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const assistantButton = document.getElementById('assistantButton');
-            const assistantModal = document.getElementById('assistantModal');
-            const closeModalButton = document.getElementById('closeModalButton');
-
-            const ads = document.getElementById('ads')
-            const ass = document.getElementById('ass')
-            const getStartedButton = document.getElementById('getStartedButton')
-
-            ass.classList.add('hidden')
-
-            getStartedButton.onclick = function () {
-                {#localStorage.setItem('assistant_permission', 'yes');#}
-                ads.classList.add('hidden');
-                ass.classList.remove('hidden');
-            };
-
-            const showModal = () => {
-                assistantModal.classList.remove('hidden', 'opacity-0', 'scale-50');
-                assistantModal.classList.add('opacity-100', 'scale-100');
-            };
-
-            const hideModal = () => {
-                assistantModal.classList.add('opacity-0', 'scale-50');
-                assistantModal.classList.remove('opacity-100', 'scale-100');
-                setTimeout(() => {
-                    assistantModal.classList.add('hidden');
-                }, 300);
-            };
-
-            setTimeout(showModal, 3000);
-
-            assistantButton.addEventListener('click', () => {
-                assistantModal.classList.contains('hidden') ? showModal() : hideModal();
-            });
-            closeModalButton.addEventListener('click', hideModal);
-        });
-
-    </script>
-
-    <script>
-        function toggleTitle(element) {
-            const titleSpan = element.querySelector('span');
-            titleSpan.classList.toggle('line-clamp-1');
+        function closeFullscreen() {
+            document.getElementById("fullscreenModal").style.display = "none";
         }
 
-        tinymce.init({
-            selector: '#desc',
-            menubar: false,       // Disable the menubar
-            toolbar: false,       // Disable the toolbar
-            plugins: 'code',      // Optional: keep if you need the code view
-            readonly: true,       // Make the editor readonly
-            statusbar: false,     // Disable the status bar at the bottom
-            setup: function (editor) {
-                editor.on('init', function () {
-                    editor.getContainer().style.border = 'none'; // Remove the editor border
-                });
-            }
-        });
+        function changeImage(direction) {
+            currentIndex = (currentIndex + direction + images.length) % images.length;
+            document.getElementById("fullscreenImage").src = images[currentIndex];
+        }
 
         function showImg(src) {
             document.getElementById("mainImage").src = src;
         }
-
-        function toggleImage(src) {
-            const magnify = document.getElementById("magnify");
-            if (magnify.style.display === "none") {
-                magnify.style.display = "block";
-                magnify.style.backgroundImage = `url(${src})`;
-                magnify.style.backgroundSize = "200%"; // Adjust zoom level here
-            } else {
-                magnify.style.display = "none";
-            }
-        }
-
-        const mainImage = document.getElementById("mainImage");
-        const magnify = document.getElementById("magnify");
-
-        mainImage.addEventListener("mousemove", function (e) {
-            magnify.style.display = "block"; // Show magnifier on hover
-
-            const {offsetX, offsetY, target} = e;
-            const {width, height} = target;
-
-            const x = (offsetX / width) * 100;
-            const y = (offsetY / height) * 100;
-
-            magnify.style.backgroundImage = `url(${mainImage.src})`;
-            magnify.style.backgroundSize = `${width * 3}px ${height * 3}px`;
-            magnify.style.backgroundPosition = `${x}% ${y}%`;
-
-            // Position magnifier relative to the cursor, slightly below
-            const magnifySize = magnify.offsetWidth / 2;
-            magnify.style.left = `${e.pageX - magnifySize + 200}px`;
-            magnify.style.top = `${e.pageY - magnifySize + 200}px`;
-        });
-
-        mainImage.addEventListener("mouseleave", function () {
-            magnify.style.display = "none";
-        });
-
 
         const slider = document.getElementById('thumbnail-slider');
         let isDragging = false;
         let startX;
         let scrollLeft;
 
-        // Handle mouse down event to start dragging
         slider.addEventListener('mousedown', (e) => {
             isDragging = true;
             startX = e.pageX - slider.offsetLeft;
@@ -474,7 +246,6 @@
             slider.style.cursor = 'grabbing';
         });
 
-        // Handle mouse leave and up events to stop dragging
         slider.addEventListener('mouseleave', () => {
             isDragging = false;
             slider.style.cursor = 'grab';
@@ -484,16 +255,14 @@
             slider.style.cursor = 'grab';
         });
 
-        // Handle mouse move event to perform dragging
         slider.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
             e.preventDefault();
             const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2; // Adjust the multiplier for sensitivity
+            const walk = (x - startX) * 2;
             slider.scrollLeft = scrollLeft - walk;
         });
 
-        // Handle touch events for mobile support
         slider.addEventListener('touchstart', (e) => {
             isDragging = true;
             startX = e.touches[0].pageX - slider.offsetLeft;
@@ -507,11 +276,10 @@
         slider.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             const x = e.touches[0].pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2; // Adjust the multiplier for sensitivity
+            const walk = (x - startX) * 2;
             slider.scrollLeft = scrollLeft - walk;
         });
 
-        // Handle mouse wheel event for smooth scrolling
         slider.addEventListener('wheel', (e) => {
             e.preventDefault();
             slider.scrollBy({
@@ -519,25 +287,5 @@
                 behavior: 'smooth'
             });
         });
-
-
-        function openCloseBidModal(itemId) {
-            const closeBidModal = document.getElementById("closeBidModal");
-            const closeBidInput = document.getElementById("closeBidInput");
-
-            // Set the hidden input value with the item ID
-            closeBidInput.value = itemId;
-
-            // Show the modal
-            closeBidModal.classList.remove("hidden");
-        }
-
-        function closeCloseBidModal() {
-            const closeBidModal = document.getElementById("closeBidModal");
-
-            // Hide the modal
-            closeBidModal.classList.add("hidden");
-        }
-
     </script>
 {% endblock %}

@@ -8,7 +8,7 @@
         <div class="container mx-auto max-w-[1280px]">
             <div class="px-2 flex justify-between items-center mb-8">
                 <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold">Top auctions list</h2>
-                <a href="{% url 'auctionList' %}" class="bg-blue-500 text-xs md:text-xl text-white px-4 py-2 rounded">View All</a>
+                <a href="{% url 'auctionList' %}" class="bg-blue-500 text-xs md:text-lg text-white px-4 py-2 rounded text-nowrap">View All</a>
             </div>
 
             <!-- Grid Layout for Auction Cards -->
@@ -85,11 +85,9 @@
             <div class="container mx-auto max-w-[1280px] w-full m-auto">
                 <h3 class="text-2xl font-bold">Register for Free & Start Bidding Now!</h3>
                 <p class="mb-8">From cars to diamonds to iPhones, we have it all.</p>
-                <a
-                        href="/register"
-                        class="bg-white text-blue-700 px-6 py-2 rounded hover:bg-purple-100"
-                >Register</a
-                >
+                <a href="/register" class="bg-white text-blue-700 px-6 py-2 rounded hover:bg-purple-100">
+                    Register
+                </a>
             </div>
         </section>
     {% endif %}
@@ -110,7 +108,7 @@
                             </p>
                         </div>
                     </div>
-                    <a href="/auctions" class="bg-blue-500 text-xs md:text-xl text-white px-4 py-2 rounded w-[100px] md:w-[120px]">View All</a>
+                    <a href="/auctions" class="bg-blue-500 text-xs md:text-lg text-white px-4 py-2 rounded text-nowrap">View All</a>
                 </div>
 
                 <!-- Responsive Grid Layout for Watch Cards -->
@@ -209,8 +207,7 @@
                     <p class="text-gray-600">Bidding is free Only pay if you win</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <img
-                            src="{% static 'images/how/win.png' %}"
+                    <img src="{% static 'images/how/win.png' %}"
                             alt="how"
                             class="h-24 mb-4"
                     />

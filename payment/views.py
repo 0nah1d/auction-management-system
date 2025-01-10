@@ -4,10 +4,8 @@ from sslcommerz_python.payment import SSLCSession
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
 from django.conf import settings
-import requests
 from auctions.models import AuctionList, Winner, Bids, User, Payment
 from django.db.models import Max
-from django.http import HttpResponseForbidden
 from django.utils import timezone
 from django.contrib import messages
 
@@ -210,7 +208,8 @@ def payment_status(request):
         auction = get_object_or_404(AuctionList, pk=auction_id)
         request_user = get_object_or_404(User, pk=user_id)
 
-        if request_user and auction and status and amount and payment_method and transaction_id and not Payment.objects.filter(transaction_id=transaction_id).exists():
+        if request_user and auction and status and amount and payment_method and transaction_id and not Payment.objects.filter(
+                transaction_id=transaction_id).exists():
             Payment.objects.create(
                 user=request_user,
                 auction=auction,
