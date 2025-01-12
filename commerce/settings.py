@@ -149,7 +149,7 @@ VAPID_EMAIL = 'mailto:<Your VAPID Email>'
 
 CELERY_BEAT_SCHEDULE = {
     'auto_bid_task': {
-        'task': 'assistant.tasks.auto_bid_task',
+        'task': 'assistant.tasks.intelligent_auto_bid_task',
         'schedule': timedelta(minutes=5),  # Runs every 5 minutes
     },
 }

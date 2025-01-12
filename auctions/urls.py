@@ -12,7 +12,7 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("create", views.create, name="create"),
     path("auctions", views.auction_list, name="auctionList"),
-    path("auction/<int:bidid>", views.auction_details, name="auctionDetails"),
+    path("auction/<int:list_id>", views.auction_details, name="auctionDetails"),
     path("delete/<int:auction_id>", views.delete_auction, name="deleteAuction"),
     path("edit/<int:auction_id>", views.update, name="update"),
     path('auctions/remove_image/', views.remove_image, name='remove_image'),
@@ -28,6 +28,7 @@ urlpatterns = [
     path("payment_information/", views.payment_information, name="paymentInformation"),
     path("bidlist", views.bid, name="bid"),
     path("win_ner", views.win_ner, name="win_ner"),
+    path("comment", views.comment, name="comment"),
 
     path('shipping/to/', views.shipping_to, name='shipping_to'),
     path('shipping/from/', views.shipping_from, name='shipping_from'),

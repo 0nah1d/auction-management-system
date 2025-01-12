@@ -25,17 +25,15 @@ def bid_assistant(request, auction_id):
         auction = get_object_or_404(AuctionList, pk=auction_id)
 
         if max_bid_amount < auction.get_highest_bid():
-            return JsonResponse({'error': 'The amount must be heigher then current bid number.'})
+            return JsonResponse({'error': 'The amount must be higher than the current highest bid.'})
 
-        assAuction = BidAssistant.objects.create(
+        BidAssistant.objects.create(
             user=request.user,
             auction=auction,
             max_bid=max_bid_amount,
         )
         return JsonResponse({'message': 'Bid Assistant set successfully.'})
 
-    except Http404:
-        return JsonResponse({'error': 'Auction not found'}, status=404)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON payload.'}, status=400)
     except Exception as e:

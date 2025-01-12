@@ -1,14 +1,16 @@
 from celery import shared_task
 from django.utils import timezone
+
+from assistant.utils import dynamic_bid_logic
 from auctions.models import AuctionList, Bids
 from assistant.models import BidAssistant
 from assistant.notifications import publish_notification
-import math
+from django.utils.timezone import now
 
 
 @shared_task
-def auto_bid_task():
-    current_time = timezone.now()
+def intelligent_auto_bid_task():
+    current_time = now()
 
     # Retrieve active BidAssistants for auctions that haven’t expired
     assistants = BidAssistant.objects.select_related('auction').filter(
@@ -18,30 +20,13 @@ def auto_bid_task():
 
     for assistant in assistants:
         auction = assistant.auction
-        time_remaining = (auction.expire_date - current_time).total_seconds()
-
         current_highest_bid = auction.get_highest_bid()
         max_bid = assistant.max_bid
-        bid_gap = max_bid - current_highest_bid
 
-        # Determine a dynamic increment based on bidding conditions
-        if bid_gap <= 10:
-            # If close to max bid, use a smaller increment
-            increment = 1
-        elif time_remaining <= 300:
-            # Larger increment as auction nears end to deter competitors
-            increment = min(bid_gap, 20)
-        elif bid_gap < 50:
-            # Moderate increment if the gap is small
-            increment = min(bid_gap, 5)
-        else:
-            # If there is a large gap, use a higher increment
-            increment = min(bid_gap, 10)
+        # Use dynamic bidding logic to calculate the next bid
+        next_bid = dynamic_bid_logic(current_highest_bid, max_bid, auction.expire_date)
 
-        next_bid = current_highest_bid + increment
-
-        # Ensure next bid does not exceed max bid
-        if next_bid <= max_bid:
+        if next_bid and next_bid > current_highest_bid:
             # Place the bid
             Bids.objects.create(user=assistant.user, auction=auction, bid=next_bid)
 
@@ -49,7 +34,7 @@ def auto_bid_task():
             assistant.last_bid_time = current_time
             assistant.save()
 
-            print(f"Dynamic bid of {next_bid} placed for {assistant.user.username} on {auction.title}")
+            print(f"Bid of {next_bid} placed by {assistant.user.username} on {auction.title}")
 
 
 @shared_task

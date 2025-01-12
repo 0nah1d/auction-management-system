@@ -136,33 +136,39 @@ def minbid(min_bid, present_bid):
     return min_bid
 
 
-def auction_details(request, bidid):
+def auction_details(request, list_id):
     # Fetch the auction listing
-    biddesc = get_object_or_404(AuctionList, pk=bidid, active_bool=True)
+    auction = get_object_or_404(AuctionList, pk=list_id, active_bool=True)
 
     # Fetch associated images
-    images = AuctionImage.objects.filter(auction=biddesc)
+    images = AuctionImage.objects.filter(auction=auction)
     image_urls = [request.build_absolute_uri(image.image_url.url) for image in images if image.image_url]
 
     # Fetch bids and related information
-    bids_present = Bids.objects.filter(auction=biddesc)
+    bids_present = Bids.objects.filter(auction=auction)
     total_bids = bids_present.count()
-    total_bidders = Bids.objects.filter(auction=biddesc).values('user').annotate(total_bids=Count('user')).count()
+    total_bidders = Bids.objects.filter(auction=auction).values('user').annotate(total_bids=Count('user')).count()
 
     # Get the highest bid
-    highest_bid = biddesc.get_highest_bid()
+    highest_bid = auction.get_highest_bid()
+
+    comments = Comments.objects.filter(listing=auction)
+    for comment in comments:
+        comment.user_photo = comment.user.profile_picture.url if comment.user.profile_picture else None
+    rating_range = range(1, 6)
 
     context = {
-        "list": biddesc,
+        "list": auction,
         "image_urls": image_urls,
-        "comments": Comments.objects.filter(listing=biddesc),
-        "present_bid": minbid(biddesc.starting_bid, bids_present),
+        "comments": comments,
+        "rating_range": rating_range,
+        "present_bid": minbid(auction.starting_bid, bids_present),
         "total_bids": total_bids,
         "total_bidders": total_bidders,
         "highest_bid": highest_bid,  # Add highest bid to context
-        "is_owner": biddesc.user == request.user
+        "is_owner": auction.user == request.user,
+        "is_payment": Payment.objects.filter(auction=auction, status="VALID").exists()
     }
-
     return render(request, "details.html", context)
 
 
@@ -709,6 +715,37 @@ def payment_information(request):
         'payments': page_obj,
         'total_payment': total_payment
     })
+
+
+@login_required(login_url='login')
+def comment(request):
+    if request.method == "POST":
+        list_id = request.POST.get("list_id")
+        comment_text = request.POST.get('comment')
+        rating = request.POST.get('rating')
+
+        # Validate data
+        if not list_id or not comment_text or not rating:
+            messages.error(request, "Missing required fields")
+            return redirect('auctionDetails', list_id=list_id)
+
+        # Fetch the listing and user
+        try:
+            listing = AuctionList.objects.get(id=list_id)
+        except AuctionList.DoesNotExist:
+            messages.error(request, "Listing not found")
+            return redirect('auctionDetails', list_id=list_id)
+
+        user = request.user
+
+        # Create a new comment
+        new_comment = Comments(user=user, listing=listing, comment=comment_text, rating=rating)
+        new_comment.save()
+
+        return redirect('auctionDetails', list_id=list_id)
+    else:
+        messages.error(request, "Invalid request method")
+        return redirect('auctionDetails', list_id=request.POST.get('list_id', ''))
 
 
 @login_required(login_url='login')

@@ -106,39 +106,55 @@
                             </ul>
                         </div>
 
+
                         <!-- Second div: 1/3 width on medium screens and up -->
                         <div class="bg-white shadow rounded-lg p-6 md:col-span-2">
-                            {% if is_owner %}
-                                <div class="w-full h-full flex justify-center items-center">
-                                    <a href="javascript:void(0);"
-                                       class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                       onclick="openCloseBidModal('{{ list.id }}')">Close Bid</a>
+                            {% if is_payment %}
+                                <div class="h-full w-full flex flex-col gap-4 justify-center items-center">
+                                    <h1 class="text-xl">Payment Completed</h1>
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="70" height="70"
+                                         viewBox="0 0 48 48">
+                                        <path fill="#4caf50"
+                                              d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"></path>
+                                        <path fill="#ccff90"
+                                              d="M34.602,14.602L21,28.199l-5.602-5.598l-2.797,2.797L21,33.801l16.398-16.402L34.602,14.602z"></path>
+                                    </svg>
                                 </div>
                             {% else %}
-                                <form class="space-y-4 flex flex-col items-center" method="POST">
-                                    <input required name="bid_amnt"
-                                           placeholder="Enter bid amount"
-                                           type="number"
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"/>
-                                    <button type="submit"
-                                            name="list_id"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full"
-                                            value="{{ list.id }}"
-                                    >
-                                        Submit a Bid
-                                    </button>
-                                </form>
+                                {% if is_owner %}
+                                    <div class="w-full h-full flex justify-center items-center">
+                                        <a href="javascript:void(0);"
+                                           class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                                           onclick="openCloseBidModal('{{ list.id }}')">Close Auction</a>
+                                    </div>
+                                {% else %}
+                                    <form class="space-y-4 flex flex-col items-center" method="POST">
+                                        <input required name="bid_amnt"
+                                               placeholder="Enter bid amount"
+                                               type="number"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"/>
+                                        <button type="submit"
+                                                name="list_id"
+                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full"
+                                                value="{{ list.id }}"
+                                        >
+                                            Submit a Bid
+                                        </button>
+                                    </form>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-white shadow rounded-lg p-4 col-span-1">
-                            <a href="{% url 'BuyNow' list.id %}"
-                               class="block bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700"
-                            >
-                                Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}
-                            </a>
+                            {% if not is_payment %}
+                                <a href="{% url 'BuyNow' list.id %}"
+                                   class="block bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700"
+                                >
+                                    Buy Now: ৳ {{ list.buy_now_price|floatformat:2 }}
+                                </a>
+                            {% endif %}
                             <div class="flex gap-4 items-center justify-between">
                                 <div class="mt-4">
                                     <span class="block mb-2 font-medium">Share to:</span>
@@ -198,7 +214,88 @@
                     </textarea>
                 </div>
             </div>
+        </div>
+    </section>
 
+    <section class="py-8 lg:py-16 bg-gray-100 text-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg lg:text-2xl font-bold">Discussion ({{ comments|length }})</h2>
+            </div>
+            <form class="mb-6" action="{% url 'comment' %}" method="POST">
+                {% csrf_token %}
+                <div class="py-2 px-4 bg-white mb-4 rounded-lg rounded-t-lg border">
+                    <label for="comment" class="sr-only">Your comment</label>
+                    <textarea id="comment" rows="6" name="comment"
+                              class="px-0 w-full text-sm border-0 focus:ring-0 focus:outline-none"
+                              placeholder="Write a comment..." required></textarea>
+                </div>
+
+                <!-- Rating Input (Star Rating) -->
+                <div class="mb-4">
+                    <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                    <div class="flex items-center" id="star-rating">
+                        <!-- Star icons (empty by default) -->
+                        {% for i in rating_range %}
+                            <svg class="w-6 h-6 text-gray-300 cursor-pointer" data-index="{{ i }}"
+                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                            </svg>
+                        {% endfor %}
+                    </div>
+                    <!-- Hidden input field for the selected rating -->
+                    <input type="hidden" id="rating" name="rating" value="" required>
+                </div>
+
+                <button type="submit" name="list_id" value="{{ list.id }}"
+                        class="inline-flex bg-purple-600 text-white items-center py-2.5 px-4 text-xs font-medium text-center rounded-lg focus:ring-4">
+                    Post comment
+                </button>
+            </form>
+
+            <!-- Comments Section (Grid Layout) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for comment in comments %}
+                    <article class="p-6 text-base bg-white rounded-lg shadow-md">
+                        <footer class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <img class="mr-2 w-10 h-10 rounded-full" src="{{ comment.user_photo }}"
+                                     alt="{{ comment.user }}">
+                                <div class="flex flex-col">
+                                    <div class="flex flex-wrap">
+                                        <p class="inline-flex text-gray-400 items-center mr-3 text-sm font-semibold">{{ comment.user }}</p>
+                                        <p class="text-sm text-gray-400">{{ comment.created_at }}</p>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center">
+                                            <!-- Loop through a range of 5 to generate stars -->
+                                            {% for i in rating_range %}
+                                                {% if i <= comment.rating %}
+                                                    <!-- Full star for rating -->
+                                                    <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
+                                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                         viewBox="0 0 22 20">
+                                                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                    </svg>
+                                                {% else %}
+                                                    <!-- Empty star for remaining rating -->
+                                                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-500 ms-1"
+                                                         aria-hidden="true"
+                                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                         viewBox="0 0 22 20">
+                                                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                    </svg>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </footer>
+                        <p class="text-gray-500 dark:text-gray-400">{{ comment.comment }}</p>
+                    </article>
+                {% endfor %}
+            </div>
         </div>
     </section>
 
@@ -210,6 +307,30 @@
         <span class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</span>
     </div>
 
+
+    <!-- JavaScript for handling star rating interaction -->
+    <script>
+        const stars = document.querySelectorAll('#star-rating svg');
+        const ratingInput = document.getElementById('rating');
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const ratingValue = star.getAttribute('data-index');
+                ratingInput.value = ratingValue;
+
+                // Update the visual state of the stars
+                stars.forEach(starElement => {
+                    if (starElement.getAttribute('data-index') <= ratingValue) {
+                        starElement.classList.add('text-yellow-300');
+                        starElement.classList.remove('text-gray-300');
+                    } else {
+                        starElement.classList.remove('text-yellow-300');
+                        starElement.classList.add('text-gray-300');
+                    }
+                });
+            });
+        });
+    </script>
     <script src="{% static 'js/detailsPage/others.js' %}"></script>
     <script>
         let currentIndex = 0;
