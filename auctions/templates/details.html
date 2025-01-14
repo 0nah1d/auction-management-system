@@ -48,8 +48,6 @@
         }
     </style>
 
-    {% include "assistant.html" %}
-
     <section class="py-24 bg-gray-100">
         <div class="container mx-auto px-4 lg:px-0 max-w-[1280px] w-full m-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -306,7 +304,8 @@
         <span class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</span>
         <span class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</span>
     </div>
-
+    
+    {% include "assistant.html" %}
 
     <!-- JavaScript for handling star rating interaction -->
     <script>
