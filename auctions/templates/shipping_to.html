@@ -29,31 +29,64 @@
                                 <table class="min-w-full bg-white">
                                     <thead>
                                     <tr class="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                        <th class="py-3 px-6 text-left">Transaction ID</th>
-                                        <th class="py-3 px-6 text-left">Amount</th>
-                                        <th class="py-3 px-6 text-left">Transaction Date</th>
-                                        <th class="py-3 px-6 text-left">Payment Method</th>
+                                        <th class="py-3 px-6 text-left">Recipient Name</th>
+                                        <th class="py-3 px-6 text-left">Address</th>
+                                        <th class="py-3 px-6 text-left">ZIP Code</th>
                                         <th class="py-3 px-6 text-left">Status</th>
+                                        <th class="py-3 px-6 text-left">Tracking Number</th>
                                     </tr>
                                     </thead>
                                     <tbody class="text-gray-600 text-sm font-light">
-                                    {% for payment in payments %}
+                                    {% for address in shipping_addresses %}
                                         <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                            <td class="py-3 px-6">{{ payment.transaction_id }}</td>
-                                            <td class="py-3 px-6">{{ payment.amount }}</td>
-                                            <td class="py-3 px-6">{{ payment.transaction_date|date:"Y-m-d H:i" }}</td>
-                                            <!-- Displaying the transaction date -->
-                                            <td class="py-3 px-6">{{ payment.payment_method }}</td>
-                                            <td class="py-3 px-6">{{ payment.status }}</td>
+                                            <td class="py-3 px-6">{{ address.recipient_name }}</td>
+                                            <td class="py-3 px-6">{{ address.street_address }}, {{ address.city }}, {{ address.province }}</td>
+                                            <td class="py-3 px-6">{{ address.zip_code }}</td>
+                                            <td class="py-3 px-6">
+                                                <!-- Status Update Form -->
+                                                <form class="status-form" method="POST"
+                                                      action="{% url 'update_shipping_status' address.id %}">
+                                                    {% csrf_token %}
+                                                    <select name="status" class=" bg-gray-200 outline-none px-2 py-1"
+                                                            onchange="this.form.submit()">
+                                                        <option value="PENDING"
+                                                                {% if address.status == 'PENDING' %}selected{% endif %}>
+                                                            Pending
+                                                        </option>
+                                                        <option value="PACKED"
+                                                                {% if address.status == 'PACKED' %}selected{% endif %}>
+                                                            Packed
+                                                        </option>
+                                                        <option value="SHIPPED"
+                                                                {% if address.status == 'SHIPPED' %}selected{% endif %}>
+                                                            Shipped
+                                                        </option>
+                                                        <option value="IN_TRANSIT"
+                                                                {% if address.status == 'IN_TRANSIT' %}selected{% endif %}>
+                                                            In Transit
+                                                        </option>
+                                                        <option value="OUT_FOR_DELIVERY"
+                                                                {% if address.status == 'OUT_FOR_DELIVERY' %}selected{% endif %}>
+                                                            Out for Delivery
+                                                        </option>
+                                                        <option value="DELIVERED"
+                                                                {% if address.status == 'DELIVERED' %}selected{% endif %}>
+                                                            Delivered
+                                                        </option>
+                                                    </select>
+                                                </form>
+                                            </td>
+                                            <td class="py-3 px-6">{{ address.tracking_number }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="5" class="text-center py-3">No Assistant information
+                                            <td colspan="5" class="text-center py-3">No shipping information
                                                 available.
                                             </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
+
                                 </table>
                             </div>
 
@@ -61,9 +94,9 @@
                             <div class="mt-6 flex justify-center">
                                 <ul class="flex space-x-2">
                                     <!-- Previous Arrow -->
-                                    {% if payments.has_previous %}
+                                    {% if shipping_addresses.has_previous %}
                                         <li>
-                                            <a href="?page={{ payments.previous_page_number }}"
+                                            <a href="?page={{ shipping_addresses.previous_page_number }}"
                                                class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
                                                 &laquo;
                                             </a>
@@ -71,24 +104,24 @@
                                     {% endif %}
 
                                     <!-- Pagination Numbers with Ellipsis -->
-                                    {% for num in payments.paginator.page_range %}
-                                        {% if num == 1 or num == payments.paginator.num_pages %}
+                                    {% for num in shipping_addresses.paginator.page_range %}
+                                        {% if num == 1 or num == shipping_addresses.paginator.num_pages %}
                                             <!-- Always show the first and last page -->
                                             <li>
                                                 <a href="?page={{ num }}"
-                                                   class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                   class="{% if num == shipping_addresses.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
                                                     {{ num }}
                                                 </a>
                                             </li>
-                                        {% elif num >= payments.number|add:"-1" and num <= payments.number|add:"1" %}
+                                        {% elif num >= shipping_addresses.number|add:"-1" and num <= shipping_addresses.number|add:"1" %}
                                             <!-- Show pages around the current page -->
                                             <li>
                                                 <a href="?page={{ num }}"
-                                                   class="{% if num == payments.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
+                                                   class="{% if num == shipping_addresses.number %} bg-blue-500 text-white {% else %} bg-gray-200 text-gray-700 {% endif %} px-3 py-1 rounded">
                                                     {{ num }}
                                                 </a>
                                             </li>
-                                        {% elif num == payments.number|add:"-2" or num == payments.number|add:"2" %}
+                                        {% elif num == shipping_addresses.number|add:"-2" or num == shipping_addresses.number|add:"2" %}
                                             <!-- Show ellipsis if there is a gap -->
                                             <li>
                                                 <span class="px-3 py-1">...</span>
@@ -97,9 +130,9 @@
                                     {% endfor %}
 
                                     <!-- Next Arrow -->
-                                    {% if payments.has_next %}
+                                    {% if shipping_addresses.has_next %}
                                         <li>
-                                            <a href="?page={{ payments.next_page_number }}"
+                                            <a href="?page={{ shipping_addresses.next_page_number }}"
                                                class="bg-gray-200 text-gray-700 px-3 py-1 rounded">
                                                 &raquo;
                                             </a>

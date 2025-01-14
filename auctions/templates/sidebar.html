@@ -114,14 +114,14 @@
                                class="flex items-center pl-5 py-2 text-sm text-gray-700 {% if request.path == shipping_from %}bg-[#242c5f] text-white{% else %}hover:bg-[#242c5f] hover:text-white{% endif %} rounded transition-colors"
                                onclick="checkMenuState('auction-menu', '{{ shipping_from }}')">
                                 <span class="inline-block transform -scale-x-100 mr-2"><i
-                                        class="fa-solid fa-truck-fast"></i></span> From
+                                        class="fa-solid fa-truck-fast"></i></span> In
                             </a>
                         </li>
                         <li>
                             <a href="{{ shipping_to }}"
                                class="flex items-center pl-5 py-2 text-sm text-gray-700 {% if request.path == shipping_to %}bg-[#242c5f] text-white{% else %}hover:bg-[#242c5f] hover:text-white{% endif %} rounded transition-colors"
                                onclick="checkMenuState('auction-menu', '{{ shipping_to }}')">
-                                <i class="fa-solid fa-truck-fast mr-2"></i> To
+                                <i class="fa-solid fa-truck-fast mr-2"></i> Out
                             </a>
                         </li>
                     </ul>

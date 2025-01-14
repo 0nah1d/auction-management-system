@@ -751,38 +751,68 @@ def comment(request):
 @login_required(login_url='login')
 def shipping_to(request):
     user = request.user
-    profile_picture_url = None
-    if hasattr(user, 'profile_picture') and user.profile_picture:
-        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+    profile_picture_url = getattr(user.profile_picture, 'url', None)
+    if profile_picture_url:
+        profile_picture_url = request.build_absolute_uri(profile_picture_url)
 
-    # Pagination
-    # paginator = Paginator(payments, 5)
-    # page_number = request.GET.get("page")
-    # page_obj = paginator.get_page(page_number)
-    # total_payment = paginator.count
+    # Shipping addresses where the user is the sender
+    shipping_addresses = (
+        ShippingAddress.objects
+        .filter(auction__user=user)
+        .order_by('-created_at')
+    )
+
+    paginator = Paginator(shipping_addresses, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "shipping_to.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
+        'shipping_addresses': page_obj,
+        'total_to': paginator.count
     })
 
 
 @login_required(login_url='login')
 def shipping_from(request):
     user = request.user
-    profile_picture_url = None
-    if hasattr(user, 'profile_picture') and user.profile_picture:
-        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+    profile_picture_url = getattr(user.profile_picture, 'url', None)
+    if profile_picture_url:
+        profile_picture_url = request.build_absolute_uri(profile_picture_url)
 
-    # Pagination
-    # paginator = Paginator(payments, 5)
-    # page_number = request.GET.get("page")
-    # page_obj = paginator.get_page(page_number)
-    # total_payment = paginator.count
+    # Shipping addresses where the user is the receiver
+    shipping_addresses = (
+        ShippingAddress.objects
+        .filter(user=user)
+        .select_related('auction__user')
+        .order_by('-created_at')
+    )
+
+    paginator = Paginator(shipping_addresses, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "shipping_from.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
+        'shipping_addresses': page_obj,
+        'total_from': paginator.count
     })
+
+
+def update_shipping_status(request, address_id):
+    address = get_object_or_404(ShippingAddress, id=address_id)
+
+    if request.method == 'POST' and 'status' in request.POST:
+        new_status = request.POST['status']
+        if new_status in dict(ShippingAddress.STATUS_CHOICES).keys():
+            address.status = new_status
+            address.save()
+            messages.success(request, "Shipping status updated successfully.")
+        else:
+            messages.error(request, "Invalid status selection.")
+
+    return redirect('shipping_to')

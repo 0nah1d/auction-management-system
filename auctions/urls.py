@@ -32,6 +32,7 @@ urlpatterns = [
 
     path('shipping/to/', views.shipping_to, name='shipping_to'),
     path('shipping/from/', views.shipping_from, name='shipping_from'),
+    path('update-status/<int:address_id>/', views.update_shipping_status, name='update_shipping_status'),
 ]
 
 if settings.DEBUG:

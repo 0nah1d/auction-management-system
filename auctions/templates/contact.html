@@ -14,17 +14,17 @@
                     <div class="flex items-center border-b border-gray-300 py-2">
                         <i class="far fa-user text-gray-500 mr-3"></i>
                         <input type="text" placeholder="Your Name" name="name" id="name"
-                            class="w-full focus:outline-none p-2">
+                               class="w-full focus:outline-none p-2">
                     </div>
                     <div class="flex items-center border-b border-gray-300 py-2">
                         <i class="fas fa-envelope-open-text text-gray-500 mr-3"></i>
                         <input type="email" placeholder="Enter Your Email ID" name="email" id="email"
-                            class="w-full focus:outline-none p-2">
+                               class="w-full focus:outline-none p-2">
                     </div>
                     <div class="flex items-start border-b border-gray-300 py-2">
                         <i class="far fa-envelope text-gray-500 mr-3 mt-3"></i>
                         <textarea name="message" id="message" placeholder="Type Your Message"
-                            class="w-full focus:outline-none p-2 h-32 resize-none"></textarea>
+                                  class="w-full focus:outline-none p-2 h-32 resize-none"></textarea>
                     </div>
                     <center>
                         <div class="g-recaptcha" data-sitekey="6LdRLDQqAAAAAJbT-riLKNptaIgFyVvmMtJQ7LXC"></div>
@@ -32,7 +32,7 @@
                     </center>
                     <div class="text-center">
                         <button type="submit"
-                            class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 focus:outline-none">
+                                class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 focus:outline-none">
                             Send Message
                         </button>
                     </div>
@@ -42,25 +42,6 @@
     </section>
     <!--============= Contact Section Ends Here =============-->
 
-    <script>
-        document.getElementById('contact_form').addEventListener('submit', function(event) {
-          event.preventDefault();
-      
-          var recaptchaResponse = grecaptcha.getResponse();
-          var captchaMessage = document.getElementById('captcha_message');
-      
-          if (recaptchaResponse.length === 0) {
-            captchaMessage.classList.remove('hidden');
-            captchaMessage.classList.add('block');
-            captchaMessage.textContent = 'Please complete the reCAPTCHA';
-          } else {
-            captchaMessage.classList.remove('block');
-            captchaMessage.classList.add('hidden');
-            this.submit();
-          }
-        });
-      </script>
-      
-      
-
+    <script src="{% static 'js/captcha.js' %}"></script>
 {% endblock %}
+

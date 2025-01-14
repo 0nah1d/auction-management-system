@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 
 {% block body %}
     <section class="pt-24 pb-16 bg-gray-100">
@@ -17,7 +18,8 @@
                     {% csrf_token %}
                     <div class="flex flex-col">
                         <div class="flex items-center space-x-3">
-                            <label for="{{ form.username.name }}" class="text-gray-500"><i class="far fa-user"></i></label>
+                            <label for="{{ form.username.name }}" class="text-gray-500"><i
+                                    class="far fa-user"></i></label>
                             <input id="{{ form.username.name }}"
                                    name="{{ form.username.name }}"
                                    placeholder="Username"
@@ -30,7 +32,8 @@
                     </div>
                     <div class="flex flex-col">
                         <div class="flex items-center space-x-3">
-                            <label for="{{ form.email.name }}" class="text-gray-500"><i class="far fa-envelope"></i></label>
+                            <label for="{{ form.email.name }}" class="text-gray-500"><i
+                                    class="far fa-envelope"></i></label>
                             <input id="{{ form.email.name }}"
                                    name="{{ form.email.name }}"
                                    placeholder="Email"
@@ -43,7 +46,8 @@
                     </div>
                     <div class="flex flex-col">
                         <div class="flex items-center space-x-3 relative">
-                            <label for="{{ form.password1.name }}" class="text-gray-500"><i class="fas fa-lock"></i></label>
+                            <label for="{{ form.password1.name }}" class="text-gray-500"><i
+                                    class="fas fa-lock"></i></label>
                             <input id="{{ form.password1.name }}"
                                    name="{{ form.password1.name }}"
                                    placeholder="Password"
@@ -59,7 +63,8 @@
                     </div>
                     <div class="flex flex-col">
                         <div class="flex items-center space-x-3 relative">
-                            <label for="{{ form.password2.name }}" class="text-gray-500"><i class="fas fa-lock"></i></label>
+                            <label for="{{ form.password2.name }}" class="text-gray-500"><i
+                                    class="fas fa-lock"></i></label>
                             <input id="{{ form.password2.name }}"
                                    name="{{ form.password2.name }}"
                                    placeholder="Confirm Password"
@@ -73,6 +78,10 @@
                         </div>
                         <small class="text-red-500 ml-7">{{ form.errors.password2 }}</small>
                     </div>
+                    <center>
+                        <div class="g-recaptcha" data-sitekey="6LdRLDQqAAAAAJbT-riLKNptaIgFyVvmMtJQ7LXC"></div>
+                        <span id="captcha_message" class="text-red-600 text-sm mt-2"></span>
+                    </center>
                     <div class="text-center">
                         <button type="submit"
                                 class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 focus:outline-none">
@@ -88,6 +97,7 @@
         </div>
     </section>
 
+    <script src="{% static 'js/captcha.js' %}"></script>
     <script>
         function togglePasswordVisibility(inputId, eyeIcon) {
             const input = document.getElementById(inputId);

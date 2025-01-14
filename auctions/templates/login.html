@@ -1,80 +1,85 @@
 {% extends "layout.html" %}
+{% load static %}
 
 {% block body %}
-<section class="flex justify-center pt-32 pb-24 bg-gray-100">
-    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <div class="mb-8 text-center">
-            <h2 class="text-3xl font-semibold text-gray-800">HI, THERE</h2>
-            <p class="text-gray-600">Log in to your BidHub account here.</p>
-        </div>
-        {% if form.non_field_errors %}
-            <div class="bg-red-100 text-red-600 p-3 rounded mb-4">
-                <small>{{ form.non_field_errors }}</small>
+    <section class="flex justify-center pt-32 pb-24 bg-gray-100">
+        <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-semibold text-gray-800">HI, THERE</h2>
+                <p class="text-gray-600">Log in to your BidHub account here.</p>
             </div>
-        {% endif %}
-        <form action="{% url 'login' %}" method="post" class="space-y-4">
-            {% csrf_token %}
-            <div class="flex flex-col">
-                <div class="flex items-center space-x-3 relative">
-                    <label for="{{ form.username.name }}" class="text-gray-500"><i class="fas fa-user"></i></label>
-                    <input id="{{ form.username.name }}"
-                           name="{{ form.username.name }}"
-                           placeholder="Username"
-                           type="text"
-                           value="{% if form.username.value %}{{ form.username.value }}{% endif %}"
-                           class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    >
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 text-red-600 p-3 rounded mb-4">
+                    <small>{{ form.non_field_errors }}</small>
                 </div>
-                <small class="text-red-500 ml-7">{{ form.errors.username }}</small>
-            </div>
-            <div class="flex flex-col">
-                <div class="flex items-center space-x-3 relative">
-                    <label for="{{ form.password.name }}" class="text-gray-500"><i class="fas fa-lock"></i></label>
-                    <input id="{{ form.password.name }}"
-                           name="{{ form.password.name }}"
-                           placeholder="Password"
-                           type="password"
-                           class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    >
-                    <span class="absolute right-3 cursor-pointer text-gray-500"
-                          onclick="togglePasswordVisibility('{{ form.password.name }}', this)">
+            {% endif %}
+            <form action="{% url 'login' %}" method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="flex flex-col">
+                    <div class="flex items-center space-x-3 relative">
+                        <label for="{{ form.username.name }}" class="text-gray-500"><i class="fas fa-user"></i></label>
+                        <input id="{{ form.username.name }}"
+                               name="{{ form.username.name }}"
+                               placeholder="Username"
+                               type="text"
+                               value="{% if form.username.value %}{{ form.username.value }}{% endif %}"
+                               class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        >
+                    </div>
+                    <small class="text-red-500 ml-7">{{ form.errors.username }}</small>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center space-x-3 relative">
+                        <label for="{{ form.password.name }}" class="text-gray-500"><i class="fas fa-lock"></i></label>
+                        <input id="{{ form.password.name }}"
+                               name="{{ form.password.name }}"
+                               placeholder="Password"
+                               type="password"
+                               class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        >
+                        <span class="absolute right-3 cursor-pointer text-gray-500"
+                              onclick="togglePasswordVisibility('{{ form.password.name }}', this)">
                         <i class="fas fa-eye"></i>
                     </span>
+                    </div>
+                    <small class="text-red-500 ml-7">{{ form.errors.password }}</small>
                 </div>
-                <small class="text-red-500 ml-7">{{ form.errors.password }}</small>
-            </div>
-            <div>
+                <center>
+                    <div class="g-recaptcha" data-sitekey="6LdRLDQqAAAAAJbT-riLKNptaIgFyVvmMtJQ7LXC"></div>
+                    <span id="captcha_message" class="text-red-600 text-sm mt-2"></span>
+                </center>
                 <button type="submit"
                         class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     LOG IN
                 </button>
+
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">NEW HERE?</p>
+                <a href="{% url 'register' %}"
+                   class="inline-block text-blue-500 font-semibold hover:underline">
+                    Sign Up
+                </a>
             </div>
-        </form>
-        <div class="mt-6 text-center">
-            <p class="text-gray-600">NEW HERE?</p>
-            <a href="{% url 'register' %}"
-               class="inline-block text-blue-500 font-semibold hover:underline">
-                Sign Up
-            </a>
         </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    function togglePasswordVisibility(inputId, eyeIcon) {
-        const input = document.getElementById(inputId);
-        const icon = eyeIcon.querySelector('i');
+    <script src="{% static 'js/captcha.js' %}"></script>
+    <script>
+        function togglePasswordVisibility(inputId, eyeIcon) {
+            const input = document.getElementById(inputId);
+            const icon = eyeIcon.querySelector('i');
 
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = "password";
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
-    }
-</script>
+    </script>
 
 {% endblock %}
