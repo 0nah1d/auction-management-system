@@ -59,10 +59,13 @@
                                required>
                     </div>
                     <button type="submit"
+                            id="startBidButton"
+                            data-loading-text="<div class='animate-spin h-5 w-5 mr-2 border-2 border-white border-t-transparent rounded-full'></div>Processing..."
                             class="w-full bg-purple-600 text-white py-3 rounded text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200 flex items-center justify-center space-x-2">
                         <i class="fas fa-play-circle"></i>
                         <span>Start Bid</span>
                     </button>
+
                 </form>
                 <button id="closeModalButton"
                         class="w-full bg-gray-300 text-gray-700 py-3 mt-4 rounded text-sm font-medium hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 flex items-center justify-center space-x-2">
@@ -113,14 +116,12 @@
 
             // Show modal function
             const showModal = () => {
-                console.log("Show modal triggered");
                 assistantModal.classList.remove('hidden', 'opacity-0', 'scale-50');
                 assistantModal.classList.add('opacity-100', 'scale-100');
             };
 
             // Hide modal function
             const hideModal = () => {
-                console.log("Hide modal triggered");
                 assistantModal.classList.add('opacity-0', 'scale-50');
                 assistantModal.classList.remove('opacity-100', 'scale-100');
                 setTimeout(() => {
@@ -128,12 +129,9 @@
                 }, 500);
             };
 
-            // Show modal after a delay
             setTimeout(showModal, 3000);
 
-            // Toggle modal visibility on button click
             assistantButton.addEventListener('click', () => {
-                console.log("Assistant button clicked");
                 if (assistantModal.classList.contains('hidden')) {
                     showModal();
                 } else {
@@ -141,25 +139,29 @@
                 }
             });
 
-            // Close modal on close button click
             closeModalButton.addEventListener('click', hideModal);
         });
 
-        // Handle form submission
         async function handleSetBidAssistant(event) {
             event.preventDefault();
 
-            const headers = {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'), // CSRF token
-            }
-
+            const startBidButton = document.getElementById('startBidButton');
+            const originalText = startBidButton.innerHTML;
+            const loadingText = startBidButton.dataset.loadingText;
             const maxBid = document.getElementById('maxBid').value;
 
             if (!maxBid) {
                 alert('Please enter a bid amount.');
                 return;
             }
+
+            startBidButton.innerHTML = loadingText;
+            startBidButton.disabled = true;
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // CSRF token
+            };
 
             try {
                 const response = await fetch(`/auction/bid_assistant/{{ list.id }}`, {
@@ -173,11 +175,13 @@
                 if (response.ok) {
                     alert(result.message);
                 } else {
-                    alert(`Error: ${result.error}`);
+                    alert(result.message);
                 }
             } catch (error) {
-                console.error('Error:', error);
                 alert('An unexpected error occurred. Please try again later.');
+            } finally {
+                startBidButton.innerHTML = originalText;
+                startBidButton.disabled = false;
             }
         }
 
