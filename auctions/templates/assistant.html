@@ -1,5 +1,16 @@
 {% load static %}
 {% block body %}
+    <!-- Check if the user is authenticated and pass that to JavaScript -->
+    {% if user.is_authenticated %}
+        <script>
+            const isAuthenticated = true;
+        </script>
+    {% else %}
+        <script>
+            const isAuthenticated = false;
+        </script>
+    {% endif %}
+
     <div class="fixed bottom-24 right-5 lg:right-4 z-50">
         <!-- Assistant Button -->
         <button id="assistantButton"
@@ -9,7 +20,7 @@
 
         <!-- Assistant Modal -->
         <div id="assistantModal"
-             class="absolute bottom-16 right-2 max-w-xs w-72 hidden z-50 opacity-0 transform transition-transform duration-500 origin-bottom-right scale-50">
+             class="absolute bottom-16 right-2 max-w-xs w-72 hidden z-50 opacity-0 transform transition-all duration-500 origin-bottom-right scale-50">
 
             <!-- Ads Section -->
             <div id="ads"
@@ -74,6 +85,26 @@
             // Initially hide the assistant section
             ass.classList.add('hidden');
 
+            // If not authenticated, show login prompt
+            if (!isAuthenticated) {
+                ads.innerHTML = `
+                    <div class="text-white space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-gift text-3xl"></i>
+                            <h2 class="text-xl font-semibold">Log in to Use Assistant!</h2>
+                        </div>
+                        <p class="text-gray-100 mb-4 text-sm sm:text-base">
+                            You need to be logged in to set the bid assistant. Please log in first to continue.
+                        </p>
+                       <button onclick="window.location.href='{% url 'login' %}'"
+                            class="w-full bg-purple-700 text-white py-3 rounded-lg text-sm font-medium hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Log In</span>
+                       </button>
+                    </div>
+                `;
+            }
+
             // Handle "Get Started" button click
             getStartedButton.addEventListener('click', () => {
                 ads.classList.add('hidden');
@@ -82,17 +113,19 @@
 
             // Show modal function
             const showModal = () => {
+                console.log("Show modal triggered");
                 assistantModal.classList.remove('hidden', 'opacity-0', 'scale-50');
                 assistantModal.classList.add('opacity-100', 'scale-100');
             };
 
             // Hide modal function
             const hideModal = () => {
+                console.log("Hide modal triggered");
                 assistantModal.classList.add('opacity-0', 'scale-50');
                 assistantModal.classList.remove('opacity-100', 'scale-100');
                 setTimeout(() => {
                     assistantModal.classList.add('hidden');
-                }, 300);
+                }, 500);
             };
 
             // Show modal after a delay
@@ -100,7 +133,12 @@
 
             // Toggle modal visibility on button click
             assistantButton.addEventListener('click', () => {
-                assistantModal.classList.contains('hidden') ? showModal() : hideModal();
+                console.log("Assistant button clicked");
+                if (assistantModal.classList.contains('hidden')) {
+                    showModal();
+                } else {
+                    hideModal();
+                }
             });
 
             // Close modal on close button click
@@ -111,6 +149,11 @@
         async function handleSetBidAssistant(event) {
             event.preventDefault();
 
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // CSRF token
+            }
+
             const maxBid = document.getElementById('maxBid').value;
 
             if (!maxBid) {
@@ -119,12 +162,9 @@
             }
 
             try {
-                const response = await fetch(`/auction/bid_assistant/{{ list_id }}`, {
+                const response = await fetch(`/auction/bid_assistant/{{ list.id }}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken'), // CSRF token
-                    },
+                    headers: headers,
                     body: JSON.stringify({max_bid: parseFloat(maxBid)}),
                 });
 
@@ -158,5 +198,4 @@
         }
 
     </script>
-    
 {% endblock %}
