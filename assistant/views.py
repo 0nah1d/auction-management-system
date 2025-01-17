@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.utils.timezone import now, make_aware, get_default_timezone
 from django.contrib import messages
 from django.http import JsonResponse
-from django.core import serializers
+from django.core.serializers import serialize
 from django.shortcuts import redirect
 from auctions.models import Bids
 import json
@@ -72,6 +72,19 @@ def bid_assistant(request, auction_id):
 
 
 @login_required(login_url='login')
+def bid_assistant_details(request, auction_id):
+    all_bids = Bids.objects.filter(auction__id=auction_id, user=request.user).order_by('-created_at')
+    bid_details = [
+        {
+            'bid': bid.bid,
+            'created_at': bid.created_at.strftime('%Y-%m-%d %I:%M:%S %p')
+        }
+        for bid in all_bids
+    ]
+    return JsonResponse({'bids': bid_details}, safe=False)
+
+
+@login_required(login_url='login')
 def assistant_info(request):
     user = request.user
     profile_picture_url = None
@@ -79,9 +92,6 @@ def assistant_info(request):
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
     set_bids = BidAssistant.objects.filter(user=user)
-
-    for bids in set_bids:
-        bids.all_bids = Bids.objects.filter(auction_id=bids.auction.id, user=request.user)
 
     # Pagination
     paginator = Paginator(set_bids, 5)
