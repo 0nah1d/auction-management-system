@@ -11,12 +11,3 @@ class BidAssistant(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - Max Bid: {self.max_bid} on {self.auction.title}"
-
-
-class PushSubscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subscription = models.JSONField()
-    auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE, related_name='subscriptions')
-
-    def __str__(self):
-        return f"Subscription for {self.user.username} on auction {self.auction.title}"

@@ -284,62 +284,66 @@ def dashboard(request):
 
 
 @login_required(login_url='login')
-def bid(request):
-    bid_amnt = request.GET["bid_amnt"]
-    list_id = request.GET["list_id"]
+def bid(request, auction_id):
+    if request.method == 'POST':
+        bid_amount = request.POST.get("bid_amount")  # Use request.POST to get the form data
 
-    if not bid_amnt or not list_id:
-        messages.error(request, "Bid amount or listing ID is missing.")
-        return redirect("auctionDetails", list_id)
+        if not bid_amount:
+            messages.error(request, "Bid amount is missing.")
+            return redirect("auctionDetails", list_id=auction_id)
 
         # Fetch the auction listing
-    auction_listing = get_object_or_404(AuctionList, pk=list_id)
+        auction_listing = get_object_or_404(AuctionList, pk=auction_id)
 
-    if auction_listing.user == request.user:
-        messages.warning(request, "You cannot bid on your own auction.")
-        return redirect("auctionDetails", list_id)
+        if auction_listing.user == request.user:
+            messages.warning(request, "You cannot bid on your own auction.")
+            return redirect("auctionDetails", list_id=auction_id)
 
-    payments = Payment.objects.filter(auction=auction_listing)
+        payments = Payment.objects.filter(auction=auction_listing)
 
-    if any(payment.status == "VALID" for payment in payments):
-        messages.info(request, "Already paid for this auction.")
-        return redirect('auctionDetails', list_id)
+        if any(payment.status == "VALID" for payment in payments):
+            messages.info(request, "Already paid for this auction.")
+            return redirect('auctionDetails', list_id=auction_id)
 
-    try:
-        winner = Winner.objects.get(bid_win_list=auction_listing)
-    except Winner.DoesNotExist:
-        winner = None
+        try:
+            winner = Winner.objects.get(bid_win_list=auction_listing)
+        except Winner.DoesNotExist:
+            winner = None
 
-    if winner:
-        messages.warning(request, "This auction has already been won, so you can no longer place a bid.")
-        return redirect("auctionDetails", list_id)
+        if winner:
+            messages.warning(request, "This auction has already been won, so you can no longer place a bid.")
+            return redirect("auctionDetails", list_id=auction_id)
 
-    # Get the current time in UTC
-    current_time = now()
+        # Get the current time in UTC
+        current_time = now()
 
-    # Convert expire_date to UTC if it's offset-naive
-    expire_date = auction_listing.expire_date
-    if not expire_date.tzinfo:
-        expire_date = make_aware(expire_date, get_default_timezone())
+        # Convert expire_date to UTC if it's offset-naive
+        expire_date = auction_listing.expire_date
+        if not expire_date.tzinfo:
+            expire_date = make_aware(expire_date, get_default_timezone())
 
-    # Check if the auction has expired
-    if current_time > expire_date:
-        messages.warning(request, "Sorry, the auction for this listing has expired.")
-        return redirect("auctionDetails", list_id)
+        # Check if the auction has expired
+        if current_time > expire_date:
+            messages.warning(request, "Sorry, the auction for this listing has expired.")
+            return redirect("auctionDetails", list_id=auction_id)
 
-    # Proceed with bid validation
-    bids_present = Bids.objects.filter(auction=auction_listing)
-    starting_bid = auction_listing.starting_bid
-    min_req_bid = minbid(starting_bid, bids_present)  # Assuming `minbid` is a custom function you have implemented
+        # Proceed with bid validation
+        bids_present = Bids.objects.filter(auction=auction_listing)
+        starting_bid = auction_listing.starting_bid
+        min_req_bid = minbid(starting_bid, bids_present)  # Assuming `minbid` is a custom function you have implemented
 
-    if int(bid_amnt) > int(min_req_bid):
-        mybid = Bids(user=request.user, auction=auction_listing, bid=bid_amnt)
-        mybid.save()
-        messages.success(request, "Bid placed successfully.")
-        return redirect("auctionDetails", list_id)
+        if int(bid_amount) > int(min_req_bid):
+            mybid = Bids(user=request.user, auction=auction_listing, bid=bid_amount)
+            mybid.save()
+            messages.success(request, "Bid placed successfully.")
+            return redirect("auctionDetails", list_id=auction_id)
 
-    messages.warning(request, f"Sorry, {bid_amnt} is less. It should be more than {min_req_bid}$.")
-    return redirect("auctionDetails", list_id)
+        messages.warning(request, f"Sorry, {bid_amount} is less. It should be more than {min_req_bid}৳.")
+        return redirect("auctionDetails", list_id=auction_id)
+
+    # Handle the case where the form was not submitted via POST (if any)
+    messages.error(request, "Invalid request method.")
+    return redirect("auctionDetails", list_id=auction_id)
 
 
 # shows message abt winner when bid is closed

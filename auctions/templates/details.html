@@ -126,15 +126,15 @@
                                            onclick="openCloseBidModal('{{ list.id }}')">Close Auction</a>
                                     </div>
                                 {% else %}
-                                    <form class="space-y-4 flex flex-col items-center" method="POST">
-                                        <input required name="bid_amnt"
+                                    <form class="space-y-4 flex flex-col items-center" method="POST"
+                                          action="{% url 'bid' list.id %}">
+                                        {% csrf_token %}
+                                        <input required name="bid_amount"
                                                placeholder="Enter bid amount"
                                                type="number"
                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"/>
                                         <button type="submit"
-                                                name="list_id"
                                                 class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full"
-                                                value="{{ list.id }}"
                                         >
                                             Submit a Bid
                                         </button>

@@ -6,6 +6,12 @@ from .models import BidAssistant
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from django.utils.timezone import now, make_aware, get_default_timezone
+from django.contrib import messages
+from django.http import JsonResponse
+from django.core import serializers
+from django.shortcuts import redirect
+from auctions.models import Bids
 import json
 
 
@@ -32,6 +38,18 @@ def bid_assistant(request, auction_id):
 
             if max_bid_amount < auction.get_highest_bid():
                 return JsonResponse({'message': 'The amount must be higher than the current highest bid.'}, status=400)
+
+            if auction.user == request.user:
+                return JsonResponse({'message': "You cannot bid on your own auction."})
+
+            expire_date = auction.expire_date
+            current_time = now()
+            if not expire_date.tzinfo:
+                expire_date = make_aware(expire_date, get_default_timezone())
+
+                # Check if the auction has expired
+            if current_time > expire_date:
+                return JsonResponse({'message': "Sorry, the auction for this listing has expired."})
 
             # Check if a BidAssistant entry already exists
             bid_ass, created = BidAssistant.objects.update_or_create(
@@ -60,14 +78,45 @@ def assistant_info(request):
     if hasattr(user, 'profile_picture') and user.profile_picture:
         profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
 
+    set_bids = BidAssistant.objects.filter(user=user)
+
+    for bids in set_bids:
+        bids.all_bids = Bids.objects.filter(auction_id=bids.auction.id, user=request.user)
+
     # Pagination
-    # paginator = Paginator(payments, 5)
-    # page_number = request.GET.get("page")
-    # page_obj = paginator.get_page(page_number)
-    # total_payment = paginator.count
+    paginator = Paginator(set_bids, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "assistant_information.html", {
         'email': user.email,
         'name': f"{user.first_name} {user.last_name}",
         'profile_picture': profile_picture_url,
+        'bids': page_obj,
+        'total': paginator.count
     })
+
+
+@login_required(login_url='login')
+def bid_assistant_update(request, auction_id):
+    if request.method == 'POST':
+        max_bid_amount = request.POST.get('max_bid')
+        bid_ass = BidAssistant.objects.filter(user=request.user, auction__id=auction_id).first()
+        if bid_ass:
+            bid_ass.max_bid = max_bid_amount
+            bid_ass.save()
+            messages.success(request, "Bid Assistant updated successfully.")
+        else:
+            messages.error(request, "Bid Assistant not found.")
+    return redirect("assistant_info")
+
+
+@login_required(login_url='login')
+def bid_assistant_delete(request, auction_id):
+    bid_ass = BidAssistant.objects.filter(user=request.user, auction__id=auction_id).first()
+    if bid_ass:
+        bid_ass.delete()
+        messages.success(request, "Bid Assistant deleted successfully.")
+    else:
+        messages.error(request, "Bid Assistant not found.")
+    return redirect("assistant_info")
