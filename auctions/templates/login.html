@@ -13,7 +13,7 @@
                     <small>{{ form.non_field_errors }}</small>
                 </div>
             {% endif %}
-            <form action="{% url 'login' %}" method="post" class="space-y-4">
+            <form action="{% url 'login' %}" method="post" class="captcha_form space-y-4">
                 {% csrf_token %}
                 <div class="flex flex-col">
                     <div class="flex items-center space-x-3 relative">
@@ -46,7 +46,7 @@
                 </div>
                 <center>
                     <div class="g-recaptcha" data-sitekey="6LdRLDQqAAAAAJbT-riLKNptaIgFyVvmMtJQ7LXC"></div>
-                    <span id="captcha_message" class="text-red-600 text-sm mt-2"></span>
+                    <span class="captcha_message text-red-600 text-sm mt-2"></span>
                 </center>
                 <button type="submit"
                         class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">

@@ -3,9 +3,9 @@ from django.utils import timezone
 
 from assistant.utils import dynamic_bid_logic
 from auctions.models import AuctionList, Bids
-from assistant.models import BidAssistant
-from assistant.notifications import publish_notification
+from assistant.models import BidAssistant, Notification
 from django.utils.timezone import now
+from channels.layers import get_channel_layer
 
 
 @shared_task
@@ -17,6 +17,7 @@ def intelligent_auto_bid_task():
         auction__expire_date__gt=current_time,
         auction__active_bool=True
     )
+
     if assistants:
         for assistant in assistants:
             auction = assistant.auction
@@ -34,7 +35,19 @@ def intelligent_auto_bid_task():
                 assistant.last_bid_time = current_time
                 assistant.save()
 
-                print(f"Bid of {next_bid} placed by {assistant.user.username} on {auction.title}")
+                message = f"Bid of {next_bid} placed by {assistant.user.username} on {auction.title}"
+
+                # Create a notification
+                Notification.objects.create(user=assistant.user, message=message)
+
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f"auction_{assistant.user.id}_notifications",
+                    {
+                        "type": "sent_notification",
+                        "message": message,
+                    }
+                )
 
     else:
         print("No active auctions to bid on.")
