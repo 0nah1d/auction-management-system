@@ -5,9 +5,16 @@ socket.onopen = function () {
 };
 
 socket.onmessage = function (event) {
+    event = JSON.parse(event.data);
+
+    const originalTitle = document.title;
+    document.title = event.message;
+
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 3000);
     get_notifications();
 };
-
 
 socket.onclose = function () {
     console.log('WebSocket disconnect');
@@ -50,7 +57,7 @@ function get_notifications() {
                 li.className = `${notification.is_read === false ? 'bg-gray-200' : 'bg-white'} p-4 cursor-pointer hover:bg-gray-200`;
                 li.innerHTML = `
                     <p class="text-gray-800 font-medium">${notification.message}</p>
-                    <small class="text-gray-500 text-xs">${notification.created_at}</small>
+                    <small class="text-gray-500 text-xs" data-timestamp="${notification.created_at}"></small>
                 `;
                 notificationList.appendChild(li);
                 hr.className = 'border-gray-400';
@@ -75,14 +82,19 @@ function get_notifications() {
                 notificationDot.classList.add('hidden');
             }
 
-            // Enable the delete notification button if notifications exist
             deleteNotificationButton.disabled = false;
+
+            const timeElements = document.querySelectorAll('[data-timestamp]');
+            timeElements.forEach(element => {
+                const timestamp = element.getAttribute('data-timestamp');
+                element.textContent = moment(new Date(timestamp)).fromNow();
+            });
+
         })
         .catch(error => {
             console.error('Error fetching notifications:', error);
         });
 }
-
 
 get_notifications();
 
@@ -102,5 +114,4 @@ deleteNotificationButton.onclick = function () {
             deleteNotificationButton.innerHTML = 'Delete All';
             deleteNotificationButton.disabled = false;
         });
-}
-
+};

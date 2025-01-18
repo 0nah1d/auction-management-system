@@ -202,7 +202,7 @@
     <!-- Bid details Modal -->
     <div id="toggleDetailsModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
          class="modal fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50 hidden">
-        <div class="modal-dialog bg-white rounded-lg shadow-lg w-1/3 max-w-2xl">
+        <div class="modal-dialog bg-white rounded-lg shadow-lg w-[500px]">
             <div class="modal-header flex justify-between items-center p-4 border-b">
                 <h5 class="modal-title text-xl font-semibold">Bid Details</h5>
                 <button type="button" class="text-gray-500 hover:text-gray-700" data-bs-dismiss="modal"
@@ -234,29 +234,38 @@
                 .then(data => {
                     const detailsContent = document.getElementById('toggleDetailsContent');
                     if (data.bids && data.bids.length > 0) {
-                        let htmlContent = '<ul class="space-y-4 overflow-y-auto h-64">';
+                        let htmlContent = `
+                        <div class="overflow-y-auto max-h-[400px]">  <!-- Added max height and scrolling -->
+                            <table class="w-full table-auto border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border px-4 py-2 text-left">#</th>
+                                        <th class="border px-4 py-2 text-left">Amount</th>
+                                        <th class="border px-4 py-2 text-left">Created at</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+
                         data.bids.forEach((bid, index) => {
                             htmlContent += `
-                                <li class="flex gap-10">
-                                    <div class="flex-shrink-0">
-                                        <strong>#${index + 1}</strong>
-                                    </div>
-                                    <div>
-                                        <strong>Amount:</strong>
-                                        <span>${bid.bid}</span>
-                                    </div>
-                                    <div>
-                                        <strong>Created at:</strong>
-                                        <span>${bid.created_at}</span>
-                                    </div>
-                                </li>`;
+                        <tr class="border-b">
+                            <td class="border px-4 py-2">${index + 1}</td>
+                            <td class="border px-4 py-2">${bid.bid}</td>
+                            <td class="border px-4 py-2">${bid.created_at}</td>
+                        </tr>
+                        `;
                         });
-                        htmlContent += '</ul>';
+
+                        htmlContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                        `;
                         detailsContent.innerHTML = htmlContent;
                     } else {
                         detailsContent.innerHTML = '<p>No bids found for this auction.</p>';
                     }
-
                 })
                 .catch(error => {
                     console.error('Error fetching bid details:', error);
@@ -268,9 +277,8 @@
             const modal = document.getElementById('toggleDetailsModal');
             modal.classList.add('hidden');  // Hide modal
         }
-
-
     </script>
+
 
     <script>
         // Show the Edit Modal
