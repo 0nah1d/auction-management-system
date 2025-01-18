@@ -6,7 +6,7 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
     console.log('Server Message:', event);
-
+    get_notifications()
 };
 
 socket.onclose = function () {
@@ -17,28 +17,90 @@ socket.onerror = function (error) {
     console.error('WebSocket error:', error);
 };
 
+const deleteNotificationButton = document.getElementById('delete_notification');
 
 function get_notifications() {
     fetch('/notifications')
         .then(response => response.json())
         .then(data => {
-            console.log(data.notifications)
             const notificationList = document.getElementById('notification_list');
+            const notificationDot = document.getElementById('notification_dot');
+            let hasUnread = false;
+
             notificationList.innerHTML = '';
+
+            if (data.notifications.length === 0) {
+                const emptyMessage = document.createElement('p');
+                emptyMessage.className = 'text-gray-500 text-center p-4';
+                emptyMessage.textContent = 'No notifications available.';
+                notificationList.appendChild(emptyMessage);
+
+                // Hide the notification dot
+                notificationDot.classList.add('hidden');
+
+                // Disable the delete notification button when no notifications are available
+                deleteNotificationButton.disabled = true;
+                deleteNotificationButton.classList.remove('hover:underline');
+                return;
+            }
 
             data.notifications.forEach(notification => {
                 const li = document.createElement('li');
                 const hr = document.createElement('hr');
                 li.className = `${notification.is_read === false ? 'bg-gray-200' : 'bg-white'} p-4 cursor-pointer hover:bg-gray-200`;
                 li.innerHTML = `
-                              <p class="text-gray-800 font-medium">${notification.message}</p>
-                              <small class="text-gray-500 text-xs">${notification.created_at}</small>
-                            `;
+                    <p class="text-gray-800 font-medium">${notification.message}</p>
+                    <small class="text-gray-500 text-xs">${notification.created_at}</small>
+                `;
                 notificationList.appendChild(li);
                 hr.className = 'border-gray-400';
                 notificationList.appendChild(hr);
+
+                if (!notification.is_read) {
+                    hasUnread = true;
+                }
+
+                li.onclick = function () {
+                    fetch(`/notifications/read/${notification.id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            get_notifications();
+                        });
+                };
             });
+
+            if (hasUnread) {
+                notificationDot.classList.remove('hidden');
+            } else {
+                notificationDot.classList.add('hidden');
+            }
+
+            // Enable the delete notification button if notifications exist
+            deleteNotificationButton.disabled = false;
         })
+        .catch(error => {
+            console.error('Error fetching notifications:', error);
+        });
 }
 
-get_notifications()
+
+get_notifications();
+
+deleteNotificationButton.onclick = function () {
+    deleteNotificationButton.innerHTML = '<span class="animate-spin mr-2 w-4 h-4 border-t-2 border-b-2 border-gray-500 border-solid rounded-full"></span> Deleting...';
+    deleteNotificationButton.disabled = true;
+
+    fetch(`/notifications/delete_all`)
+        .then(response => response.json())
+        .then(data => {
+            get_notifications();
+            deleteNotificationButton.innerHTML = 'Delete All';
+            deleteNotificationButton.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error deleting notifications:', error);
+            deleteNotificationButton.innerHTML = 'Delete All';
+            deleteNotificationButton.disabled = false;
+        });
+}
+

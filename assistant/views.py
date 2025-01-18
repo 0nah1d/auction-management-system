@@ -145,3 +145,15 @@ def get_notification(request):
         for notification in notifications
     ]
     return JsonResponse({'notifications': formated_notifications}, safe=False)
+
+
+@login_required(login_url='login')
+def read_notification(request, id):
+    Notification.objects.filter(pk=id).update(is_read=True)
+    return JsonResponse({'message': 'Notification marked as read successfully.'}, status=200)
+
+
+@login_required(login_url='login')
+def delete_all_notification(request):
+    Notification.objects.filter(user=request.user).delete()
+    return JsonResponse({'message': 'Notifications deleted successfully.'}, status=200)

@@ -6,6 +6,11 @@ def dynamic_bid_logic(current_bid, max_bid, auction_end_time):
     current_time = datetime.now(timezone.utc)
     time_remaining = (auction_end_time - current_time).total_seconds()
 
+    # Handle the scenario where there is no initial bid gap
+    if current_bid == 0:  # No bid has been placed yet
+        initial_bid = max(1, math.ceil(max_bid * 0.01))  # Default to 1% of max_bid or 1 if very low
+        return initial_bid
+
     bid_gap = max_bid - current_bid
     if bid_gap <= 0:
         return None  # No further bids can be placed

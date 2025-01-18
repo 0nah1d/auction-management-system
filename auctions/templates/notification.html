@@ -1,14 +1,21 @@
 {% block body %}
     <div class="relative">
         <button id="notification_toggle"
-                class="text-white px-3 py-2 rounded-md focus:outline-none hover:bg-gray-700">
+                class="relative text-white px-3 py-2 rounded-md focus:outline-none hover:bg-gray-700">
             <i class="fa-solid fa-bell"></i>
+            <div id="notification_dot" class="hidden absolute bottom-1/2 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
         </button>
+
         <!-- Notification Dropdown -->
         <div id="notification_dropdown"
              class="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-md shadow-lg hidden">
             <div class="py-4 pl-4">
-                <h3 class="text-lg font-semibold mb-2">Notifications</h3>
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-semibold mb-2">Notifications</h3>
+                    <button id="delete_notification" class="text-sm text-gray-500 hover:underline mr-8">
+                        Delete All
+                    </button>
+                </div>
                 <hr/>
                 <div class="w-[400px] h-[70vh] overflow-y-auto pr-2">
                     <ul id="notification_list" class="py-2 rounded-md">
@@ -20,14 +27,11 @@
     </div>
 
     <script>
-        // Wait for the DOM to be fully loaded
         window.onload = function () {
             const notificationToggle = document.getElementById('notification_toggle');
             const notificationDropdown = document.getElementById('notification_dropdown');
 
-            // Check if the elements exist
             if (notificationToggle && notificationDropdown) {
-                // Toggle dropdown visibility when the button is clicked
                 notificationToggle.addEventListener('click', function () {
                     notificationDropdown.classList.toggle('hidden');
                 });

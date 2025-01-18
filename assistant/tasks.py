@@ -6,6 +6,7 @@ from auctions.models import AuctionList, Bids
 from assistant.models import BidAssistant, Notification
 from django.utils.timezone import now
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 @shared_task
@@ -16,8 +17,6 @@ def intelligent_auto_bid_task():
         auction__expire_date__gt=current_time,
         auction__active_bool=True
     )
-
-    print(assistants)
 
     if assistants:
         for assistant in assistants:
@@ -36,7 +35,7 @@ def intelligent_auto_bid_task():
                 assistant.last_bid_time = current_time
                 assistant.save()
 
-                message = f"Bid of {next_bid} placed by {assistant.user.username} on {auction.title}"
+                message = f"The assistant has placed a bid of {next_bid}৳ on {auction.title}."
 
                 # Create a notification
                 Notification.objects.create(user=assistant.user, message=message)
