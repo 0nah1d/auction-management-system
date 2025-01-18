@@ -5,7 +5,6 @@ socket.onopen = function () {
 };
 
 socket.onmessage = function (event) {
-    console.log('Server Message:', event);
     get_notifications();
 };
 
