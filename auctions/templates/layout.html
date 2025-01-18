@@ -154,36 +154,9 @@
                 <!-- Navbar Links -->
                 <div class="hidden lg:flex space-x-4 items-center">
                     <nav class="flex space-x-4">
-                        <!-- Shopping Cart -->
-                        <div class="relative">
-                            <button id="cart-toggle"
-                                    class="text-white px-3 py-2 rounded-md focus:outline-none hover:bg-gray-700">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </button>
-                            <!-- Cart Dropdown -->
-                            <div id="cart-dropdown"
-                                 class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg hidden">
-                                <div class="p-4">
-                                    <h3 class="text-lg font-semibold mb-2">Shopping Cart</h3>
-                                    <ul class="space-y-2">
-                                        <li class="flex justify-between items-center">
-                                            <span>Item 1</span>
-                                            <span>$10.00</span>
-                                        </li>
-                                        <li class="flex justify-between items-center">
-                                            <span>Item 2</span>
-                                            <span>$15.00</span>
-                                        </li>
-                                    </ul>
-                                    <div class="mt-4">
-                                        {#                                    {% url 'cart' %}#}
-                                        <a href=""
-                                           class="block text-center bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600">View
-                                            Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% if user.is_authenticated %}
+                            {% include 'notification.html' %}
+                        {% endif %}
                         <a href="{% url 'index' %}"
                            class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
                         <a href="{% url 'auctionList' %}"
@@ -198,9 +171,10 @@
                         {% else %}
                             <a href="{% url 'userDashboard' %}"
                                class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Dashboard</a>
-                            <button onclick="showLogoutModal()"
-                                    class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Logout
-                            </button>
+                            <div onclick="showLogoutModal()"
+                                 class="cursor-pointer text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                Logout
+                            </div>
                         {% endif %}
                     </nav>
                 </div>
@@ -215,10 +189,10 @@
                             <a href="{% url 'logout' %}"
                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Yes,
                                 Logout</a>
-                            <button onclick="hideLogoutModal()"
-                                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">
+                            <div onclick="hideLogoutModal()"
+                                 class="cursor-pointer bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">
                                 Cancel
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -228,6 +202,9 @@
         <!-- Mobile Menu -->
         <div id="nav-menu" class="lg:hidden hidden bg-[#242c5f] px-4 py-4 transition-all duration-300">
             <nav class="space-y-2">
+                {% if user.is_authenticated %}
+                    {% include 'notification.html' %}
+                {% endif %}
                 <a href="{% url 'index' %}"
                    class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Home</a>
                 <a href="{% url 'auctionList' %}"
@@ -334,16 +311,10 @@
         </div>
     </div>
 </footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
 <script src="{% static 'js/websocket.js' %}"></script>
-
 <script>
-
-    // Show/Hide Cart Dropdown
-    document.getElementById('cart-toggle').addEventListener('click', () => {
-        document.getElementById('cart-dropdown').classList.toggle('hidden');
-    });
-
     function showLogoutModal() {
         document.getElementById('logout-modal').classList.remove('hidden');
     }
@@ -352,8 +323,6 @@
         document.getElementById('logout-modal').classList.add('hidden');
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Change Navbar Background on Scroll

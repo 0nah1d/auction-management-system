@@ -1,0 +1,40 @@
+{% load static %}
+
+{% block body %}
+
+    <div class="relative">
+        <button id="cart-toggle"
+                class="text-white px-3 py-2 rounded-md focus:outline-none hover:bg-gray-700">
+            <i class="fa-solid fa-bell"></i>
+        </button>
+        <!-- Cart Dropdown -->
+        <div id="cart-dropdown"
+             class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg hidden">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold mb-2">Shopping Cart</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between items-center">
+                        <span>Item 1</span>
+                        <span>$10.00</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span>Item 2</span>
+                        <span>$15.00</span>
+                    </li>
+                </ul>
+                <div class="mt-4">
+                    {#                                    {% url 'cart' %}#}
+                    <a href=""
+                       class="block text-center bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600">View
+                        Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('cart-toggle').addEventListener('click', () => {
+            document.getElementById('cart-dropdown').classList.toggle('hidden');
+        });
+    </script>
+
+{% endblock %}
