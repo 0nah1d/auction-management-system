@@ -1,4 +1,3 @@
-const notificationSound = new Audio('/static/mp3/notification.mp3');
 const socket = new WebSocket(`ws://localhost:8000/ws/${user_id}/notifications/`);
 
 socket.onopen = function () {
@@ -7,14 +6,13 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
     event = JSON.parse(event.data);
-    notificationSound.play().catch(() => console.log());
-
+    playNotificationSound();
     const originalTitle = document.title;
     document.title = event.message;
 
     setTimeout(() => {
         document.title = originalTitle;
-    }, 3000);
+    }, 5000);
     get_notifications();
 };
 
@@ -116,4 +114,9 @@ deleteNotificationButton.onclick = function () {
             deleteNotificationButton.innerHTML = 'Delete All';
             deleteNotificationButton.disabled = false;
         });
+};
+
+const playNotificationSound = () => {
+    const notificationSound = new Audio('/static/mp3/notification.mp3');
+    notificationSound.play().catch(error => console.log());
 };
