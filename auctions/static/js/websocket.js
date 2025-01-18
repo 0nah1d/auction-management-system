@@ -1,3 +1,4 @@
+const notificationSound = new Audio('/static/mp3/notification.mp3');
 const socket = new WebSocket(`ws://localhost:8000/ws/${user_id}/notifications/`);
 
 socket.onopen = function () {
@@ -6,6 +7,7 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
     event = JSON.parse(event.data);
+    notificationSound.play().catch(() => console.log());
 
     const originalTitle = document.title;
     document.title = event.message;
