@@ -138,7 +138,9 @@ def get_notification(request):
     formated_notifications = [
         {
             'message': notification.message,
-            'created_at': notification.created_at.strftime('%Y-%m-%d %I:%M:%S %p')
+            'created_at': notification.created_at.strftime('%Y-%m-%d %I:%M:%S %p'),
+            'is_read': notification.is_read,
+            'id': notification.pk,
         }
         for notification in notifications
     ]

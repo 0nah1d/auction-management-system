@@ -11,14 +11,9 @@ class AuctionNotificationConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
         self.accept()
 
-        self.send(text_data=json.dumps({
-            'connect_message': 'Socket connected',
-        }))
-
-    def disconnect(self,):
+    def disconnect(self):
         self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
