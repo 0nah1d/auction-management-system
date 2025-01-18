@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from auctions.models import AuctionList
-from .models import BidAssistant
+from .models import BidAssistant, Notification
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.core.paginator import Paginator
@@ -130,3 +130,16 @@ def bid_assistant_delete(request, auction_id):
     else:
         messages.error(request, "Bid Assistant not found.")
     return redirect("assistant_info")
+
+
+@login_required(login_url='login')
+def get_notification(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    formated_notifications = [
+        {
+            'message': notification.message,
+            'created_at': notification.created_at.strftime('%Y-%m-%d %I:%M:%S %p')
+        }
+        for notification in notifications
+    ]
+    return JsonResponse({'notifications': formated_notifications}, safe=False)

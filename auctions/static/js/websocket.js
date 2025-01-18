@@ -6,6 +6,7 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
     console.log('Server Message:', event.data);
+    get_notifications()
 };
 
 socket.onclose = function () {
@@ -15,3 +16,12 @@ socket.onclose = function () {
 socket.onerror = function (error) {
     console.error('WebSocket error:', error);
 };
+
+
+function get_notifications() {
+    fetch('/notifications')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+}

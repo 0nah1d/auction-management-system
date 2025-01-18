@@ -12,11 +12,12 @@ from channels.layers import get_channel_layer
 def intelligent_auto_bid_task():
     current_time = now()
 
-    # Retrieve active BidAssistants for auctions that haven’t expired
     assistants = BidAssistant.objects.select_related('auction').filter(
         auction__expire_date__gt=current_time,
         auction__active_bool=True
     )
+
+    print(assistants)
 
     if assistants:
         for assistant in assistants:
