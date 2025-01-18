@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8000/ws/1/notifications/');
+const socket = new WebSocket(`ws://localhost:8000/ws/${user_id}/notifications/`);
 
 socket.onopen = function () {
     console.log('WebSocket connect');
@@ -6,8 +6,9 @@ socket.onopen = function () {
 
 socket.onmessage = function (event) {
     console.log('Server Message:', event);
-    get_notifications()
+    get_notifications();
 };
+
 
 socket.onclose = function () {
     console.log('WebSocket disconnect');

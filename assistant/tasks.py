@@ -5,8 +5,12 @@ from assistant.utils import dynamic_bid_logic
 from auctions.models import AuctionList, Bids
 from assistant.models import BidAssistant, Notification
 from django.utils.timezone import now
-from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -40,11 +44,13 @@ def intelligent_auto_bid_task():
                 # Create a notification
                 Notification.objects.create(user=assistant.user, message=message)
 
+                user_id = assistant.user.id
+
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
-                    f"auction_{assistant.user.id}_notifications",
+                    f"auction_{user_id}_notifications",
                     {
-                        "type": "sent_notification",
+                        "type": "send_notification",
                         "message": message,
                     }
                 )
