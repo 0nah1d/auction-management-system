@@ -38,13 +38,3 @@ def intelligent_auto_bid_task():
 
     else:
         print("No active auctions to bid on.")
-
-
-@shared_task
-def notify_user_about_new_bid(auction_id, bid_amount, user_id):
-    auction = AuctionList.objects.get(id=auction_id)
-    message = f"New bid of {bid_amount} placed on {auction.title}. Auction ends soon!"
-
-    # Publish the notification to the auction channel
-    channel = f"auction_{auction.id}_notifications"
-    publish_notification(channel, message)
