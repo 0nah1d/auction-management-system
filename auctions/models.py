@@ -47,6 +47,12 @@ class AuctionList(models.Model):
         highest_bid = self.bids.order_by('-bid').first()
         return highest_bid.bid if highest_bid else self.starting_bid
 
+    def get_highest_bid_user(self):
+        highest_bid = self.bids.order_by('-bid').first()
+        if highest_bid:
+            return highest_bid.user
+        return None
+
     def __str__(self):
         return f"{self.title}"
 

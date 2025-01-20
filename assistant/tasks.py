@@ -16,36 +16,25 @@ def intelligent_auto_bid_task():
         auction__active_bool=True
     )
 
-    if assistants:
-        for assistant in assistants:
-            auction = assistant.auction
-            current_highest_bid = auction.get_highest_bid()
-            max_bid = assistant.max_bid
+    for assistant in assistants:
+        auction = assistant.auction
+        current_highest_bid = auction.get_highest_bid() or 0
+        max_bid = assistant.max_bid
 
-            # Use dynamic bidding logic to calculate the next bid
-            next_bid = dynamic_bid_logic(current_highest_bid, max_bid, auction.expire_date)
+        if auction.get_highest_bid_user() == assistant.user or max_bid <= current_highest_bid:
+            continue
 
-            if next_bid and next_bid > current_highest_bid:
-                # Place the bid
-                Bids.objects.create(user=assistant.user, auction=auction, bid=next_bid)
+        next_bid = dynamic_bid_logic(current_highest_bid, max_bid, auction.expire_date)
 
-                # Update last bid time
-                assistant.last_bid_time = current_time
-                assistant.save()
+        if next_bid > current_highest_bid:
+            Bids.objects.create(user=assistant.user, auction=auction, bid=next_bid)
+            assistant.last_bid_time = current_time
+            assistant.save()
 
-                message = f"The assistant has placed a bid of {next_bid}৳ on {auction.title}."
+            message = f"The assistant has placed a bid of {next_bid}৳ on {auction.title}."
+            Notification.objects.create(user=assistant.user, message=message)
 
-                # Create a notification
-                Notification.objects.create(user=assistant.user, message=message)
-
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)(
-                    f"auction_{assistant.user.id}_notifications",
-                    {
-                        "type": "send_notification",
-                        "message": message,
-                    }
-                )
-
-    else:
-        print("No active auctions to bid on.")
+            async_to_sync(get_channel_layer().group_send)(
+                f"auction_{assistant.user.id}_notifications",
+                {"type": "send_notification", "message": message}
+            )

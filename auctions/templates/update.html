@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-
+{% load static %}
 {% block body %}
     <style>
         ::placeholder {
@@ -55,107 +55,147 @@
         }
     </style>
 
-    <div class="pt-20 flex justify-center items-center max-w-[1280px] w-full m-auto">
-        <div class="container px-4 py-8 mb-24 bg-white shadow-lg rounded-lg">
-            <h2 class="text-3xl font-semibold text-center mb-6">Edit Auction</h2>
-            <form method="POST" action="" enctype="multipart/form-data">
-                {% csrf_token %}
+    <div class="max-w-[1280px] w-full m-auto">
 
-                <div class="mb-4">
-                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                    <input required autofocus placeholder="Title" type="text" name="create_title" id="title"
-                           value="{{ auction.title }}"
-                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
-                </div>
+        <!--============= Hero Section Starts Here =============-->
+        <div class="pt-[100px]">
+            <div class="container mx-auto">
+                <ul class="flex space-x-2 text-gray-500">
+                    <li><a href="/" class="hover:text-blue-500">Home</a></li>
+                    <li><span> / Create Auction</span></li>
+                </ul>
+            </div>
+        </div>
+        <!--============= Hero Section Ends Here =============-->
 
-                <div class="mb-4">
-                    <label for="desc" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea style="width: 100%"
-                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
-                              id="desc" rows="6" placeholder="Add Description"
-                              name="create_desc">{{ auction.desc }}</textarea>
-                </div>
+        <!--============= Dashboard Section Starts Here =============-->
+        <section class="my-10">
+            <div class="container mx-auto">
+                <div class="flex flex-wrap justify-center">
+                    {% include "sidebar.html" %}
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="mb-4">
-                        <label for="starting_bid" class="block text-sm font-medium text-gray-700">Starting Bid</label>
-                        <input required placeholder="Starting bid amount" type="number" name="create_initial_bid"
-                               id="starting_bid" value="{{ auction.starting_bid }}"
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
-                    </div>
+                    <!-- Main Content -->
+                    <div class="w-full sm:w-2/3 lg:w-3/4 p-4">
+                        <!-- My Activity -->
+                        <div class="container px-4 py-8 mb-24 bg-white shadow-lg rounded-lg">
+                            <h2 class="text-3xl font-semibold text-center mb-6">Edit Auction</h2>
+                            <form method="POST" action="" enctype="multipart/form-data">
+                                {% csrf_token %}
 
-                    <div class="mb-4">
-                        <label for="buy_now_price" class="block text-sm font-medium text-gray-700">Buy Now Price</label>
-                        <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
-                               id="buy_now_price" value="{{ auction.buy_now_price }}"
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="expire_date" class="block text-sm font-medium text-gray-700">Expiration Date</label>
-                        <input required placeholder="Expiration date" type="date" name="expire_date"
-                               id="expire_date" value="{{ auction.expire_date|date:'Y-m-d' }}"
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="img_url" class="block text-sm font-medium text-gray-700">Upload Images</label>
-                    <div class="relative">
-                        <input type="file" class="sr-only" id="inputGroupFile04" name="img_url"
-                               accept="image/*" multiple onchange="previewImages(event)">
-                        <label class="cursor-pointer block bg-gray-200 border border-gray-300 rounded-md text-gray-700 py-2 px-4 text-sm"
-                               for="inputGroupFile04">Choose Images</label>
-                        <div class="image-preview-container mt-2" id="image_preview_container">
-                            {% for image_url in image_urls %}
-                                <div class="image-preview inline-block mr-2 mb-2">
-                                    <img src="{{ image_url }}" alt="Current Image"
-                                         class="h-24 w-24 object-cover rounded">
-                                    <button class="remove-img-btn"
-                                            onclick="removeImage('{{ image_url }}', '{{ auction.id }}', this); return false;">
-                                        ×
-                                    </button>
+                                <div class="mb-4">
+                                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                                    <input required autofocus placeholder="Title" type="text" name="create_title"
+                                           id="title"
+                                           value="{{ auction.title }}"
+                                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
                                 </div>
-                            {% endfor %}
+
+                                <div class="mb-4">
+                                    <label for="desc"
+                                           class="block text-sm font-medium text-gray-700">Description</label>
+                                    <textarea style="width: 100%"
+                                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
+                                              id="desc" rows="6" placeholder="Add Description"
+                                              name="create_desc">{{ auction.desc }}</textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div class="mb-4">
+                                        <label for="starting_bid" class="block text-sm font-medium text-gray-700">Starting
+                                            Bid</label>
+                                        <input required placeholder="Starting bid amount" type="number"
+                                               name="create_initial_bid"
+                                               id="starting_bid" value="{{ auction.starting_bid }}"
+                                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="buy_now_price" class="block text-sm font-medium text-gray-700">Buy
+                                            Now Price</label>
+                                        <input placeholder="Buy Now Price" type="number" name="create_buy_now_price"
+                                               id="buy_now_price" value="{{ auction.buy_now_price }}"
+                                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="expire_date" class="block text-sm font-medium text-gray-700">Expiration
+                                            Date</label>
+                                        <input required placeholder="Expiration date" type="datetime-local"
+                                               name="expire_date"
+                                               id="expire_date" value="{{ auction.expire_date|date:'Y-m-d\\TH:i' }}"
+                                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="img_url" class="block text-sm font-medium text-gray-700">Upload
+                                        Images</label>
+                                    <div class="relative">
+                                        <input type="file" class="sr-only" id="inputGroupFile04" name="img_url"
+                                               accept="image/*" multiple onchange="previewImages(event)">
+                                        <label class="cursor-pointer block bg-gray-200 border border-gray-300 rounded-md text-gray-700 py-2 px-4 text-sm"
+                                               for="inputGroupFile04">Choose Images</label>
+                                        <div class="image-preview-container mt-2" id="image_preview_container">
+                                            {% for image_url in image_urls %}
+                                                <div class="image-preview inline-block mr-2 mb-2">
+                                                    <img src="{{ image_url }}" alt="Current Image"
+                                                         class="h-24 w-24 object-cover rounded">
+                                                    <button class="remove-img-btn"
+                                                            onclick="removeImage('{{ image_url }}', '{{ auction.id }}', this); return false;">
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="category_select" class="block text-sm font-medium text-gray-700">
+                                        Select Category <span class="text-xs text-gray-500">(You can select multiple categories by holding down the Ctrl key)</span>
+                                    </label>
+                                    <select name="category[]" id="category_select"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
+                                            multiple style="height: 200px;"
+                                            onchange="toggleNewCategoryField()">
+                                        {% for category in categories %}
+                                            <option class="p-2" value="{{ category.slug }}"
+                                                    {% if category in auction.categories.all %}
+                                                    selected
+                                                    {% endif %}
+                                            >{{ category.title }}</option>
+                                        {% endfor %}
+                                        <option value="new" class="p-2 italic">Add New Category</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4" id="new_category_field" style="display:none;">
+                                    <label for="new_category_title" class="block text-sm font-medium text-gray-700">New
+                                        Category
+                                        Title</label>
+                                    <input placeholder="Enter new category title" type="text" name="new_category_title"
+                                           id="new_category_title"
+                                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
+                                </div>
+
+                                <center class="flex gap-4 justify-center items-center">
+                                    <a href="{% url 'myAuction' %}"
+                                       class="bg-red-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-red-600 transition duration-150 ease-in-out">
+                                        Back to Auction
+                                    </a>
+                                    <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-150 ease-in-out"
+                                            type="submit">Submit
+                                    </button>
+                                </center>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-                <div class="mb-4">
-                    <label for="category_select" class="block text-sm font-medium text-gray-700">
-                        Select Category <span class="text-xs text-gray-500">(You can select multiple categories by holding down the Ctrl key)</span>
-                    </label>
-                    <select name="category[]" id="category_select"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"
-                            multiple style="height: 200px;"
-                            onchange="toggleNewCategoryField()">
-                        {% for category in categories %}
-                            <option class="p-2" value="{{ category.slug }}"
-                                    {% if category in auction.categories.all %}
-                                    selected
-                                    {% endif %}
-                            >{{ category.title }}</option>
-                        {% endfor %}
-                        <option value="new" class="p-2 italic">Add New Category</option>
-                    </select>
-                </div>
-
-                <div class="mb-4" id="new_category_field" style="display:none;">
-                    <label for="new_category_title" class="block text-sm font-medium text-gray-700">New Category
-                        Title</label>
-                    <input placeholder="Enter new category title" type="text" name="new_category_title"
-                           id="new_category_title"
-                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 transition duration-150 ease-in-out"/>
-                </div>
-
-                <center>
-                    <button class="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-150 ease-in-out"
-                            type="submit">Submit
-                    </button>
-                </center>
-            </form>
-        </div>
+            </div>
+        </section>
+        <!--============= Dashboard Section Ends Here =============-->
     </div>
+
 
     <script>
         tinymce.init({
