@@ -9,8 +9,8 @@ def dynamic_bid_logic(current_bid, max_bid, auction_end_time):
     if bid_gap <= 0:
         return None
 
-    auction_duration = (auction_end_time - datetime.now(timezone.utc)).total_seconds()
-    final_stage_time = auction_duration * 0.1
+    # Define the final stage as 10% of the time remaining
+    final_stage_time = time_remaining * 0.1
 
     if time_remaining > final_stage_time * 5:
         increment = max(1, math.ceil(bid_gap * 0.01))

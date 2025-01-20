@@ -664,10 +664,19 @@ def update(request, auction_id):
     # Get existing images for the auction
     image_urls = [image.image_url.url for image in auction.images.all()]
 
+    user = request.user
+
+    profile_picture_url = None
+    if user.profile_picture:
+        profile_picture_url = request.build_absolute_uri(user.profile_picture.url)
+
     return render(request, "update.html", {
         'auction': auction,
         'categories': Category.objects.all(),
-        'image_urls': image_urls
+        'image_urls': image_urls,
+        'email': user.email,
+        'name': f"{user.first_name} {user.last_name}",
+        'profile_picture': profile_picture_url,
     })
 
 
