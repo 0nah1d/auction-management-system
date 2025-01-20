@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import math
 
 
@@ -20,3 +20,18 @@ def dynamic_bid_logic(current_bid, max_bid, auction_end_time):
         increment = max(10, math.ceil(bid_gap * 0.05))
 
     return min(current_bid + increment, max_bid)
+
+
+# Example Usage for understanding
+if __name__ == "__main__":
+    current_bid_amount = 100
+    max_bid_amount = 500
+    auction_end_time_ = datetime.now(timezone.utc) + timedelta(minutes=30)
+
+    new_bid = dynamic_bid_logic(current_bid_amount, max_bid_amount, auction_end_time_)
+
+    print(f"Current Bid: {current_bid_amount}")
+    print(f"Max Bid: {max_bid_amount}")
+    print(f"Auction End Time (UTC): {auction_end_time_}")
+    print(f"Time Remaining (seconds): {(auction_end_time_ - datetime.now(timezone.utc)).total_seconds()}")
+    print(f"New Bid: {new_bid}")
