@@ -94,7 +94,7 @@
                                     <div class="flex justify-between items-center text-sm text-gray-600">
                                         <p>
                                             Bids:
-                                            <span class="font-bold">{{ present_bid|default:"0" }}</span>
+                                            <span class="font-bold">{{ auction_p_list.total_bids|default:"0" }}</span>
                                         </p>
                                         <div class="countdown-timer"
                                              data-expire-date="{{ auction_p_list.expire_date }}"></div>

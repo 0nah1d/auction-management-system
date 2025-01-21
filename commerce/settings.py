@@ -148,8 +148,12 @@ VAPID_PUBLIC_KEY = '<Your VAPID Public Key>'
 VAPID_EMAIL = 'mailto:<Your VAPID Email>'
 
 CELERY_BEAT_SCHEDULE = {
-    'auto_bid_task': {
+    'intelligent_auto_bid_task': {
         'task': 'assistant.tasks.intelligent_auto_bid_task',
-        'schedule': timedelta(minutes=5),  # Runs every 5 minutes
+        'schedule': timedelta(minutes=5),
+    },
+    'winner_notify_task': {
+        'task': 'assistant.tasks.winner_notify_task',
+        'schedule': timedelta(minutes=1),
     },
 }

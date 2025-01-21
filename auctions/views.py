@@ -22,6 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     def add_full_image_url_and_highest_bid(auction_list):
         for auction in auction_list:
+            auction.total_bids = auction.get_total_active_bids()
             # Get the first image URL
             first_image = AuctionImage.objects.filter(auction=auction).first()
             if first_image:
@@ -94,6 +95,7 @@ def auction_list(request):
     selected_category = request.GET.get('filter-by', 'all')
 
     auctions = AuctionList.objects.filter(active_bool=True)
+    auctions = auctions.annotate(total_bids=Count('bids'))
 
     if search_query:
         auctions = auctions.filter(Q(title__icontains=search_query))

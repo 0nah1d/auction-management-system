@@ -368,14 +368,20 @@
             }, 500);
         }
 
-        // Time counter
         function updateCountdown() {
             const countdownDivs = document.querySelectorAll(".countdown-timer:not(.expired)");
-            const now = moment();
+            const now = moment();  // Current time (in local time zone)
 
             countdownDivs.forEach((countdownDiv) => {
                 const expireDateStr = countdownDiv.getAttribute("data-expire-date");
+
+                // Ensure expireDateStr is in Asia/Dhaka timezone
                 const endTime = moment.tz(expireDateStr, "MMM. D, YYYY, h a", "Asia/Dhaka");
+
+                // Log current and expiration time to debug
+                console.log("Current time: ", now.format());
+                console.log("Expiration time: ", endTime.format());
+
                 const duration = moment.duration(endTime.diff(now));
 
                 if (duration.asMilliseconds() <= 0) {

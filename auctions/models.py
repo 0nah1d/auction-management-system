@@ -53,6 +53,9 @@ class AuctionList(models.Model):
             return highest_bid.user
         return None
 
+    def get_total_active_bids(self):
+        return self.bids.count()
+
     def __str__(self):
         return f"{self.title}"
 
@@ -122,6 +125,9 @@ class Bids(models.Model):
 class Winner(models.Model):
     bid_win_list = models.ForeignKey(AuctionList, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_notified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username} won {self.bid_win_list.title}"
