@@ -5,6 +5,7 @@ from assistant.models import BidAssistant, Notification
 from django.utils.timezone import now
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+import logging
 
 
 @shared_task
@@ -65,6 +66,7 @@ def winner_notify_task():
                 message = f"Congratulations {winner_user.username}! You have won the auction '{auction.title}'."
                 Notification.objects.create(user=winner_user, message=message)
 
+                logging.info(f"User id from winner notify task: {auction.user.id}")
                 async_to_sync(get_channel_layer().group_send)(
                     f"auction_{auction.user.id}_notifications",
                     {"type": "send_notification", "message": message}
