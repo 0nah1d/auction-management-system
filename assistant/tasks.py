@@ -52,8 +52,8 @@ def winner_notify_task():
     expired_auctions = AuctionList.objects.filter(expire_date__lte=current_time, active_bool=True).prefetch_related('bids')
 
     for auction in expired_auctions:
-        auction.active_bool = False
-        auction.save()
+        # auction.active_bool = False
+        # auction.save()
 
         highest_bid = auction.bids.order_by('-bid').first()
         if highest_bid:
