@@ -370,7 +370,7 @@
 
         function updateCountdown() {
             const countdownDivs = document.querySelectorAll(".countdown-timer:not(.expired)");
-            const now = moment();  // Current time (in local time zone)
+            const now = moment().tz("Asia/Dhaka");  // Ensure current time is in Asia/Dhaka timezone
 
             countdownDivs.forEach((countdownDiv) => {
                 const expireDateStr = countdownDiv.getAttribute("data-expire-date");
@@ -393,6 +393,7 @@
                 }
             });
         }
+
 
         setInterval(updateCountdown, 1000);
         updateCountdown();

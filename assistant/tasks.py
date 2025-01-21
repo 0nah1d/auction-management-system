@@ -40,7 +40,7 @@ def intelligent_auto_bid_task():
             Notification.objects.create(user=assistant.user, message=message)
 
             async_to_sync(get_channel_layer().group_send)(
-                f"user_{assistant.user.id}_notifications",
+                f"auction_{assistant.user.id}_notifications",
                 {"type": "send_notification", "message": message}
             )
 
@@ -48,7 +48,6 @@ def intelligent_auto_bid_task():
 @shared_task
 def winner_notify_task():
     current_time = now()
-    channel_layer = get_channel_layer()
 
     expired_auctions = AuctionList.objects.filter(expire_date__lte=current_time, active_bool=True).prefetch_related('bids')
 
@@ -66,7 +65,7 @@ def winner_notify_task():
                 message = f"Congratulations {winner_user.username}! You have won the auction '{auction.title}'."
                 Notification.objects.create(user=winner_user, message=message)
 
-                async_to_sync(channel_layer.group_send)(
-                    f"user_{winner_user.id}_notifications",
+                async_to_sync(get_channel_layer().group_send)(
+                    f"auction_{auction.user.id}_notifications",
                     {"type": "send_notification", "message": message}
                 )
