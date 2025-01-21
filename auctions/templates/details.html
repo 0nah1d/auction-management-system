@@ -206,10 +206,11 @@
                 <span class="line-clamp-1 overflow-hidden">{{ list.title }}</span>
             </h3>
             <div class="mt-4">
-                <div class="bg-white shadow rounded-lg p-6">
-                    <textarea id="desc">
-                        {{ list.desc }}
-                    </textarea>
+                <div class="bg-white shadow rounded-lg p-6 relative h-full w-full">
+                    <div id="desc">
+                        {{ list.desc|safe }}
+                    </div>
+                    <div class="absolute top-0 left-0 h-full w-full"></div>
                 </div>
             </div>
         </div>

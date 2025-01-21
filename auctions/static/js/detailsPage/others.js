@@ -3,16 +3,18 @@ tinymce.init({
     selector: '#desc',
     menubar: false,
     toolbar: false,
-    plugins: 'code',
+    plugins: 'autoresize',
     readonly: true,
     statusbar: false,
-    content_style: `body { padding: 0; margin: 0; height: auto; }`,
     setup: function (editor) {
         editor.on('init', function () {
-            editor.getContainer().style.border = 'none';
+            const editorContainer = editor.getContainer();
+            editorContainer.style.border = 'none';
+            editorContainer.style.outline = 'none';
         });
-    }
+    },
 });
+
 
 //=====================tinymce=====================
 
