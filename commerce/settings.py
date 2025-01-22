@@ -142,11 +142,6 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # env('CELERY_BROKER_URL', default='')
 
-# VAPID keys for Web Push Notifications (Generate using tools like web-push)
-VAPID_PRIVATE_KEY = '<Your VAPID Private Key>'
-VAPID_PUBLIC_KEY = '<Your VAPID Public Key>'
-VAPID_EMAIL = 'mailto:<Your VAPID Email>'
-
 CELERY_BEAT_SCHEDULE = {
     'intelligent_auto_bid_task': {
         'task': 'assistant.tasks.intelligent_auto_bid_task',
