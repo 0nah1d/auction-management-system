@@ -157,8 +157,6 @@
                         {% if user.is_authenticated %}
                             {% include 'notification.html' %}
                         {% endif %}
-                        <a href="{% url 'index' %}"
-                           class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
                         <a href="{% url 'auctionList' %}"
                            class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Auctions</a>
                         <a href="{% url 'contact' %}"
@@ -205,8 +203,6 @@
                 {% if user.is_authenticated %}
                     {% include 'notification.html' %}
                 {% endif %}
-                <a href="{% url 'index' %}"
-                   class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Home</a>
                 <a href="{% url 'auctionList' %}"
                    class="block text-white px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">Auctions</a>
                 <a href="{% url 'contact' %}"
@@ -318,6 +314,7 @@
 </script>
 
 <script src="{% static 'js/websocket.js' %}"></script>
+<script src="{% static 'js/endTimeCounter.js' %}"></script>
 <script>
     function showLogoutModal() {
         document.getElementById('logout-modal').classList.remove('hidden');
@@ -329,7 +326,6 @@
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        console.clear();
         // Change Navbar Background on Scroll
         window.addEventListener("scroll", function () {
             const navbar = document.getElementById("navbar");
@@ -368,37 +364,6 @@
                 overlayer.classList.add("hidden");
             }, 500);
         }
-
-        function updateCountdown() {
-            const countdownDivs = document.querySelectorAll(".countdown-timer:not(.expired)");
-            const now = moment().tz("Asia/Dhaka");  // Ensure current time is in Asia/Dhaka timezone
-
-            countdownDivs.forEach((countdownDiv) => {
-                const expireDateStr = countdownDiv.getAttribute("data-expire-date");
-
-                // Ensure expireDateStr is in Asia/Dhaka timezone
-                const endTime = moment.tz(expireDateStr, "MMM. D, YYYY, h a", "Asia/Dhaka");
-
-                const duration = moment.duration(endTime.diff(now));
-
-                if (duration.asMilliseconds() <= 0) {
-                    countdownDiv.textContent = "EXPIRED";
-                    countdownDiv.classList.add("expired");
-                } else {
-                    const days = Math.floor(duration.asDays());
-                    const hours = duration.hours();
-                    const minutes = duration.minutes();
-                    const seconds = duration.seconds();
-
-                    countdownDiv.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                }
-            });
-        }
-
-
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
 
         setTimeout(function () {
             document.querySelectorAll('.toast-message').forEach(function (toast) {
