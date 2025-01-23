@@ -2,24 +2,32 @@ from datetime import datetime, timezone, timedelta
 import math
 
 
-def dynamic_bid_logic(current_bid, max_bid, auction_end_time):
+def dynamic_bid_logic(current_bid, max_bid, auction_end_time, auction_created_at):
+    # Calculate the total auction duration and time remaining
+    total_auction_duration = (auction_end_time - auction_created_at).total_seconds()
     time_remaining = (auction_end_time - datetime.now(timezone.utc)).total_seconds()
     bid_gap = max_bid - current_bid
 
-    if bid_gap <= 0:
+    if bid_gap <= 0 or time_remaining <= 0 or total_auction_duration <= 0:
         return None
 
-    # Define the final stage as 10% of the time remaining
-    final_stage_time = time_remaining * 0.1
+    # Calculate the auction's progress as a percentage
+    auction_progress = (1 - (time_remaining / total_auction_duration)) * 100
 
-    if time_remaining > final_stage_time * 5:
+    # Dynamic increment logic based on auction progress
+    if auction_progress < 50:
+        # Early stage: Small increments
         increment = max(1, math.ceil(bid_gap * 0.01))
-    elif final_stage_time < time_remaining <= final_stage_time * 5:
+    elif 50 <= auction_progress < 80:
+        # Mid stage: Moderate increments
         increment = max(5, math.ceil(bid_gap * 0.02))
     else:
+        # Final stage: Aggressive increments
         increment = max(10, math.ceil(bid_gap * 0.05))
 
-    return min(current_bid + increment, max_bid)
+    # Ensure the next bid does not exceed max_bid
+    next_bid = current_bid + increment
+    return min(next_bid, max_bid)
 
 
 # Example Usage for understanding

@@ -8,6 +8,8 @@ class BidAssistant(models.Model):
     auction = models.ForeignKey(AuctionList, on_delete=models.CASCADE, related_name='bid_assistants')
     max_bid = models.IntegerField()
     last_bid_time = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username} - Max Bid: {self.max_bid} on {self.auction.title}"

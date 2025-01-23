@@ -27,7 +27,7 @@ def intelligent_auto_bid_task():
             continue
 
         # Determine the next bid
-        next_bid = dynamic_bid_logic(current_highest_bid, max_bid, auction.expire_date)
+        next_bid = dynamic_bid_logic(current_highest_bid, max_bid, auction.expire_date, auction.created_at)
 
         if next_bid > current_highest_bid:
             # Place the bid

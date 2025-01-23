@@ -39,6 +39,8 @@ class AuctionList(models.Model):
     expire_date = models.DateTimeField(blank=False, null=True)
     categories = models.ManyToManyField('Category', through='AuctionCategory')
     active_bool = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def get_images(self):
         return self.images.all()
